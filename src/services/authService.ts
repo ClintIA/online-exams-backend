@@ -1,17 +1,23 @@
-import AppDataSource from '../config/database';
-import { User } from '../models/User';
+import { AppDataSource } from '../config/database';
+import { Patient } from '../models/Patient';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwtHelper';
+import { Admin } from '../models/Admin';
 
-const userRepository = AppDataSource.getRepository(User);
+const patientRepository = AppDataSource.getRepository(Patient);
+const adminRepository = AppDataSource.getRepository(Admin);
 
-const findUserByEmailAndTenant = async (email: string, tenantId: number): Promise<User | null> => {
-    return await userRepository.findOne({ where: { email, tenant: { id: tenantId } } });
+const findPatientByEmailAndTenant = async (email: string, tenantId: number): Promise<Patient | null> => {
+    return await patientRepository.findOne({ where: { email, tenant: { id: tenantId } } });
 };
 
-const findUserByProtocolAndTenant = async (protocol: string, tenantId: number): Promise<User | null> => {
-    return await userRepository.findOne({ where: { protocol, tenant: { id: tenantId } } });
+const findAdminByEmailAndTenant = async (email: string, tenantId: number): Promise<Admin | null> => {
+    return await adminRepository.findOne({ where: { email, tenant: { id: tenantId } } });
+};
+
+const findPatientByProtocolAndTenant = async (protocol: string, tenantId: number): Promise<Patient | null> => {
+    return await patientRepository.findOne({ where: { protocol, tenant: { id: tenantId } } });
 };
 
 const hashPassword = async (password: string): Promise<string> => {
@@ -22,79 +28,95 @@ const comparePassword = async (password: string, hashedPassword: string): Promis
     return await bcrypt.compare(password, hashedPassword);
 };
 
-export const registerUser = async (email: string, tenantId: number) => {
-    const existingUser = await findUserByEmailAndTenant(email, tenantId);
+export const registerPatient = async (patientData: {
+    full_name: string,
+    cpf: string,
+    dob: Date,
+    email: string,
+    phone: string,
+    address: string,
+    gender?: string,
+    health_card_number?: string
+}, tenantId: number) => {
+    const existingPatient = await findPatientByEmailAndTenant(patientData.email, tenantId);
 
-    if (existingUser) {
-        throw new Error('Usuário já cadastrado');
+    if (existingPatient) {
+        throw new Error('Paciente já cadastrado');
     }
 
-    const protocol = `U-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
+    const protocol = `P-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
     const tempPassword = crypto.randomBytes(8).toString('hex');
     const hashedPassword = await hashPassword(tempPassword);
 
-    const newUser = userRepository.create({
-        email,
-        password: hashedPassword,
+    const newPatient = patientRepository.create({
+        ...patientData,
         protocol,
+        temp_password: hashedPassword,
         tenant: { id: tenantId }
     });
 
-    await userRepository.save(newUser);
+    await patientRepository.save(newPatient);
 
     return { protocol, tempPassword };
 };
 
-export const registerAdmin = async (email: string, tenantId: number) => {
-    const existingAdmin = await findUserByEmailAndTenant(email, tenantId);
+export const registerAdmin = async (adminData: { email: string, password: string, fullName: string }, tenantId: number) => {
+    const existingAdmin = await findAdminByEmailAndTenant(adminData.email, tenantId);
 
     if (existingAdmin) {
         throw new Error('Admin já cadastrado');
     }
 
-    const tempPassword = crypto.randomBytes(8).toString('hex');
-    const hashedPassword = await hashPassword(tempPassword);
+    const hashedPassword = await hashPassword(adminData.password);
 
-    const newAdmin = userRepository.create({
-        email,
+    const newAdmin = adminRepository.create({
+        email: adminData.email,
         password: hashedPassword,
-        is_admin: true,
+        fullName: adminData.fullName,
         tenant: { id: tenantId }
     });
 
-    await userRepository.save(newAdmin);
+    await adminRepository.save(newAdmin);
 
-    return { tempPassword };
+    return { message: 'Admin registrado com sucesso' };
 };
 
 export const loginAdmin = async (email: string, password: string, tenantId: number) => {
-    const user = await findUserByEmailAndTenant(email, tenantId);
+    const admin = await findAdminByEmailAndTenant(email, tenantId);
 
-    if (!user || !user.is_admin) {
+    if (!admin) {
         throw new Error('Admin não encontrado');
     }
 
-    const isPasswordValid = await comparePassword(password, user.password);
+    const isPasswordValid = await comparePassword(password, admin.password);
     if (!isPasswordValid) {
         throw new Error('Senha inválida');
     }
 
-    const token = generateToken(user.id, tenantId, user.is_admin);
+    const token = generateToken(admin.id, tenantId, true);
+
+    admin.sessionToken = token;
+    await adminRepository.save(admin);
+
     return token;
 };
 
 export const loginPatient = async (protocol: string, password: string, tenantId: number) => {
-    const user = await findUserByProtocolAndTenant(protocol, tenantId);
+    const patient = await findPatientByProtocolAndTenant(protocol, tenantId);
 
-    if (!user) {
+    if (!patient) {
         throw new Error('Paciente não encontrado');
     }
 
-    const isPasswordValid = await comparePassword(password, user.password);
+    const isPasswordValid = await comparePassword(password, patient.temp_password!);
     if (!isPasswordValid) {
         throw new Error('Senha inválida');
     }
 
-    const token = generateToken(user.id, tenantId, false);
+    const token = generateToken(patient.id, tenantId, false);
+
+    patient.sessionToken = token;
+    await patientRepository.save(patient);
+
     return token;
 };

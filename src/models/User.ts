@@ -18,6 +18,9 @@ export class User {
     @CreateDateColumn()
     created_at!: Date;
 
+    @Column({ nullable: true })
+    sessionToken?: string;
+
     @ManyToOne(() => Tenant, tenant => tenant.users)
     tenant!: Tenant;
 

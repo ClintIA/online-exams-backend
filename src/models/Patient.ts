@@ -35,6 +35,9 @@ export class Patient {
 
     @Column({ nullable: true })
     temp_password?: string;
+    
+    @Column({ nullable: true })
+    sessionToken?: string;
 
     @CreateDateColumn()
     created_at!: Date;

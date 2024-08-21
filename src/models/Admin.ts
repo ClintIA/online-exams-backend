@@ -12,13 +12,13 @@ export class Admin {
     @Column()
     password!: string;
 
-    @Column({ unique: true })
-    protocol!: string;
-
     @Column()
     fullName!: string;
 
-    @Column()
+    @Column({ nullable: true })
+    sessionToken?: string;
+
+    @Column({ default: true })
     isAdmin: boolean = true;
 
     @CreateDateColumn()
