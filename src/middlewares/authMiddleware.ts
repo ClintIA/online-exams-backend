@@ -1,12 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/jwtHelper';
 import { errorResponse } from '../utils/httpResponses';
-import { AppDataSource } from '../config/database';
-import { Admin } from '../models/Admin';
-import { Patient } from '../models/Patient';
-
-const adminRepository = AppDataSource.getRepository(Admin);
-const patientRepository = AppDataSource.getRepository(Patient);
+import { adminRepository } from '../repositories/adminRepository';
+import { patientRepository } from '../repositories/patientRepository';
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;

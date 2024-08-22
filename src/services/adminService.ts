@@ -1,9 +1,7 @@
-import { AppDataSource } from '../config/database';
 import { Admin } from '../models/Admin';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwtHelper';
-
-const adminRepository = AppDataSource.getRepository(Admin);
+import { adminRepository } from '../repositories/adminRepository';
 
 const findAdminByEmailAndTenant = async (email: string, tenantId: number): Promise<Admin | null> => {
     return await adminRepository.findOne({ where: { email, tenant: { id: tenantId } } });

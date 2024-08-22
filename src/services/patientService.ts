@@ -1,11 +1,9 @@
-import { AppDataSource } from '../config/database';
 import { Patient } from '../models/Patient';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwtHelper';
 import { sendLoginTokenSMS } from './smsService';
-
-const patientRepository = AppDataSource.getRepository(Patient);
+import { patientRepository } from '../repositories/patientRepository';
 
 const findPatientByCpfAndTenant = async (cpf: string, tenantId: number): Promise<Patient | null> => {
     return await patientRepository.findOne({ where: { cpf, tenant: { id: tenantId } } });
@@ -57,7 +55,7 @@ export const loginStepOne = async (cpf: string, tenantId: number) => {
 
     await patientRepository.save(patient);
 
-    sendLoginTokenSMS(patient.phone!, loginToken);
+    sendLoginTokenSMS(patient.tenant.id ,patient.phone!, loginToken);
 
     return { message: 'Token de login enviado para o celular' };
 };
