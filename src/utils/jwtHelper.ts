@@ -1,6 +1,9 @@
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
-const JWT_SECRET = "b356a576a560dadf85999b54209f60bdb7b919bc5f92df0f29e48e5daa61a206";
+dotenv.config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 interface TokenPayload {
     userId: number;
@@ -10,12 +13,12 @@ interface TokenPayload {
 
 export const generateToken = (userId: number, tenantId: number, isAdmin: boolean): string => {
     const payload: TokenPayload = { userId, tenantId, isAdmin };
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+    return jwt.sign(payload, JWT_SECRET!, { expiresIn: '1h' });
 };
 
 export const verifyToken = (token: string): TokenPayload => {
     try {
-        return jwt.verify(token, JWT_SECRET) as TokenPayload;
+        return jwt.verify(token, JWT_SECRET!) as TokenPayload;
     } catch (error) {
         throw new Error('Invalid token');
     }
