@@ -30,9 +30,6 @@ export class Patient {
     @Column({ nullable: true })
     health_card_number?: string;
 
-    @Column({ unique: true })
-    protocol!: string;
-
     @Column({ nullable: true })
     temp_password?: string;
     
