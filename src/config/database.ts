@@ -2,8 +2,8 @@ import { DataSource } from 'typeorm';
 import { Admin } from '../models/Admin';
 import { Patient } from '../models/Patient';
 import { Tenant } from '../models/Tenant';
-import { User } from '../models/User';
 import dotenv from 'dotenv';
+import { Product } from '../models/Product';
 
 dotenv.config();
 
@@ -15,7 +15,7 @@ export const AppDataSource = new DataSource({
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [Admin, Patient, Tenant, User],
+    entities: [Admin, Patient, Tenant, Product],
     synchronize: true,
     logging: true,
 });

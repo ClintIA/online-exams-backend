@@ -1,8 +1,7 @@
 import { Patient } from '../models/Patient';
-import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwtHelper';
-import { sendLoginTokenSMS } from './smsService';
+import { checkSMSCode, sendSMS } from './smsService';
 import { patientRepository } from '../repositories/patientRepository';
 
 const findPatientByCpfAndTenant = async (cpf: string, tenantId: number): Promise<Patient | null> => {
@@ -50,12 +49,7 @@ export const loginStepOne = async (cpf: string, tenantId: number) => {
         throw new Error('Paciente não encontrado');
     }
 
-    const loginToken = crypto.randomInt(100000, 999999).toString();
-    patient.temp_password = await hashPassword(loginToken);
-
-    await patientRepository.save(patient);
-
-    sendLoginTokenSMS(patient.tenant.id ,patient.phone!, loginToken);
+    await sendSMS(tenantId, patient.phone!);
 
     return { message: 'Token de login enviado para o celular' };
 };
@@ -67,7 +61,7 @@ export const loginStepTwo = async (cpf: string, loginToken: string, tenantId: nu
         throw new Error('Paciente não encontrado');
     }
 
-    const isTokenValid = await comparePassword(loginToken, patient.temp_password!);
+    const isTokenValid = await checkSMSCode(patient.phone!, loginToken);
     if (!isTokenValid) {
         throw new Error('Token inválido');
     }
@@ -78,7 +72,6 @@ export const loginStepTwo = async (cpf: string, loginToken: string, tenantId: nu
 
     const token = generateToken(patient.id, tenantId, false);
     patient.sessionToken = token;
-    patient.temp_password = undefined;
 
     await patientRepository.save(patient);
 

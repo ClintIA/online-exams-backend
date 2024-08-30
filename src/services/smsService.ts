@@ -1,7 +1,12 @@
-import { tenantRepository } from "../repositories/tenantRepository";
+import axios from 'axios';
+import { tenantRepository } from '../repositories/tenantRepository';
+import dotenv from 'dotenv';
 
-export const sendSMS = async (tenantId: number, phoneNumber: string, message: string) => {
-    
+dotenv.config();
+
+const smsApiKey = process.env.SMS_API_KEY;
+
+export const sendSMS = async (tenantId: number, phoneNumber: string) => {
     const tenant = await tenantRepository.findOne({ where: { id: tenantId }, relations: ["product"] });
 
     if (!tenant) {
@@ -12,15 +17,55 @@ export const sendSMS = async (tenantId: number, phoneNumber: string, message: st
         throw new Error('Limite de SMS atingido');
     }
 
-    console.log(`Enviando SMS para ${phoneNumber}: ${message}`);
+    const template = "<#> Seu código de verificação é: {999-999}";
+    const expireTime = process.env.SMS_CODE_EXPIRATION || 300;
 
-    tenant.smsUsage += 1;
-    await tenantRepository.save(tenant);
+    const smsSendApiUrl = process.env.SMS_SEND_API_URL;
+
+    try {
+        const response = await axios.post("https://api.smstoken.com.br/token/v1/verify", {
+            key: smsApiKey,
+            number: phoneNumber,
+            template: template,
+            expire: expireTime,
+        });
+
+        const { situacao, code, descricao } = response.data;
+        if (situacao !== 'OK') {
+            throw new Error(`Erro ao enviar SMS: ${descricao}`);
+        }
+
+        console.log(`SMS enviado para ${phoneNumber}: ${descricao}`);
+
+        tenant.smsUsage += 1;
+        await tenantRepository.save(tenant);
+
+        return code;
+    } catch (error: any) {
+        throw new Error(`Erro ao enviar SMS: ${error.message}`);
+    }
 };
 
-export const sendLoginTokenSMS = async (tenantId: number, phoneNumber: string, loginToken: string) => {
-    const message = `Seu código de login é: ${loginToken}`;
-    await sendSMS(tenantId, phoneNumber, message);
+
+export const checkSMSCode = async (phoneNumber: string, code: string) => {
+    const smsCheckApiUrl = process.env.SMS_CHECK_API_URL;
+
+    try {
+        const response = await axios.post("https://api.smstoken.com.br/token/v1/check", {
+            key: smsApiKey,
+            number: phoneNumber,
+            code: code,
+        });
+
+        const { situacao, checked, descricao } = response.data;
+        if (situacao !== 'OK' || !checked) {
+            throw new Error(`Erro ao validar código: ${descricao}`);
+        }
+
+        return true;
+    } catch (error: any) {
+        throw new Error(`Erro ao validar código: ${error.message}`);
+    }
 };
 
 export const resetSmsUsage = async () => {

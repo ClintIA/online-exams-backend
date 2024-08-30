@@ -9,7 +9,7 @@ const router = Router();
 router.post('/register/admin', tenantMiddleware, authMiddleware, isAdminMiddleware, registerAdminController);
 router.post('/login/admin', tenantMiddleware, loginAdminController);
 
-router.post('/register/patient', tenantMiddleware ,authMiddleware, isAdminMiddleware, registerPatientController);
+router.post('/register/patient', tenantMiddleware, authMiddleware, isAdminMiddleware, registerPatientController);
 router.post('/login/patient/step1', tenantMiddleware, loginPatientStepOneController);
 router.post('/login/patient/step2', tenantMiddleware, loginPatientStepTwoController);
 

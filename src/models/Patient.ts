@@ -30,8 +30,8 @@ export class Patient {
     @Column({ nullable: true })
     health_card_number?: string;
 
-    @Column({ nullable: true })
-    temp_password?: string;
+    @Column("simple-array", { nullable: true })
+    exams?: string[];
     
     @Column({ nullable: true })
     sessionToken?: string;
