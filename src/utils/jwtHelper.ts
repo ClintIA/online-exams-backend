@@ -7,12 +7,12 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 interface TokenPayload {
     userId: number;
-    tenantId: number;
+    tenantId?: number;
     isAdmin: boolean;
 }
 
-export const generateToken = (userId: number, tenantId: number, isAdmin: boolean): string => {
-    const payload: TokenPayload = { userId, tenantId, isAdmin };
+export const generateToken = (userId: number, isAdmin: boolean, tenantId?: number): string => {
+    const payload: TokenPayload = isAdmin ? { userId, tenantId: tenantId!, isAdmin } : { userId, isAdmin };
     return jwt.sign(payload, JWT_SECRET!, { expiresIn: '1h' });
 };
 

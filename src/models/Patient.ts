@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, ManyToMany } from 'typeorm';
 import { Tenant } from './Tenant';
 
 @Entity()
@@ -39,6 +39,6 @@ export class Patient {
     @CreateDateColumn()
     created_at!: Date;
 
-    @ManyToOne(() => Tenant, tenant => tenant.patients)
-    tenant!: Tenant;
+    @ManyToMany(() => Tenant, tenant => tenant.patients)
+    tenants!: Tenant[];
 }

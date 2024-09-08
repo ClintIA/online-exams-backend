@@ -5,7 +5,7 @@ declare module 'express' {
         tenantId?: number;
         user?: {
             userId: number;
-            tenantId: number;
+            tenantId?: number;
             isAdmin: boolean;
         };
     }

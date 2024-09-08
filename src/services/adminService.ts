@@ -3,8 +3,8 @@ import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwtHelper';
 import { adminRepository } from '../repositories/adminRepository';
 
-const findAdminByEmailAndTenant = async (email: string, tenantId: number): Promise<Admin | null> => {
-    return await adminRepository.findOne({ where: { email, tenant: { id: tenantId } } });
+const findAdminByEmail = async (email: string): Promise<Admin | null> => {
+    return await adminRepository.findOne({ where: { email }, relations: ['tenant'] });
 };
 
 const hashPassword = async (password: string): Promise<string> => {
@@ -16,7 +16,7 @@ const comparePassword = async (password: string, hashedPassword: string): Promis
 };
 
 export const registerAdmin = async (adminData: { email: string, password: string, fullName: string }, tenantId: number) => {
-    const existingAdmin = await findAdminByEmailAndTenant(adminData.email, tenantId);
+    const existingAdmin = await findAdminByEmail(adminData.email);
 
     if (existingAdmin) {
         throw new Error('Admin já cadastrado');
@@ -36,8 +36,8 @@ export const registerAdmin = async (adminData: { email: string, password: string
     return { message: 'Admin registrado com sucesso' };
 };
 
-export const loginAdmin = async (email: string, password: string, tenantId: number) => {
-    const admin = await findAdminByEmailAndTenant(email, tenantId);
+export const loginAdmin = async (email: string, password: string) => {
+    const admin = await findAdminByEmail(email);
 
     if (!admin) {
         throw new Error('Admin não encontrado');
@@ -48,11 +48,13 @@ export const loginAdmin = async (email: string, password: string, tenantId: numb
         throw new Error('Senha inválida');
     }
 
+    const tenantId = admin.tenant.id;
+
     if (admin.sessionToken) {
         admin.sessionToken = undefined;
     }
 
-    const token = generateToken(admin.id, tenantId, true);
+    const token = generateToken(admin.id, true, tenantId);
 
     admin.sessionToken = token;
     await adminRepository.save(admin);

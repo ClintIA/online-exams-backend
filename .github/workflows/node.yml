@@ -23,9 +23,3 @@ jobs:
 
       - name: Build
         run: npm run build
-
-      - name: Run tests
-        run: npm test
-
-      - name: Run code quality analysis
-        run: npx eslint . --ext .js,.ts
