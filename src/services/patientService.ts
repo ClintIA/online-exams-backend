@@ -1,19 +1,15 @@
 import { Patient } from '../models/Patient';
-import bcrypt from 'bcryptjs';
+import { Tenant } from '../models/Tenant';
 import { generateToken } from '../utils/jwtHelper';
-import { checkSMSCode, sendSMS } from './smsService';
 import { patientRepository } from '../repositories/patientRepository';
+import { tenantRepository } from '../repositories/tenantRepository';
 
-const findPatientByCpfAndTenant = async (cpf: string, tenantId: number): Promise<Patient | null> => {
-    return await patientRepository.findOne({ where: { cpf, tenant: { id: tenantId } } });
+const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
+    return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
 };
 
-const hashPassword = async (password: string): Promise<string> => {
-    return await bcrypt.hash(password, 10);
-};
-
-const comparePassword = async (password: string, hashedPassword: string): Promise<boolean> => {
-    return await bcrypt.compare(password, hashedPassword);
+const findTenantById = async (tenantId: number): Promise<Tenant | null> => {
+    return await tenantRepository.findOne({ where: { id: tenantId } });
 };
 
 export const registerPatient = async (patientData: {
@@ -26,54 +22,50 @@ export const registerPatient = async (patientData: {
     gender?: string,
     health_card_number?: string
 }, tenantId: number) => {
-    const existingPatient = await findPatientByCpfAndTenant(patientData.cpf, tenantId);
-
-    if (existingPatient) {
-        throw new Error('Paciente já cadastrado');
+    const tenant = await findTenantById(tenantId);
+    if (!tenant) {
+        throw new Error('Tenant não encontrado');
     }
 
-    const newPatient = patientRepository.create({
-        ...patientData,
-        tenant: { id: tenantId }
-    });
+    let patient = await findPatientByCpf(patientData.cpf);
 
-    await patientRepository.save(newPatient);
+    if (patient) {
+        if (patient.tenants.some(t => t.id === tenantId)) {
+            throw new Error('Paciente já está associado a essa clínica');
+        }
+
+        Object.assign(patient, patientData);
+
+        patient.tenants.push(tenant);
+    } else {
+        patient = patientRepository.create({
+            ...patientData,
+            tenants: [tenant]
+        });
+    }
+
+    await patientRepository.save(patient);
 
     return { message: 'Paciente registrado com sucesso' };
 };
 
-export const loginStepOne = async (cpf: string, tenantId: number) => {
-    const patient = await findPatientByCpfAndTenant(cpf, tenantId);
+
+export const loginPatientByCpf = async (cpf: string) => {
+    const patient = await findPatientByCpf(cpf);
 
     if (!patient) {
         throw new Error('Paciente não encontrado');
-    }
-
-    await sendSMS(tenantId, patient.phone!);
-
-    return { message: 'Token de login enviado para o celular' };
-};
-
-export const loginStepTwo = async (cpf: string, loginToken: string, tenantId: number) => {
-    const patient = await findPatientByCpfAndTenant(cpf, tenantId);
-
-    if (!patient) {
-        throw new Error('Paciente não encontrado');
-    }
-
-    const isTokenValid = await checkSMSCode(patient.phone!, loginToken);
-    if (!isTokenValid) {
-        throw new Error('Token inválido');
     }
 
     if (patient.sessionToken) {
         patient.sessionToken = undefined;
     }
 
-    const token = generateToken(patient.id, tenantId, false);
-    patient.sessionToken = token;
+    const token = generateToken(patient.id, false);
 
+    patient.sessionToken = token;
     await patientRepository.save(patient);
 
     return token;
 };
+

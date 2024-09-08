@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { registerPatient, loginStepOne, loginStepTwo } from '../services/patientService';
+import { registerPatient, loginPatientByCpf } from '../services/patientService'; 
 import { registerAdmin, loginAdmin } from '../services/adminService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
 
@@ -37,24 +37,11 @@ export const registerPatientController = async (req: Request, res: Response) => 
     }
 };
 
-export const loginPatientStepOneController = async (req: Request, res: Response) => {
+export const loginPatientController = async (req: Request, res: Response) => {
     try {
         const { cpf } = req.body;
-        const tenantId = req.tenantId!;
 
-        const result = await loginStepOne(cpf, tenantId);
-        return successResponse(res, result, 'Token de login enviado com sucesso');
-    } catch (error) {
-        return errorResponse(res, error);
-    }
-};
-
-export const loginPatientStepTwoController = async (req: Request, res: Response) => {
-    try {
-        const { cpf, loginToken } = req.body;
-        const tenantId = req.tenantId!;
-
-        const token = await loginStepTwo(cpf, loginToken, tenantId);
+        const token = await loginPatientByCpf(cpf);
         return successResponse(res, { token }, 'Login realizado com sucesso');
     } catch (error) {
         return errorResponse(res, error, 401);
@@ -64,9 +51,8 @@ export const loginPatientStepTwoController = async (req: Request, res: Response)
 export const loginAdminController = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
-        const tenantId = req.tenantId!;
 
-        const token = await loginAdmin(email, password, tenantId);
+        const token = await loginAdmin(email, password);
         return successResponse(res, { token }, 'Login realizado com sucesso');
     } catch (error) {
         return errorResponse(res, error, 401);
