@@ -10,7 +10,7 @@ export class Product {
     name!: string;
 
     @Column()
-    smsLimit!: number;
+    uploadLimit!: number;
 
     @OneToMany(() => Tenant, tenant => tenant.product)
     tenants!: Tenant[];

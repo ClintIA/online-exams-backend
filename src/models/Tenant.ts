@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn, ManyToMany } from 'typeorm';
 import { Patient } from './Patient';
 import { Admin } from './Admin';
 import { Product } from './Product';
+import { TenantExams } from './TenantExams';
 
 @Entity()
 export class Tenant {
@@ -20,12 +21,15 @@ export class Tenant {
     @ManyToOne(() => Product, product => product.tenants)
     product!: Product;
 
-    @Column({ default: 0 })
-    smsUsage!: number;
+    @Column({default: 0})
+    uploadUsage!: number;
 
-    @OneToMany(() => Patient, patient => patient.tenant)
+    @ManyToMany(() => Patient, patient => patient.tenants)
     patients!: Patient[];
 
     @OneToMany(() => Admin, admin => admin.tenant)
     admins!: Admin[];
+
+    @OneToMany(() => TenantExams, tenantExams => tenantExams.tenant)
+    exams!: TenantExams[];
 }

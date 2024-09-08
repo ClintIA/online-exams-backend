@@ -2,25 +2,19 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } f
 import { Tenant } from './Tenant';
 
 @Entity()
-export class Admin {
+export class TenantExams {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ unique: true })
-    email!: string;
-
     @Column()
-    password!: string;
+    exam_name!: string;
 
-    @Column()
-    fullName!: string;
+    @Column('decimal', { precision: 10, scale: 2 })
+    price!: number;
 
-    @Column({ nullable: true })
-    sessionToken?: string;
-    
     @CreateDateColumn()
     created_at!: Date;
 
-    @ManyToOne(() => Tenant, tenant => tenant.admins)
+    @ManyToOne(() => Tenant, tenant => tenant.exams)
     tenant!: Tenant;
 }
