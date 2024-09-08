@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn, ManyToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn, ManyToMany, JoinTable } from 'typeorm';
 import { Patient } from './Patient';
 import { Admin } from './Admin';
 import { Product } from './Product';
@@ -25,6 +25,7 @@ export class Tenant {
     uploadUsage!: number;
 
     @ManyToMany(() => Patient, patient => patient.tenants)
+    @JoinTable()
     patients!: Patient[];
 
     @OneToMany(() => Admin, admin => admin.tenant)
