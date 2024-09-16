@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import 'reflect-metadata';
 import authRoutes from './routes/authRoutes';
-import { tenantMiddleware } from './middlewares/tenantMiddleware';
+import tenantExamRoutes from './routes/tenantExamRoutes';
 import uploadRoutes from './routes/uploadRoutes';
 
 dotenv.config();
@@ -15,5 +15,6 @@ app.use(express.json());
 
 app.use('/auth', authRoutes);
 app.use('/api', uploadRoutes);
+app.use('/clinic', tenantExamRoutes)
 
 export default app;
