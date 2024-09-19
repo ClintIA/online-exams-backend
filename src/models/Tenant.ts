@@ -1,10 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, CreateDateColumn, ManyToMany, JoinTable, Index } from 'typeorm';
 import { Patient } from './Patient';
 import { Admin } from './Admin';
 import { Product } from './Product';
 import { TenantExams } from './TenantExams';
 
 @Entity()
+@Index(['id'])
 export class Tenant {
     @PrimaryGeneratedColumn()
     id!: number;

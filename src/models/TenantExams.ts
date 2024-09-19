@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index } from 'typeorm';
 import { Tenant } from './Tenant';
 
 @Entity()
+@Index(['id', 'exam_name'])
 export class TenantExams {
     @PrimaryGeneratedColumn()
     id!: number;
@@ -16,5 +17,5 @@ export class TenantExams {
     created_at!: Date;
 
     @ManyToOne(() => Tenant, tenant => tenant.exams)
-    tenant!: Tenant;
+    tenant!: Tenant;    
 }

@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, ManyToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, ManyToMany, Index } from 'typeorm';
 import { Tenant } from './Tenant';
 
 @Entity()
+@Index(['id', 'cpf'])
 export class Patient {
     @PrimaryGeneratedColumn()
     id!: number;
