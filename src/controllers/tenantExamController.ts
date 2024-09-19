@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createExam, getExams, updateExam, deleteExam } from '../services/examService';
+import { createExam, getExams, updateExam, deleteExam } from '../services/tenantExamService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
 
 export const createExamController = async (req: Request, res: Response) => {
@@ -25,7 +25,7 @@ export const getExamsController = async (req: Request, res: Response) => {
 
 export const updateExamController = async (req: Request, res: Response) => {
     try {
-        const examId = parseInt(req.params.id);
+        const examId = parseInt(req.params.clinicExamId);
         const { exam_name, price } = req.body;
         const tenantId = req.tenantId!;
         const result = await updateExam(examId, { exam_name, price }, tenantId);
@@ -37,7 +37,7 @@ export const updateExamController = async (req: Request, res: Response) => {
 
 export const deleteExamController = async (req: Request, res: Response) => {
     try {
-        const examId = parseInt(req.params.id);
+        const examId = parseInt(req.params.clinicExamId);
         const tenantId = req.tenantId!;
         await deleteExam(examId, tenantId);
         return successResponse(res, { message: 'Exame deletado com sucesso' });

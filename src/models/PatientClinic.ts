@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Index } from 'typeorm';
 import { Patient } from './Patient';
 import { Tenant } from './Tenant';
 
 @Entity()
+@Index(['id'])
 export class PatientClinic {
     @PrimaryGeneratedColumn()
     id!: number;

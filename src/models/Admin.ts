@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index } from 'typeorm';
 import { Tenant } from './Tenant';
 
 @Entity()
+@Index(['id'])
 export class Admin {
     @PrimaryGeneratedColumn()
     id!: number;

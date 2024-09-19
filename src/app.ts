@@ -15,6 +15,6 @@ app.use(express.json());
 
 app.use('/auth', authRoutes);
 app.use('/api', uploadRoutes);
-app.use('/clinic', tenantExamRoutes)
+app.use('/clinicexams', tenantExamRoutes)
 
 export default app;

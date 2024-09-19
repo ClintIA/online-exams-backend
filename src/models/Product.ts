@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Index } from 'typeorm';
 import { Tenant } from './Tenant';
 
 @Entity()
+@Index(['id'])
 export class Product {
     @PrimaryGeneratedColumn()
     id!: number;

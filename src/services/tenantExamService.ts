@@ -12,6 +12,16 @@ export const createExam = async (examData: { exam_name: string, price: number },
         throw new Error('Tenant não encontrado');
     }
 
+    const exam = await tenantExamsRepository.findOne({
+        where: {
+            exam_name: examData.exam_name,
+            tenant: { id: tenantId }
+        }
+    });
+    if (exam) {
+        throw new Error('Exame já cadastrado');
+    }
+
     const newExam = tenantExamsRepository.create({
         ...examData,
         tenant
@@ -22,12 +32,10 @@ export const createExam = async (examData: { exam_name: string, price: number },
 };
 
 export const getExams = async (tenantId: number) => {
-    const tenant = await findTenantById(tenantId);
-    if (!tenant) {
-        throw new Error('Tenant não encontrado');
-    }
-
-    const exams = await tenantExamsRepository.find({ where: { tenant } });
+    const exams = await tenantExamsRepository.find({
+        where: { tenant: { id: tenantId } },
+        select: ['id', 'exam_name', 'price', 'created_at']
+    });
     return exams;
 };
 
@@ -37,7 +45,12 @@ export const updateExam = async (examId: number, examData: { exam_name: string, 
         throw new Error('Tenant não encontrado');
     }
 
-    const exam = await tenantExamsRepository.findOne({ where: { id: examId, tenant } });
+    const exam = await tenantExamsRepository.findOne({
+        where: {
+            id: examId,
+            tenant: { id: tenantId }
+        }
+    });
     if (!exam) {
         throw new Error('Exame não encontrado');
     }
@@ -54,7 +67,12 @@ export const deleteExam = async (examId: number, tenantId: number) => {
         throw new Error('Tenant não encontrado');
     }
 
-    const exam = await tenantExamsRepository.findOne({ where: { id: examId, tenant } });
+    const exam = await tenantExamsRepository.findOne({
+        where: {
+            id: examId,
+            tenant: { id: tenantId }
+        }
+    });
     if (!exam) {
         throw new Error('Exame não encontrado');
     }
