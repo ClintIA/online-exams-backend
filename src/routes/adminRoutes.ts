@@ -10,8 +10,8 @@ import {authMiddleware} from "../middlewares/authMiddleware";
 
 const router = Router();
 
-router.get('/admin', tenantMiddleware, getAdminListController);
-router.get('/admin/cpf', tenantMiddleware, authMiddleware, isAdminMiddleware, getAdminsByCPFController);
-router.get('/admin/name', tenantMiddleware, authMiddleware, isAdminMiddleware, getAdminsByNameController);
+router.get('/', tenantMiddleware, authMiddleware, isAdminMiddleware, getAdminListController);
+router.get('/cpf', tenantMiddleware, authMiddleware, isAdminMiddleware, getAdminsByCPFController);
+router.get('/name', tenantMiddleware, authMiddleware, isAdminMiddleware, getAdminsByNameController);
 
 export default router;
