@@ -2,7 +2,7 @@ import { Admin } from '../models/Admin';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwtHelper';
 import { adminRepository } from '../repositories/adminRepository';
-import {ILike} from "typeorm";
+import {ILike, Like} from "typeorm";
 
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
     return await adminRepository.findOne({ where: { email }, relations: ['tenant'] });
@@ -65,16 +65,16 @@ export const loginAdmin = async (email: string, password: string) => {
 };
 
 export const getAdmins = async (tenantId: number) => {
-
     return await adminRepository.find({
         select: {
             email: true,
             cpf: true,
             fullName: true,
+
         },
         where: {
             tenant: {
-                id: tenantId,
+                id: tenantId
             }
         }
     })
@@ -91,7 +91,7 @@ export const getAdminsByCPF = async (cpf: string, tenantId: number) => {
             cpf: cpf,
             tenant: { id: tenantId },
         },
-        relations: ['tenants']
+        relations: ['tenant']
     })
 }
 export const getAdminsByName = async (name: string, tenantId: number) => {
@@ -102,10 +102,10 @@ export const getAdminsByName = async (name: string, tenantId: number) => {
             cpf: true
         },
         where: {
-            fullName: ILike(name),
+            fullName: ILike("%"+name+"%"),
             tenant: { id: tenantId },
         },
-        relations: ['tenants']
+        relations: ['tenant']
     })
 
 }
