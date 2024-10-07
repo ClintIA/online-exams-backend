@@ -16,7 +16,7 @@ const comparePassword = async (password: string, hashedPassword: string): Promis
     return await bcrypt.compare(password, hashedPassword);
 };
 
-export const registerAdmin = async (adminData: { email: string, password: string, fullName: string }, tenantId: number) => {
+export const registerAdmin = async (adminData: { email: string, adminCpf: string, password: string, fullName: string }, tenantId: number) => {
     const existingAdmin = await findAdminByEmail(adminData.email);
 
     if (existingAdmin) {
@@ -28,6 +28,7 @@ export const registerAdmin = async (adminData: { email: string, password: string
     const newAdmin = adminRepository.create({
         email: adminData.email,
         password: hashedPassword,
+        cpf: adminData.adminCpf,
         fullName: adminData.fullName,
         tenant: { id: tenantId }
     });
@@ -64,6 +65,7 @@ export const loginAdmin = async (email: string, password: string) => {
 };
 
 export const getAdmins = async (tenantId: number) => {
+
     return await adminRepository.find({
         select: {
             email: true,

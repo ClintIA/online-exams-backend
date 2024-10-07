@@ -4,8 +4,8 @@ import {getAdmins, getAdminsByCPF, getAdminsByName} from "../services/adminServi
 
 export const getAdminListController =  async (req: Request, res: Response) => {
     try {
-        const tenantId = req.tenantId!;
-        return await getAdmins(tenantId)
+        const tenantId = req.headers['x-tenant-id'];
+        return await getAdmins(parseInt(tenantId as string));
     } catch (error) {
         return errorResponse(res, error);
     }
