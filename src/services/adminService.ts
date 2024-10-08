@@ -88,7 +88,7 @@ export const getAdminsByCPF = async (cpf: string, tenantId: number) => {
             cpf: true,
         },
         where: {
-            cpf: cpf,
+            cpf: ILike("%"+cpf+"%"),
             tenant: { id: tenantId },
         },
         relations: ['tenant']
