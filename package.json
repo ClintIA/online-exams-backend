@@ -2,7 +2,7 @@
   "name": "online-exams-backend",
   "version": "1.0.0",
   "description": "A back-end of a online exams system",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only -r dotenv/config src/server.ts",
     "build": "tsc",
