@@ -20,6 +20,7 @@ export const AppDataSource = new DataSource({
     entities: [Admin, Patient, Tenant, Product, TenantExams, PatientExams],
     synchronize: true,
     logging: true,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
 
 export const connectDatabase = async () => {
