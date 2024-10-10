@@ -5,6 +5,7 @@ import 'reflect-metadata';
 import authRoutes from './routes/authRoutes';
 import tenantExamRoutes from './routes/tenantExamRoutes';
 import uploadRoutes from './routes/uploadRoutes';
+import adminRoutes from "./routes/adminRoutes";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/auth', authRoutes);
+app.use('/admin', adminRoutes);
 app.use('/api', uploadRoutes);
 app.use('/clinicexams', tenantExamRoutes)
 

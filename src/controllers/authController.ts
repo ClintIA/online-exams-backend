@@ -5,10 +5,10 @@ import { successResponse, errorResponse } from '../utils/httpResponses';
 
 export const registerAdminController = async (req: Request, res: Response) => {
     try {
-        const { email, password, fullName } = req.body;
+        const { email, adminCpf, password, fullName } = req.body;
         const tenantId = req.tenantId!;
         
-        const result = await registerAdmin({ email, password, fullName }, tenantId);
+        const result = await registerAdmin({ email, adminCpf, password, fullName }, tenantId);
         return successResponse(res, result, 'Admin registrado com sucesso', 201);
     } catch (error) {
         return errorResponse(res, error);

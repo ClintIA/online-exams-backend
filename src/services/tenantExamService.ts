@@ -1,6 +1,6 @@
-import { Tenant } from '../models/Tenant';
-import { tenantExamsRepository } from '../repositories/tenantExamsRepository';
-import { tenantRepository } from '../repositories/tenantRepository';
+import {Tenant} from '../models/Tenant';
+import {tenantExamsRepository} from '../repositories/tenantExamsRepository';
+import {tenantRepository} from '../repositories/tenantRepository';
 
 const findTenantById = async (tenantId: number): Promise<Tenant | null> => {
     return await tenantRepository.findOne({ where: { id: tenantId } });
@@ -32,11 +32,10 @@ export const createExam = async (examData: { exam_name: string, price: number },
 };
 
 export const getExams = async (tenantId: number) => {
-    const exams = await tenantExamsRepository.find({
-        where: { tenant: { id: tenantId } },
+    return await tenantExamsRepository.find({
+        where: {tenant: {id: tenantId}},
         select: ['id', 'exam_name', 'price', 'created_at']
     });
-    return exams;
 };
 
 export const updateExam = async (examId: number, examData: { exam_name: string, price: number }, tenantId: number) => {

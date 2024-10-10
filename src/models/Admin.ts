@@ -2,13 +2,16 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, In
 import { Tenant } from './Tenant';
 
 @Entity()
-@Index(['id'])
+@Index(['id', 'cpf', 'fullName'])
 export class Admin {
     @PrimaryGeneratedColumn()
     id!: number;
 
     @Column({ unique: true })
     email!: string;
+
+    @Column({ unique: true })
+    cpf!: string;
 
     @Column()
     password!: string;
