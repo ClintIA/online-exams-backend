@@ -1,24 +1,20 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import 'reflect-metadata';
-import authRoutes from './routes/authRoutes';
-import tenantExamRoutes from './routes/tenantExamRoutes';
-import uploadRoutes from './routes/uploadRoutes';
-import adminRoutes from "./routes/adminRoutes";
+import app from "./routes";
+import { connectDatabase } from './config/database';
 
-dotenv.config();
+const PORT = process.env.PORT || 3000;
 
-const app = express();
+const startServer = async () => {
+    try {
+        await connectDatabase();
+        console.log('Conexão com o banco de dados estabelecida com sucesso');
 
-app.use(cors());
-app.use(express.json());
+        app.listen(PORT, () => {
+            console.log(`Servidor rodando na porta ${PORT}`);
+        });
+    } catch (error) {
+        console.error('Erro ao iniciar o servidor:', error);
+        process.exit(1);
+    }
+};
 
-app.use('/auth', authRoutes);
-app.use('/admin', adminRoutes);
-app.use('/api', uploadRoutes);
-app.use('/clinicexams', tenantExamRoutes)
-app.get('/', (req, res) => {
-    res.send('App Running')
-})
-export default app;
+startServer();
