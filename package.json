@@ -2,7 +2,8 @@
   "name": "online-exams-backend",
   "version": "1.0.0",
   "description": "A back-end of a online exams system",
-  "main": "dist/server.ts",
+  "main": "dist/server",
+  "types": "dist/index",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only -r dotenv/config src/server.ts",
     "dev:preprod": "ts-node-dev --respawn --transpile-only -r dotenv/config -r dotenv/config dotenv_config_path=.env.preprod src/server.ts",
