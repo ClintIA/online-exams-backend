@@ -2,12 +2,12 @@
   "name": "online-exams-backend",
   "version": "1.0.0",
   "description": "A back-end of a online exams system",
-  "main": "dist/index.ts",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only -r dotenv/config src/server.ts",
     "dev:preprod": "ts-node-dev --respawn --transpile-only -r dotenv/config -r dotenv/config dotenv_config_path=.env.preprod src/server.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node dist/server.js",
     "start:prod": "NODE_ENV=production node dist/server.js",
     "test": "jest"
   },
