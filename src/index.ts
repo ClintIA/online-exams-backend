@@ -18,5 +18,7 @@ app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api', uploadRoutes);
 app.use('/clinicexams', tenantExamRoutes)
-
+app.get('/', (req, res) => {
+    res.send('App Running')
+})
 export default app;
