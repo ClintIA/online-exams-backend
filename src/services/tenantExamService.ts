@@ -1,10 +1,5 @@
-import {Tenant} from '../models/Tenant';
 import {tenantExamsRepository} from '../repositories/tenantExamsRepository';
-import {tenantRepository} from '../repositories/tenantRepository';
-
-const findTenantById = async (tenantId: number): Promise<Tenant | null> => {
-    return await tenantRepository.findOne({ where: { id: tenantId } });
-};
+import { findTenantById } from './tenantService';
 
 export const createExam = async (examData: { exam_name: string, price: number }, tenantId: number) => {
     const tenant = await findTenantById(tenantId);
