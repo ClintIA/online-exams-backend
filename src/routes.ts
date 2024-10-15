@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes';
 import tenantExamRoutes from './routes/tenantExamRoutes';
 import uploadRoutes from './routes/uploadRoutes';
 import adminRoutes from "./routes/adminRoutes";
+import patientExamRoutes from './routes/patientExamRoutes';
 
 dotenv.config();
 
@@ -18,5 +19,6 @@ app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api', uploadRoutes);
 app.use('/clinicexams', tenantExamRoutes)
+app.use('/patientExams', patientExamRoutes)
 
 export default app;

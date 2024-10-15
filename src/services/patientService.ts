@@ -1,15 +1,10 @@
 import { Patient } from '../models/Patient';
-import { Tenant } from '../models/Tenant';
 import { generateToken } from '../utils/jwtHelper';
 import { patientRepository } from '../repositories/patientRepository';
-import { tenantRepository } from '../repositories/tenantRepository';
+import { findTenantById } from './tenantService';
 
 const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
     return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
-};
-
-const findTenantById = async (tenantId: number): Promise<Tenant | null> => {
-    return await tenantRepository.findOne({ where: { id: tenantId } });
 };
 
 export const registerPatient = async (patientData: {
