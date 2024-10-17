@@ -1,7 +1,7 @@
 import {tenantExamsRepository} from '../repositories/tenantExamsRepository';
 import { findTenantById } from './tenantService';
 
-export const createExam = async (examData: { exam_name: string, price: number }, tenantId: number) => {
+export const createExam = async (examData: { doctorId: number, exam_name: string, price: number }, tenantId: number) => {
     const tenant = await findTenantById(tenantId);
     if (!tenant) {
         throw new Error('Tenant não encontrado');
@@ -9,6 +9,7 @@ export const createExam = async (examData: { exam_name: string, price: number },
 
     const exam = await tenantExamsRepository.findOne({
         where: {
+            doctorId: examData.doctorId,
             exam_name: examData.exam_name,
             tenant: { id: tenantId }
         }

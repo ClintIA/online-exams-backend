@@ -19,6 +19,9 @@ export class Admin {
     @Column()
     fullName!: string;
 
+    @Column({ default: false })
+    isDoctor!: boolean;
+
     @Column({ nullable: true })
     sessionToken?: string;
     

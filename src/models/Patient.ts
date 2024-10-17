@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, ManyToMany, Index } from 'typeorm';
 import { Tenant } from './Tenant';
+import {PatientExams} from "./PatientExams";
 
 @Entity()
 @Index(['id', 'cpf'])
@@ -32,7 +33,7 @@ export class Patient {
     health_card_number?: string;
 
     @Column("simple-array", { nullable: true })
-    exams?: string[];
+    exams?: PatientExams[];
     
     @Column({ nullable: true })
     sessionToken?: string;

@@ -7,6 +7,7 @@ import tenantExamRoutes from './routes/tenantExamRoutes';
 import uploadRoutes from './routes/uploadRoutes';
 import adminRoutes from "./routes/adminRoutes";
 import patientExamRoutes from './routes/patientExamRoutes';
+import availabilityRoutess from "./routes/doctorAvailabilityRoutes";
 
 dotenv.config();
 
@@ -20,5 +21,7 @@ app.use('/admin', adminRoutes);
 app.use('/api', uploadRoutes);
 app.use('/clinicexams', tenantExamRoutes)
 app.use('/patientExams', patientExamRoutes)
+app.use('/doctorAvailability', availabilityRoutess)
+
 
 export default app;

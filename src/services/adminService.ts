@@ -2,12 +2,14 @@ import { Admin } from '../models/Admin';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwtHelper';
 import { adminRepository } from '../repositories/adminRepository';
-import {ILike, Like} from "typeorm";
+import {ILike} from "typeorm";
 
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
     return await adminRepository.findOne({ where: { email }, relations: ['tenant'] });
 };
-
+export const findDoctorById = async (id: number): Promise<Admin | null> => {
+    return await adminRepository.findOne({ where: { id, isDoctor: true }, relations: ['tenant'] });
+};
 const hashPassword = async (password: string): Promise<string> => {
     return await bcrypt.hash(password, 10);
 };
