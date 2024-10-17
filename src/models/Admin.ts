@@ -13,7 +13,7 @@ export class Admin {
     @Column({ unique: true })
     cpf!: string;
 
-    @Column()
+    @Column({select: false})
     password!: string;
 
     @Column()

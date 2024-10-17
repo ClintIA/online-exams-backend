@@ -1,34 +1,37 @@
 import {doctorAvailabilityRepository} from "../repositories/doctorAvailabilityRepository";
 import {IAvailabilityRequest} from "../controllers/doctorAvailabilityController";
-import { adminRepository } from "../repositories/adminRepository";
 import {findDoctorById} from "./adminService";
 import {findTenantById} from "./tenantService";
+import moment from 'moment-timezone';
 
 
-export const listdoctorAvailability= async (
+export const listdoctorAvailabilityService = async (
     filters: {
-        date?: Date;
+        availabilityDate?: string;
         doctorId?: number;
         tenantId?: number
     }) => {
 
     const whereCondition: any = {};
 
-    if (filters.tenantId) {
-        whereCondition.exam = { tenant: { id: filters.tenantId } };
-    }
-
-    if (filters.date) {
-        whereCondition.patient = { id: filters.date };
-    }
-
     if (filters.doctorId) {
-        whereCondition.doctor = { id : filters.doctorId }
+        const doctor = await findDoctorById(filters.doctorId);
+        if(!doctor || !doctor.isDoctor) {
+            throw new Error('Doutor não encontrado');
+        }
+        whereCondition.doctor = { id: filters.doctorId  }
+    }
+    if (filters.tenantId) {
+        whereCondition.tenant = { id: filters.tenantId  }
     }
 
+    if (filters.availabilityDate) {
+        whereCondition.availabilityDate =  filters.availabilityDate ;
+    }
+    console.log(whereCondition);
     const listAvailability = await doctorAvailabilityRepository.find({
         where: whereCondition,
-        relations: ['exam.tenant'],
+        relations: ['doctor','tenant'],
         order: { created_at: 'DESC' }
     });
 
@@ -46,7 +49,7 @@ export const createDoctorAvailability = async (availabilityData: IAvailabilityRe
     }
     const checkDate = await doctorAvailabilityRepository.findOne({
         where: {
-            date: availabilityData.date,
+            availabilityDate: availabilityData.availabilityDate,
             tenant: { id: tenantId },
         }
     });
@@ -66,7 +69,7 @@ export const createDoctorAvailability = async (availabilityData: IAvailabilityRe
         }
     });
     if(checkDate && checkStartTime && checkDoctor) {
-        throw new Error("O doutor " + doctor.fullName + ", já possui um agendamento para o dia "+ availabilityData.date +", no horário de "+ availabilityData.startTime);
+        throw new Error("O doutor " + doctor.fullName + ", já possui um agendamento para o dia "+ availabilityData.availabilityDate +", no horário de "+ availabilityData.startTime);
     }
 
     const tenant = await findTenantById(tenantId)

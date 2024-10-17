@@ -12,7 +12,10 @@ export class TenantExams {
     exam_name!: string;
 
     @ManyToOne(() => Admin, admin => admin.id)
-    createdBy!: Admin;
+    doctor!: Admin;
+
+    @Column('time')
+    examTime!: Date;
 
     @Column('decimal', { precision: 10, scale: 2 })
     price!: number;

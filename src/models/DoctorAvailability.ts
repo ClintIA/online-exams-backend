@@ -3,7 +3,7 @@ import { Tenant } from './Tenant';
 import {Admin} from "./Admin";
 
 @Entity()
-@Index(['id', 'doctor', 'date','tenant'])
+@Index(['id', 'doctor', 'availabilityDate','tenant'])
 export class DoctorAvailability {
     @PrimaryGeneratedColumn()
     id!: number;
@@ -11,13 +11,13 @@ export class DoctorAvailability {
     @ManyToOne(() => Admin, admin => admin.id)
     doctor!: Admin;
 
-    @Column()
-    date!:  Date;
+    @Column({type: 'date'})
+    availabilityDate!:  Date;
 
-    @Column()
+    @Column({ type: 'time' })
     startTime!: string;
 
-    @Column()
+    @Column({ type: 'time' })
     endTime!: string;
 
     @CreateDateColumn()

@@ -1,12 +1,35 @@
 import { Request, Response } from 'express';
 import { successResponse, errorResponse } from '../utils/httpResponses';
-import {createDoctorAvailability} from "../services/doctorAvailabilityService";
+import {createDoctorAvailability, listdoctorAvailabilityService} from "../services/doctorAvailabilityService";
 
 export interface IAvailabilityRequest {
     doctorId: number
-    date: Date
+    availabilityDate: Date
     startTime: string
     endTime: string
+}
+
+export const listDoctorAvailability = async (req: Request, res: Response) => {
+    const tenantId = req.headers['x-tenant-id'];
+    const { availabilityDate, doctorId } = req.query;
+    if (!tenantId) {
+        return errorResponse(res, new Error('É necessário passar o tenantId'), 400);
+    }
+
+
+    const filters = {
+        availabilityDate: availabilityDate ? availabilityDate as string : undefined,
+        doctorId: doctorId ? parseInt(doctorId as string) : undefined,
+        tenantId: tenantId? parseInt(tenantId as string) : undefined,
+    }
+    try {
+        const result = await listdoctorAvailabilityService(filters);
+        return successResponse(res, result, 'Lista de disponibilidades');
+
+    } catch (error) {
+        return errorResponse(res, error);
+
+    }
 }
 
 export const createNewAvailability = async (req: Request, res: Response) => {
@@ -14,15 +37,15 @@ export const createNewAvailability = async (req: Request, res: Response) => {
     const doctorId = req.body.doctorId;
     const startTime = req.body.startTime;
     const endTime = req.body.endTime;
-    const date = req.body.date;
+    const availabilityDate = req.body.date;
 
-    if (!doctorId || !startTime || !endTime || !date) {
+    if (!doctorId || !startTime || !endTime || !availabilityDate) {
         return errorResponse(res, new Error('Dados inválidos'), 400);
     }
 
     const availability: IAvailabilityRequest = {
         doctorId: doctorId,
-        date: new Date(date),
+        availabilityDate: new Date(availabilityDate),
         startTime: startTime,
         endTime: endTime,
     }
