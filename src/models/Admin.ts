@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index } from 'typeorm';
 import { Tenant } from './Tenant';
+import {Exclude} from "class-transformer";
 
 @Entity()
 @Index(['id', 'cpf', 'fullName'])
@@ -13,7 +14,8 @@ export class Admin {
     @Column({ unique: true })
     cpf!: string;
 
-    @Column({select: false})
+    @Exclude()
+    @Column()
     password!: string;
 
     @Column()

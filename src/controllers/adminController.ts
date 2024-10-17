@@ -1,7 +1,19 @@
 import {Request, Response} from 'express';
 import {errorResponse, successResponse} from '../utils/httpResponses';
-import {getAdmins, getAdminsByCPF, getAdminsByName} from "../services/adminService";
+import {findAllDoctor, getAdmins, getAdminsByCPF, getAdminsByName} from "../services/adminService";
 
+export const getAllDoctors = async (req: Request, res: Response) => {
+    try {
+        const tenantId = req.tenantId;
+
+        if (tenantId) {
+            const result = await findAllDoctor(tenantId);
+            return successResponse(res, result);
+        }
+    }    catch (error) {
+    return errorResponse(res, error);
+    }
+}
 export const getAdminListController =  async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'];

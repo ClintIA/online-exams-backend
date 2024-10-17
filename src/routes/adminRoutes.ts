@@ -3,7 +3,7 @@ import { isAdminMiddleware } from '../middlewares/isAdminMiddleware';
 import {
     getAdminListController,
     getAdminsByCPFController,
-    getAdminsByNameController
+    getAdminsByNameController, getAllDoctors
 } from "../controllers/adminController";
 import {tenantMiddleware} from "../middlewares/tenantMiddleware";
 import {authMiddleware} from "../middlewares/authMiddleware";
@@ -13,5 +13,6 @@ const router = Router();
 router.get('/', tenantMiddleware, authMiddleware, isAdminMiddleware, getAdminListController);
 router.get('/cpf', tenantMiddleware, authMiddleware, isAdminMiddleware, getAdminsByCPFController);
 router.get('/name', tenantMiddleware, authMiddleware, isAdminMiddleware, getAdminsByNameController);
+router.get('/doctors', tenantMiddleware, getAllDoctors);
 
 export default router;

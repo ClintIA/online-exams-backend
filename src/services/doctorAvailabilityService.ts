@@ -2,8 +2,6 @@ import {doctorAvailabilityRepository} from "../repositories/doctorAvailabilityRe
 import {IAvailabilityRequest} from "../controllers/doctorAvailabilityController";
 import {findDoctorById} from "./adminService";
 import {findTenantById} from "./tenantService";
-import moment from 'moment-timezone';
-
 
 export const listdoctorAvailabilityService = async (
     filters: {

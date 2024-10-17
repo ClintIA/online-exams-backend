@@ -51,7 +51,6 @@ export const loginPatientController = async (req: Request, res: Response) => {
 export const loginAdminController = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
-
         const token = await loginAdmin(email, password);
         return successResponse(res, { token }, 'Login realizado com sucesso');
     } catch (error) {
