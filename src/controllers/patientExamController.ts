@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { listPatientExams, createPatientExam, updatePatientExam, deletePatientExam } from '../services/patientExamService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
+import {findPatientByCpf} from "../services/patientService";
 
 export const listPatientExamsController = async (req: Request, res: Response) => {
     try {
@@ -83,6 +84,18 @@ export const updatePatientExamController = async (req: Request, res: Response) =
         return errorResponse(res, error);
     }
 };
+
+export const findPatientByCPFController = async (req: Request, res: Response) => {
+    const { cpf } = req.body.cpf;
+
+    try {
+        const result = await findPatientByCpf(cpf)
+        return successResponse(res, result);
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+
+}
 
 export const deletePatientExamController = async (req: Request, res: Response) => {
     try {
