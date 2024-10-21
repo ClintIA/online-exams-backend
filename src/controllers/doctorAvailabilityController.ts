@@ -4,7 +4,8 @@ import {createDoctorAvailability, listdoctorAvailabilityService} from "../servic
 
 export interface IAvailabilityRequest {
     doctorId: number
-    availabilityDate: Date
+    availabilityDays: number
+    examId: number
     startTime: string
     endTime: string
 }
@@ -37,17 +38,19 @@ export const createNewAvailability = async (req: Request, res: Response) => {
     const doctorId = req.body.doctorId;
     const startTime = req.body.startTime;
     const endTime = req.body.endTime;
-    const availabilityDate = req.body.date;
+    const availabilityDays = req.body.weekday;
+    const examId = req.body.examId;
 
-    if (!doctorId || !startTime || !endTime || !availabilityDate) {
+    if (!doctorId || !startTime || !endTime || !availabilityDays) {
         return errorResponse(res, new Error('Dados inválidos'), 400);
     }
 
     const availability: IAvailabilityRequest = {
-        doctorId: doctorId,
-        availabilityDate: new Date(availabilityDate),
-        startTime: startTime,
-        endTime: endTime,
+        doctorId: doctorId as number,
+        availabilityDays: availabilityDays as number,
+        examId: examId as number,
+        startTime: startTime as string,
+        endTime: endTime as string,
     }
 
     const tenantId = req.tenantId

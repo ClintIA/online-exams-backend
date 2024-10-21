@@ -11,9 +11,6 @@ export class TenantExams {
     @Column()
     exam_name!: string;
 
-    @ManyToOne(() => Admin, admin => admin.id)
-    doctor!: Admin;
-
     @Column('time')
     examTime!: Date;
 

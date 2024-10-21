@@ -2,6 +2,9 @@ import {doctorAvailabilityRepository} from "../repositories/doctorAvailabilityRe
 import {IAvailabilityRequest} from "../controllers/doctorAvailabilityController";
 import {findDoctorById} from "./adminService";
 import {findTenantById} from "./tenantService";
+import {tenantExamsRepository} from "../repositories/tenantExamsRepository";
+import {DoctorAvailability} from "../models/DoctorAvailability";
+import {TenantExams} from "../models/TenantExams";
 
 export const listdoctorAvailabilityService = async (
     filters: {
@@ -45,12 +48,6 @@ export const createDoctorAvailability = async (availabilityData: IAvailabilityRe
     if(!doctor || !doctor.isDoctor) {
         throw new Error('Doutor não encontrado');
     }
-    const checkDate = await doctorAvailabilityRepository.findOne({
-        where: {
-            availabilityDate: availabilityData.availabilityDate,
-            tenant: { id: tenantId },
-        }
-    });
     const checkStartTime = await doctorAvailabilityRepository.findOne({
         where: {
             startTime: availabilityData.startTime,
@@ -66,20 +63,49 @@ export const createDoctorAvailability = async (availabilityData: IAvailabilityRe
             tenant: { id: tenantId },
         }
     });
-    if(checkDate && checkStartTime && checkDoctor) {
-        throw new Error("O doutor " + doctor.fullName + ", já possui um agendamento para o dia "+ availabilityData.availabilityDate +", no horário de "+ availabilityData.startTime);
+    const checkExam = await tenantExamsRepository.findOne({
+        where: {
+            id: availabilityData.examId,
+            tenant: { id: tenantId },
+        }
+    })
+    if(!checkExam) {
+        throw new Error("O exame ID" + availabilityData.examId + "não foi encontrado.");
     }
+    if(checkDoctor) {
+        for (let day of checkDoctor?.availabilityDays) {
+            if (day === availabilityData.availabilityDays) {
+                throw new Error("O doutor " + doctor.fullName + ", já possui um agendamento para o dia " + availabilityData.availabilityDays);
+            }
+        }
+        checkDoctor?.availabilityDays.push(availabilityData.availabilityDays);
 
-    const tenant = await findTenantById(tenantId)
-    if(!tenant) {
-        throw new Error('Tenant não encontrado');
-    }
-    const newAvailability = { ...availabilityData, doctor: doctor, tenant: tenant, };
-    const doctorAvailability = doctorAvailabilityRepository.create(newAvailability);
-    const registerAvailability = await doctorAvailabilityRepository.save(doctorAvailability);
-    if(registerAvailability) {
-        return { message: "Disponibilidade Cadastradas" }
-    } else {
-        throw new Error('Não foi possivel cadastrar disponibilidade')
+        if (checkStartTime && checkDoctor) {
+            throw new Error("O doutor " + doctor.fullName + ", já possui um agendamento para o dia " + availabilityData.availabilityDays + ", no horário de " + availabilityData.startTime);
+        }
+
+        const tenant = await findTenantById(tenantId)
+        if (!tenant) {
+            throw new Error('Tenant não encontrado');
+        }
+
+        const exams: TenantExams[] = [];
+        exams.push(checkExam)
+
+        const newAvailability = {
+            ...availabilityData,
+            exam: exams,
+            availabilityDays: checkDoctor?.availabilityDays,
+            doctor: doctor,
+            tenant: tenant,
+        };
+        console.log(newAvailability)
+        const doctorAvailability = doctorAvailabilityRepository.create(newAvailability);
+        const registerAvailability = await doctorAvailabilityRepository.save(doctorAvailability);
+        if (registerAvailability) {
+            return {message: "Disponibilidade Cadastradas"}
+        } else {
+            throw new Error('Não foi possivel cadastrar disponibilidade')
+        }
     }
 }

@@ -1,9 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index } from 'typeorm';
 import { Tenant } from './Tenant';
 import {Admin} from "./Admin";
+import {TenantExams} from "./TenantExams";
 
 @Entity()
-@Index(['id', 'doctor', 'availabilityDate','tenant'])
+@Index(['id', 'doctor','tenant'])
 export class DoctorAvailability {
     @PrimaryGeneratedColumn()
     id!: number;
@@ -11,8 +12,11 @@ export class DoctorAvailability {
     @ManyToOne(() => Admin, admin => admin.id)
     doctor!: Admin;
 
-    @Column({type: 'date'})
-    availabilityDate!:  Date;
+    @Column("simple-array", { nullable: false })
+    availabilityDays!:  number[];
+
+    @ManyToOne(() => TenantExams, exam => exam.id)
+    exam!: TenantExams[];
 
     @Column({ type: 'time' })
     startTime!: string;

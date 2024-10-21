@@ -12,7 +12,17 @@ export const findDoctorById = async (id: number): Promise<Admin | null> => {
 };
 
 export const findAllDoctor = async (tenantId: number): Promise<Admin[]> => {
-    return await adminRepository.find({ where: { isDoctor: true, tenant: { id: tenantId } }, relations: ['tenant'] });
+    return await adminRepository.find({
+        select: {
+            id: true,
+            fullName: true,
+        },
+        where: {
+            isDoctor: true,
+            tenant: {
+                id: tenantId
+            } },
+        relations: ['tenant'] });
 };
 const hashPassword = async (password: string): Promise<string> => {
     return await bcrypt.hash(password, 10);
