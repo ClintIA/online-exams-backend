@@ -9,10 +9,15 @@ export const findPatientByCpf = async (cpf: string): Promise<Patient | null> => 
     return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
 };
 
-export const findPatientByCpfAndTenant = async (cpf: string, tenantId: number): Promise<Patient[]> => {
-    return await patientRepository.find({ where: { cpf: ILike("%"+cpf+"%"), tenants: {
-                id: tenantId
-            } }, relations: ['tenants'] });
+export const findPatientByCpfAndTenant = async (cpf: string, tenantId: number): Promise<Patient | null> => {
+    return await patientRepository.findOne(
+        { where: {
+                cpf: cpf,
+                tenants: {
+                    id: tenantId
+                }
+            },
+            relations: ['tenants'] });
 };
 
 export const listPatientByTenant = async (tenantId: number): Promise<Patient[]> => {

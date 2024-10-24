@@ -21,10 +21,9 @@ export const findPatientByCPFAndTenant = async (req: Request, res: Response) => 
     const tenantId = req.tenantId!;
 
     try {
-     const result = await findPatientByCpfAndTenant(cpf,tenantId)
+        const result = await findPatientByCpfAndTenant(cpf,tenantId)
 
         return successResponse(res, result);
-
     } catch (error) {
         return errorResponse(res, error);
     }
