@@ -23,9 +23,5 @@ app.use('/clinicexams', tenantExamRoutes)
 app.use('/patientExams', patientExamRoutes)
 app.use('/patient', patientRoutes)
 
-app.use(cors({
-    origin: '*', // Permite todas as origens
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-}))
 
 export default app;
