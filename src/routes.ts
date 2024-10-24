@@ -18,7 +18,6 @@ const options = [
     cors({
         origin: '*',
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        allowedHeaders: ['Content-Type', 'Authorization',"x-tenant-id"],
     })
 ];
 
