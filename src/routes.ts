@@ -13,17 +13,9 @@ dotenv.config();
 
 const app = express();
 
-
-const options = [
-    cors({
-        origin: '*',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    })
-];
-
-app.use(options);
 app.use(cors());
 app.use(express.json());
+
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api', uploadRoutes);
