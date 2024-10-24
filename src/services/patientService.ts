@@ -8,6 +8,9 @@ import {ILike} from "typeorm";
 export const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
     return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
 };
+export const findPatientByEmail = async (email: string): Promise<Patient | null> => {
+    return await patientRepository.findOne({ where: { email }, relations: ['tenants'] });
+};
 
 export const findPatientByCpfAndTenant = async (cpf: string, tenantId: number): Promise<Patient | null> => {
     return await patientRepository.findOne(
@@ -45,8 +48,14 @@ export const registerPatient = async (patientData: {
         throw new Error('Tenant não encontrado');
     }
 
+    const patientEmail = await findPatientByEmail(patientData.email);
+    if (patientEmail) {
+        throw new Error('Já possui um paciente associado a esse e-mail');
+
+    }
 
     let patient = await findPatientByCpf(patientData.cpf);
+
     if (patient) {
         if (patient.tenants.some(t => t.id === tenantId)) {
             throw new Error('Paciente já está associado a essa clínica');
