@@ -27,7 +27,7 @@ export class PatientExams {
     @CreateDateColumn()
     createdAt!: Date;
 
-    @Column({ nullable: true })
+    @Column({ type: 'datetime', nullable: true })
     examDate?: Date;
 
     @Column({ nullable: true })
