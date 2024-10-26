@@ -1,4 +1,4 @@
-# White Label Medical Exam Management System
+# SaaS Medical Exam Management System
 
 Este repositório contém o código para um sistema de gerenciamento de exames médicos desenvolvido em Node.js usando TypeScript e TypeORM. O sistema é projetado como uma aplicação White Label, permitindo que múltiplos clientes utilizem o sistema de forma isolada.
 
