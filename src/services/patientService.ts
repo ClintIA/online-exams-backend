@@ -3,7 +3,6 @@ import {generateToken} from '../utils/jwtHelper';
 import {patientRepository} from '../repositories/patientRepository';
 import {findTenantById} from './tenantService';
 import {tenantRepository} from "../repositories/tenantRepository";
-import {ILike} from "typeorm";
 
 export const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
     return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
@@ -46,12 +45,6 @@ export const registerPatient = async (patientData: {
     const tenant = await findTenantById(tenantId);
     if (!tenant) {
         throw new Error('Tenant não encontrado');
-    }
-
-    const patientEmail = await findPatientByEmail(patientData.email);
-    if (patientEmail) {
-        throw new Error('Já possui um paciente associado a esse e-mail');
-
     }
 
     let patient = await findPatientByCpf(patientData.cpf);

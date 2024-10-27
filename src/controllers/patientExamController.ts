@@ -85,18 +85,6 @@ export const updatePatientExamController = async (req: Request, res: Response) =
     }
 };
 
-export const findPatientByCPFController = async (req: Request, res: Response) => {
-    const { cpf } = req.body.cpf;
-
-    try {
-        const result = await findPatientByCpf(cpf)
-        return successResponse(res, result);
-    } catch (error) {
-        return errorResponse(res, error);
-    }
-
-}
-
 export const deletePatientExamController = async (req: Request, res: Response) => {
     try {
         const examId = parseInt(req.params.examId);
