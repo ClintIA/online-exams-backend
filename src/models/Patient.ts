@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, ManyToMany, Index } from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    ManyToOne,
+    ManyToMany,
+    Index,
+    JoinTable, OneToMany
+} from 'typeorm';
 import { Tenant } from './Tenant';
 
 @Entity()
@@ -13,7 +22,7 @@ export class Patient {
     @Column({ unique: true })
     cpf!: string;
 
-    @Column('date')
+    @Column({type: 'date'})
     dob!: Date;
 
     @Column({ unique: true })
@@ -41,5 +50,6 @@ export class Patient {
     created_at!: Date;
 
     @ManyToMany(() => Tenant, tenant => tenant.patients)
+    @JoinTable()
     tenants!: Tenant[];
 }

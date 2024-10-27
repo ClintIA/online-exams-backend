@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { listPatientExams, createPatientExam, updatePatientExam, deletePatientExam } from '../services/patientExamService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
+import {findPatientByCpf} from "../services/patientService";
 
 export const listPatientExamsController = async (req: Request, res: Response) => {
     try {

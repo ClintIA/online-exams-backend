@@ -1,11 +1,36 @@
-import { Patient } from '../models/Patient';
-import { generateToken } from '../utils/jwtHelper';
-import { patientRepository } from '../repositories/patientRepository';
-import { findTenantById } from './tenantService';
+import {Patient} from '../models/Patient';
+import {generateToken} from '../utils/jwtHelper';
+import {patientRepository} from '../repositories/patientRepository';
+import {findTenantById} from './tenantService';
+import {tenantRepository} from "../repositories/tenantRepository";
 
-const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
+export const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
     return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
 };
+export const findPatientByEmail = async (email: string): Promise<Patient | null> => {
+    return await patientRepository.findOne({ where: { email }, relations: ['tenants'] });
+};
+
+export const findPatientByCpfAndTenant = async (cpf: string, tenantId: number): Promise<Patient | null> => {
+    return await patientRepository.findOne(
+        { where: {
+                cpf: cpf,
+                tenants: {
+                    id: tenantId
+                }
+            },
+            relations: ['tenants'] });
+};
+
+export const listPatientByTenant = async (tenantId: number): Promise<Patient[]> => {
+    const tenant = await tenantRepository.findOne({ where: { id: tenantId  } });
+    if(!tenant)  {
+        throw new Error('Tenant Não encontrado');
+    }
+    return await patientRepository.find( { where: { tenants: {
+        id: tenantId,
+            } }});
+}
 
 export const registerPatient = async (patientData: {
     full_name: string,
@@ -32,6 +57,11 @@ export const registerPatient = async (patientData: {
         Object.assign(patient, patientData);
 
         patient.tenants.push(tenant);
+
+        await patientRepository.save(patient);
+
+        return { message: 'Clínica registrada ao paciente com sucesso' };
+
     } else {
         patient = patientRepository.create({
             ...patientData,

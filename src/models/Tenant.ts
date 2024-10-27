@@ -26,7 +26,6 @@ export class Tenant {
     uploadUsage!: number;
 
     @ManyToMany(() => Patient, patient => patient.tenants)
-    @JoinTable()
     patients!: Patient[];
 
     @OneToMany(() => Admin, admin => admin.tenant)
