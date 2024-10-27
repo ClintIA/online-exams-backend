@@ -1,6 +1,0 @@
-DB_HOST=clintia-database.cji60yus8lwe.sa-east-1.rds.amazonaws.com
-DB_PORT=5432
-DB_USERNAME=clintiadatabase
-DB_PASSWORD=Clintia*1020
-DB_NAME=clintiadb
-JWT_SECRET=hIo9hd3H38hggydoyd3hPhqo3d7h
