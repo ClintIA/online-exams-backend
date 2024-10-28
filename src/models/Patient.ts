@@ -19,6 +19,9 @@ export class Patient {
     @Column()
     full_name!: string;
 
+    @Column()
+    password!: string;
+
     @Column({ unique: true })
     cpf!: string;
 

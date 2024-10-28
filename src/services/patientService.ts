@@ -3,6 +3,7 @@ import {generateToken} from '../utils/jwtHelper';
 import {patientRepository} from '../repositories/patientRepository';
 import {findTenantById} from './tenantService';
 import {tenantRepository} from "../repositories/tenantRepository";
+import {hashPassword} from "./adminService";
 
 export const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
     return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
@@ -35,6 +36,7 @@ export const listPatientByTenant = async (tenantId: number): Promise<Patient[]> 
 export const registerPatient = async (patientData: {
     full_name: string,
     cpf: string,
+    password: string,
     dob: Date,
     email: string,
     phone: string,
@@ -47,8 +49,8 @@ export const registerPatient = async (patientData: {
         throw new Error('Tenant não encontrado');
     }
 
+    const passwordTofront = patientData.password
     let patient = await findPatientByCpf(patientData.cpf);
-
     if (patient) {
         if (patient.tenants.some(t => t.id === tenantId)) {
             throw new Error('Paciente já está associado a essa clínica');
@@ -63,6 +65,7 @@ export const registerPatient = async (patientData: {
         return { message: 'Clínica registrada ao paciente com sucesso' };
 
     } else {
+        patientData.password = await hashPassword(patientData.password);
         patient = patientRepository.create({
             ...patientData,
             tenants: [tenant]
@@ -71,7 +74,7 @@ export const registerPatient = async (patientData: {
 
     await patientRepository.save(patient);
 
-    return { message: 'Paciente registrado com sucesso' };
+    return { message: 'Paciente registrado com sucesso', password: passwordTofront  };
 };
 
 

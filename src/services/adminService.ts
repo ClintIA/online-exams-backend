@@ -8,7 +8,7 @@ const findAdminByEmail = async (email: string): Promise<Admin | null> => {
     return await adminRepository.findOne({ where: { email }, relations: ['tenant'] });
 };
 
-const hashPassword = async (password: string): Promise<string> => {
+export const hashPassword = async (password: string): Promise<string> => {
     return await bcrypt.hash(password, 10);
 };
 
