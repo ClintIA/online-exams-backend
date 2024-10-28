@@ -47,9 +47,9 @@ export const registerPatientController = async (req: Request, res: Response) => 
 
 export const loginPatientController = async (req: Request, res: Response) => {
     try {
-        const { cpf } = req.body;
+        const { cpf, password } = req.body;
 
-        const token = await loginPatientByCpf(cpf);
+        const token = await loginPatientByCpf(cpf,password);
         return successResponse(res, { token }, 'Login realizado com sucesso');
     } catch (error) {
         return errorResponse(res, error, 401);

@@ -3,7 +3,7 @@ import {generateToken} from '../utils/jwtHelper';
 import {patientRepository} from '../repositories/patientRepository';
 import {findTenantById} from './tenantService';
 import {tenantRepository} from "../repositories/tenantRepository";
-import {hashPassword} from "./adminService";
+import {comparePassword, hashPassword} from "./adminService";
 
 export const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
     return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
@@ -78,13 +78,16 @@ export const registerPatient = async (patientData: {
 };
 
 
-export const loginPatientByCpf = async (cpf: string) => {
+export const loginPatientByCpf = async (cpf: string, password: string) => {
     const patient = await findPatientByCpf(cpf);
 
     if (!patient) {
         throw new Error('Paciente não encontrado');
     }
-
+    const isPasswordValid = await comparePassword(password, patient.password);
+    if (!isPasswordValid) {
+        throw new Error('Senha inválida');
+    }
     if (patient.sessionToken) {
         patient.sessionToken = undefined;
     }
