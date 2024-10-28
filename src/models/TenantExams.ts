@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index } from 'typeorm';
+// Modelo TenantExams atualizado com o relacionamento Many-to-Many com Admin
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index, ManyToMany } from 'typeorm';
 import { Tenant } from './Tenant';
+import { Admin } from './Admin';
 
 @Entity()
 @Index(['id', 'exam_name'])
@@ -18,4 +20,7 @@ export class TenantExams {
 
     @ManyToOne(() => Tenant, tenant => tenant.exams)
     tenant!: Tenant;    
+
+    @ManyToMany(() => Admin, admin => admin.exams)
+    doctors!: Admin[];
 }

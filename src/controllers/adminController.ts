@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import {errorResponse, successResponse} from '../utils/httpResponses';
-import {getAdmins, getAdminsByCPF, getAdminsByName} from "../services/adminService";
+import {getAdmins, getAdminsByCPF, getAdminsByName, getDoctorsByExamName} from "../services/adminService";
 
 export const getAdminListController =  async (req: Request, res: Response) => {
     try {
@@ -39,3 +39,13 @@ export const getAdminsByNameController = async (req: Request, res: Response) => 
 
    }
 }
+
+export const getDoctorsByExamNameController = async (req: Request, res: Response) => {
+    try {
+        const { examName } = req.params;
+        const result = await getDoctorsByExamName(examName);
+        return successResponse(res, result, 'Doutores associados ao exame listados com sucesso');
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+};
