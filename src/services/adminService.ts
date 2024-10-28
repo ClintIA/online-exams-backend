@@ -8,11 +8,11 @@ const findAdminByEmail = async (email: string): Promise<Admin | null> => {
     return await adminRepository.findOne({ where: { email }, relations: ['tenant'] });
 };
 
-const hashPassword = async (password: string): Promise<string> => {
+export const hashPassword = async (password: string): Promise<string> => {
     return await bcrypt.hash(password, 10);
 };
 
-const comparePassword = async (password: string, hashedPassword: string): Promise<boolean> => {
+export const comparePassword = async (password: string, hashedPassword: string): Promise<boolean> => {
     return await bcrypt.compare(password, hashedPassword);
 };
 
@@ -39,7 +39,7 @@ export const registerAdmin = async (adminData: { email: string, adminCpf: string
 };
 
 export const loginAdmin = async (email: string, password: string) => {
-    const admin = await findAdminByEmail(email);
+    const admin = await findAdminByEmail(email.toLowerCase());
 
     if (!admin) {
         throw new Error('Admin não encontrado');
