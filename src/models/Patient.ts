@@ -19,7 +19,7 @@ export class Patient {
     @Column()
     full_name!: string;
 
-    @Column({ nullable: true })
+    @Column()
     password!: string;
 
     @Column({ unique: true })
