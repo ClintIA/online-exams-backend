@@ -116,6 +116,6 @@ export const getDoctorsByExamName = async (examName: string) => {
             isDoctor: true,
         },
         relations: ['exams'],
-        select: { email: true, fullName: true, cpf: true }
+        select: {fullName: true}
     });
 };
