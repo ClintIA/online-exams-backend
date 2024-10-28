@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index, ManyToMany, JoinTable } from 'typeorm';
 import { Tenant } from './Tenant';
+import { TenantExams } from './TenantExams';
 
 @Entity()
 @Index(['id', 'cpf', 'fullName'])
@@ -27,4 +28,11 @@ export class Admin {
 
     @ManyToOne(() => Tenant, tenant => tenant.admins)
     tenant!: Tenant;
+
+    @Column({ default: false })
+    isDoctor!: boolean;
+
+    @ManyToMany(() => TenantExams, exam => exam.doctors)
+    @JoinTable()
+    exams!: TenantExams[];
 }

@@ -107,5 +107,15 @@ export const getAdminsByName = async (name: string, tenantId: number) => {
         },
         relations: ['tenant']
     })
-
 }
+
+export const getDoctorsByExamName = async (examName: string) => {
+    return await adminRepository.find({
+        where: {
+            exams: { exam_name: ILike(`%${examName}%`) },
+            isDoctor: true,
+        },
+        relations: ['exams'],
+        select: {fullName: true}
+    });
+};
