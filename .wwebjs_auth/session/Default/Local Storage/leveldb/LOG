@@ -1,9 +1,0 @@
-2024/10/28-22:03:25.300 af03 Reusing MANIFEST /Users/carlosmoreira/Documents/Projetos/ClintIA/online-exams-backend/.wwebjs_auth/session/Default/Local Storage/leveldb/MANIFEST-000001
-2024/10/28-22:03:25.301 af03 Recovering log #3
-2024/10/28-22:03:25.301 af03 Reusing old log /Users/carlosmoreira/Documents/Projetos/ClintIA/online-exams-backend/.wwebjs_auth/session/Default/Local Storage/leveldb/000003.log 
-2024/10/28-22:47:02.818 16703 Level-0 table #5: started
-2024/10/28-22:47:02.823 16703 Level-0 table #5: 16658 bytes OK
-2024/10/28-22:47:02.828 16703 Delete type=0 #3
-2024/10/29-04:18:19.607 1205f Level-0 table #7: started
-2024/10/29-04:18:19.612 1205f Level-0 table #7: 11985 bytes OK
-2024/10/29-04:18:19.618 1205f Delete type=0 #4
