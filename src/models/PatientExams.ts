@@ -24,6 +24,9 @@ export class PatientExams {
     @ManyToOne(() => Admin, admin => admin.id, { nullable: true })
     uploadedBy?: Admin;
 
+    @ManyToOne(() => Admin, admin => admin.id, { nullable: true })
+    doctor?: Admin;
+
     @CreateDateColumn()
     createdAt!: Date;
 

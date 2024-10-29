@@ -61,11 +61,10 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
 
 export const createPatientExamController = async (req: Request, res: Response) => {
     try {
-        const { patientId, examId, examDate } = req.body;
+        const { patientId, examId, examDate, doctorId, userId } = req.body;
         const tenantId = req.tenantId!;
-        const createdBy = req.user?.userId!;
 
-        const result = await createPatientExam({ patientId, examId, examDate: new Date(examDate), createdBy }, tenantId);
+        const result = await createPatientExam({ patientId, examId, examDate: new Date(examDate), userId, doctorId }, tenantId);
         return successResponse(res, result, 'Exame do paciente criado com sucesso', 201);
     } catch (error) {
         return errorResponse(res, error);

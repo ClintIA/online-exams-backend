@@ -7,7 +7,9 @@ import {ILike, Like} from "typeorm";
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
     return await adminRepository.findOne({ where: { email }, relations: ['tenant'] });
 };
-
+export const findDoctorById = async (id: number, tenantId: number): Promise<Admin | null> => {
+    return await adminRepository.findOne({ where: { tenant: { id: tenantId }, id: id } });
+};
 export const hashPassword = async (password: string): Promise<string> => {
     return await bcrypt.hash(password, 10);
 };
