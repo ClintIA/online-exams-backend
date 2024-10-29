@@ -1,0 +1,21 @@
+2024/10/29-08:03:24.023 16397 Creating DB /Users/carlosmoreira/Documents/Projetos/ClintIA/online-exams-backend/.wwebjs_auth/session/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb since it was missing.
+2024/10/29-08:03:24.037 16397 Reusing MANIFEST /Users/carlosmoreira/Documents/Projetos/ClintIA/online-exams-backend/.wwebjs_auth/session/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/10/29-08:33:13.583 1644b Level-0 table #5: started
+2024/10/29-08:33:13.600 1644b Level-0 table #5: 1202398 bytes OK
+2024/10/29-08:33:13.607 1644b Delete type=0 #3
+2024/10/29-08:56:35.877 b323 Level-0 table #7: started
+2024/10/29-08:56:35.894 b323 Level-0 table #7: 1258880 bytes OK
+2024/10/29-08:56:35.901 b323 Delete type=0 #4
+2024/10/29-08:56:36.125 8927 Compacting 1@1 + 1@2 files
+2024/10/29-08:56:36.161 8927 Generated table #8@1: 26071 keys, 1238696 bytes
+2024/10/29-08:56:36.161 8927 Compacted 1@1 + 1@2 files => 1238696 bytes
+2024/10/29-08:56:36.168 8927 compacted to: files[ 0 0 1 0 0 0 0 ]
+2024/10/29-08:56:36.168 8927 Delete type=2 #7
+2024/10/29-08:56:36.168 8927 Delete type=2 #5
+2024/10/29-09:18:25.098 b32f Level-0 table #10: started
+2024/10/29-09:18:25.146 b32f Level-0 table #10: 1307160 bytes OK
+2024/10/29-09:18:25.375 1603f Compacting 1@1 + 1@2 files
+2024/10/29-09:18:25.436 1603f Generated table #11@1: 35454 keys, 1683492 bytes
+2024/10/29-09:18:25.436 1603f Compacted 1@1 + 1@2 files => 1683492 bytes
+2024/10/29-09:18:25.440 1603f compacted to: files[ 0 0 1 0 0 0 0 ]
+2024/10/29-09:18:25.440 1603f Delete type=2 #10

@@ -42,8 +42,8 @@ export const getAdminsByNameController = async (req: Request, res: Response) => 
 
 export const getDoctorsByExamNameController = async (req: Request, res: Response) => {
     try {
-        const { examName } = req.params;
-        const result = await getDoctorsByExamName(examName);
+        const { examName } = req.query;
+        const result = await getDoctorsByExamName(examName as string);
         return successResponse(res, result, 'Doutores associados ao exame listados com sucesso');
     } catch (error) {
         return errorResponse(res, error);
