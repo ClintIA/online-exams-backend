@@ -26,7 +26,6 @@ export const registerPatientController = async (req: Request, res: Response) => 
             cpf: cpf,
             dob: dob,
         })
-
         const result = await registerPatient({
             full_name,
             password: password,
@@ -37,7 +36,7 @@ export const registerPatientController = async (req: Request, res: Response) => 
             address,
             gender,
             health_card_number
-        }, tenantId);
+        }, tenantId)
 
         return successResponse(res, result, 'Paciente registrado com sucesso', 201);
     } catch (error) {

@@ -28,9 +28,22 @@ export const listPatientByTenant = async (tenantId: number): Promise<Patient[]> 
     if(!tenant)  {
         throw new Error('Tenant Não encontrado');
     }
-    return await patientRepository.find( { where: { tenants: {
-        id: tenantId,
-            } }});
+    return await patientRepository.find( {
+        where: {
+            tenants: {
+                id: tenantId,
+            }
+        },
+        select: {
+            full_name: true,
+            id: true,
+            cpf: true,
+            dob: true,
+            phone: true,
+            address: true,
+            gender: true,
+            health_card_number: true
+        }});
 }
 
 export const registerPatient = async (patientData: {

@@ -8,6 +8,7 @@ import uploadRoutes from './routes/uploadRoutes';
 import adminRoutes from "./routes/adminRoutes";
 import patientExamRoutes from './routes/patientExamRoutes';
 import patientRoutes from "./routes/patientRoutes";
+import whatsappRoutes from "./routes/whatsappRoutes";
 
 dotenv.config();
 
@@ -22,6 +23,6 @@ app.use('/api', uploadRoutes);
 app.use('/clinicexams', tenantExamRoutes)
 app.use('/patientExams', patientExamRoutes)
 app.use('/patient', patientRoutes)
-
+app.use('/whatsapp', whatsappRoutes)
 
 export default app;
