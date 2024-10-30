@@ -41,7 +41,7 @@ export const registerAdmin = async (adminData: { email: string, adminCpf: string
 };
 
 export const loginAdmin = async (email: string, password: string) => {
-    const admin = await findAdminByEmail(email.toLowerCase());
+    const admin = await findAdminByEmail(email);
 
     if (!admin) {
         throw new Error('Admin não encontrado');
