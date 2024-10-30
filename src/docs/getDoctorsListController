@@ -1,0 +1,178 @@
+# Doctors List API Documentation
+
+## Overview
+This endpoint retrieves a paginated list of doctors for a specific tenant. The response includes doctor information along with pagination metadata.
+
+## Endpoint Details
+
+### GET /doctors
+
+Retrieves a list of doctors with pagination support.
+
+### Headers
+
+| Header        | Type   | Required | Description                          |
+|---------------|--------|----------|--------------------------------------|
+| x-tenant-id   | string | Yes      | Unique identifier for the tenant     |
+
+### Query Parameters
+
+| Parameter | Type    | Required | Default | Description                                |
+|-----------|---------|----------|---------|-------------------------------------------|
+| page      | number  | No       | 1       | Page number for pagination                |
+| take      | number  | No       | 10      | Number of records to return per page      |
+| skip      | number  | No       | 0       | Number of records to skip                 |
+
+### Success Response
+
+```typescript
+{
+  "success": true,
+  "data": {
+    "data": [
+      {
+        "id": number,
+        "name": string,
+        "specialty": string,
+        // ... other doctor properties
+      }
+    ],
+    "pagination": {
+      "total": number,      // Total number of doctors
+      "page": number,       // Current page
+      "take": number,       // Records per page
+      "skip": number,       // Records skipped
+      "remaining": number   // Remaining records
+    }
+  },
+  "message": string
+}
+```
+
+### Error Responses
+
+#### 400 Bad Request
+When invalid parameters are provided.
+
+```json
+{
+  "success": false,
+  "error": {
+    "message": "Invalid or missing tenant ID"
+  }
+}
+```
+
+```json
+{
+  "success": false,
+  "error": {
+    "message": "Invalid pagination parameters"
+  }
+}
+```
+
+#### 500 Internal Server Error
+When an unexpected error occurs during processing.
+
+```json
+{
+  "success": false,
+  "error": {
+    "message": "Internal server error"
+  }
+}
+```
+
+### Example Requests
+
+#### Basic Request
+```bash
+curl -X GET \
+  'http://api.example.com/doctors?page=1&take=10' \
+  -H 'x-tenant-id: 123'
+```
+
+#### Custom Pagination
+```bash
+curl -X GET \
+  'http://api.example.com/doctors?page=2&take=20&skip=20' \
+  -H 'x-tenant-id: 123'
+```
+
+### Example Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "data": [
+      {
+        "id": 1,
+        "name": "Dr. John Doe",
+        "specialty": "Cardiology",
+        "email": "john.doe@example.com",
+        "phone": "+1234567890"
+      },
+      // ... more doctors
+    ],
+    "pagination": {
+      "total": 100,
+      "page": 1,
+      "take": 10,
+      "skip": 0,
+      "remaining": 90
+    }
+  },
+  "message": "Showing 10 of 100 doctors (90 remaining)"
+}
+```
+
+### Notes
+
+1. The endpoint uses zero-based pagination with the `skip` parameter.
+2. The tenant ID must be a valid number provided in the headers.
+3. All numeric query parameters must be positive integers.
+4. The response includes both the data and pagination metadata.
+5. The total count of records is included in the pagination metadata.
+
+### Error Handling
+
+The API implements the following error handling:
+
+- Validates the presence and format of the tenant ID
+- Validates all numeric parameters
+- Returns appropriate HTTP status codes for different error scenarios
+- Includes detailed error messages in the response
+
+### Rate Limiting
+
+_Note: Implement and document rate limiting details specific to your application._
+
+### Security
+
+1. Requires valid tenant ID in headers
+2. _Add any additional security measures specific to your application_
+
+### Best Practices
+
+1. Use the pagination parameters to limit the amount of data returned
+2. Cache responses when appropriate
+3. Handle rate limiting appropriately
+4. Include the tenant ID in all requests
+
+### Support
+
+For additional support or to report issues:
+- _Add your support contact information_
+- _Add link to issue tracker_
+- _Add any other relevant support information_
+
+---
+
+## Changelog
+
+| Version | Date       | Description                    |
+|---------|------------|--------------------------------|
+| 1.0.0   | 2024-03-30| Initial release of the API     |
+

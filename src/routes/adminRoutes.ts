@@ -4,7 +4,7 @@ import {
     getAdminListController,
     getAdminsByCPFController,
     getAdminsByNameController,
-    getDoctorsByExamNameController
+    getDoctorsByExamNameController, getDoctorsListController
 } from "../controllers/adminController";
 import {tenantMiddleware} from "../middlewares/tenantMiddleware";
 import {authMiddleware} from "../middlewares/authMiddleware";
@@ -15,5 +15,6 @@ router.get('/', tenantMiddleware, authMiddleware, isAdminMiddleware, getAdminLis
 router.get('/cpf', tenantMiddleware, authMiddleware, isAdminMiddleware, getAdminsByCPFController);
 router.get('/name', tenantMiddleware, authMiddleware, isAdminMiddleware, getAdminsByNameController);
 router.get('/exam', tenantMiddleware, authMiddleware, isAdminMiddleware, getDoctorsByExamNameController)
+router.get('/doctors', tenantMiddleware, authMiddleware, isAdminMiddleware,getDoctorsListController)
 
 export default router;
