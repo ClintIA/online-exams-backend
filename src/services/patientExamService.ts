@@ -65,24 +65,19 @@ export const updatePatientExam = async (
     examData: { status?: 'Scheduled' | 'InProgress' | 'Completed'; link?: string },
     tenantId: number
 ) => {
-    const exam = await patientExamsRepository.findOne({
-        where: {
-            id: examId,
-            exam: {tenant: {id: tenantId}},
-        },
-    });
-
+    const exam = await patientExamsRepository.update({ id: examId }, {
+         status: examData.status,
+         link: examData.link,
+     });
     if (!exam) {
-        throw new Error('Exame não encontrado');
+        throw new Error('Erro ao salvar link ou Exame não encontrado');
     }
 
     Object.assign(exam, examData);
 
-    if (examData.status === 'Completed' && !exam.link) {
+    if (examData.status === 'Completed' && !examData.link) {
         throw new Error('Link do exame é necessário para status de concluído');
     }
-
-    await patientExamsRepository.save(exam);
     return {message: 'Exame atualizado com sucesso'};
 };
 
