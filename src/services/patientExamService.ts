@@ -1,50 +1,68 @@
-import { Like } from 'typeorm';
-import { patientExamsRepository } from '../repositories/patientExamsRepository';
-import { tenantExamsRepository } from '../repositories/tenantExamsRepository';
-import {adminRepository} from "../repositories/adminRepository";
+import {Between, Like} from 'typeorm';
+import {patientExamsRepository} from '../repositories/patientExamsRepository';
+import {tenantExamsRepository} from '../repositories/tenantExamsRepository';
 import {findDoctorById} from "./adminService";
-import { PatientExams } from '../models/PatientExams';
+import {PatientExams} from '../models/PatientExams';
 
-export const listPatientExams = async (
-    filters: {
-        date?: Date;
-        status?: 'Scheduled' | 'InProgress' | 'Completed';
-        patientName?: string;
-        patientId?: number;
-        tenantId?: number
-    }) => {
+interface FilterParams {
+    startDate?: string;
+    endDate?: string;
+    status: 'Scheduled' | 'InProgress' | 'Completed';
+    patientName?: string;
+    patientId?: number;
+    tenantId?: number;
+}
 
+export const listPatientExams = async (filters: FilterParams): Promise<PatientExams[]> => {
     const whereCondition: any = {};
 
+    // Handle tenant filtering
     if (filters.tenantId) {
-        whereCondition.exam = {tenant: {id: filters.tenantId}};
+        whereCondition.exam = { tenant: { id: filters.tenantId } };
     }
 
-    if (filters.patientId) {
-        whereCondition.patient = {id: filters.patientId};
+    // Handle patient filtering
+    if (filters.patientId || filters.patientName) {
+        whereCondition.patient = {
+            ...(filters.patientId && { id: filters.patientId }),
+            ...(filters.patientName && { full_name: Like(`%${filters.patientName}%`) })
+        };
     }
 
-    if (filters.date) {
-        whereCondition.examDate = filters.date;
-    }
+    // Handle date filtering
+    if (filters.startDate || filters.endDate) {
+        const getFormattedDate = (date: string, offsetDays: number = 0): string => {
+            const dateObj = new Date(date);
+            dateObj.setDate(dateObj.getDate() + offsetDays);
+            return dateObj.toISOString().split('T')[0];
+        };
 
+        if (filters.startDate && filters.endDate) {
+            whereCondition.examDate = Between(filters.startDate, getFormattedDate(filters.endDate, 1)
+            );
+        } else if (filters.startDate) {
+            whereCondition.examDate = Between(
+                filters.startDate,
+                getFormattedDate(filters.startDate, 1)
+            );
+        } else if (filters.endDate) {
+            whereCondition.examDate = Between(
+                getFormattedDate(filters.endDate, -1),
+                filters.endDate
+            );
+        }
+    }
+    // Handle status filtering
     if (filters.status) {
         whereCondition.status = filters.status;
     }
 
-    if (filters.patientName) {
-        whereCondition.patient = {full_name: Like(`%${filters.patientName}%`)};
-    }
-
-    const exams = await patientExamsRepository.find({
+    return await patientExamsRepository.find({
         where: whereCondition,
         relations: ['patient', 'exam', 'exam.tenant'],
-        order: {createdAt: 'DESC'}
+        order: { createdAt: 'DESC' }
     });
-
-    return exams;
 };
-
 
 export const deletePatientExam = async (examId: number, tenantId: number) => {
     const exam = await patientExamsRepository.findOne({

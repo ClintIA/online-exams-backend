@@ -69,7 +69,7 @@ export const getDoctorsListController = async (req: Request, res: Response) => {
 
     } catch (error) {
         // Log the error here if you have a logging system
-        console.error('Error in getDoctorsListController:', error);
+        console.error('Error in getDoctorsListController', error);
         return errorResponse(res, error);
     }
 };

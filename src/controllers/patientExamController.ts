@@ -1,19 +1,19 @@
 import { Request, Response } from 'express';
 import { listPatientExams, createPatientExam, updatePatientExam, deletePatientExam } from '../services/patientExamService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
-import {findPatientByCpf} from "../services/patientService";
 
 export const listPatientExamsController = async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'];
-        const { date, status, patientName, patientId } = req.query;
+        const { startDate,endDate, status, patientName, patientId } = req.query;
 
         if (!tenantId && !patientId) {
             return errorResponse(res, new Error('É necessário passar o tenantId ou patientId'), 400);
         }
 
         const filters = {
-            date: date ? new Date(date as string) : undefined,
+            startDate: startDate ? startDate as string : undefined,
+            endDate: endDate ? endDate as string : undefined,
             status: status as 'Scheduled' | 'InProgress' | 'Completed',
             patientName: patientName as string,
             patientId: patientId ? parseInt(patientId as string) : undefined,
