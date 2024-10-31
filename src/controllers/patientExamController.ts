@@ -50,8 +50,10 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
 
             return acc;
         }, []);
-
-        return successResponse(res, { tenant: transformedData }, 'Exames listados com sucesso');
+        if(transformedData.length === 0) {
+            return successResponse(res, null, 'Não foram encontrados exames para essa pesquisa');
+        }
+        return successResponse(res, { exames: transformedData }, 'Exames listados com sucesso');
     } catch (error) {
         return errorResponse(res, error);
     }
