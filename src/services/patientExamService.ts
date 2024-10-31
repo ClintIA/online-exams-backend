@@ -11,17 +11,20 @@ interface FilterParams {
     patientName?: string;
     patientId?: number;
     tenantId?: number;
+    patientCpf?: string
 }
 
 export const listPatientExams = async (filters: FilterParams): Promise<PatientExams[]> => {
     const whereCondition: any = {};
 
-    // Handle tenant filtering
     if (filters.tenantId) {
         whereCondition.exam = { tenant: { id: filters.tenantId } };
     }
 
-    // Handle patient filtering
+    if (filters.patientCpf) {
+        whereCondition.patient = { cpf: filters.patientCpf  };
+    }
+
     if (filters.patientId || filters.patientName) {
         whereCondition.patient = {
             ...(filters.patientId && { id: filters.patientId }),
@@ -29,7 +32,6 @@ export const listPatientExams = async (filters: FilterParams): Promise<PatientEx
         };
     }
 
-    // Handle date filtering
     if (filters.startDate || filters.endDate) {
         const getFormattedDate = (date: string, offsetDays: number = 0): string => {
             const dateObj = new Date(date);
@@ -52,7 +54,6 @@ export const listPatientExams = async (filters: FilterParams): Promise<PatientEx
             );
         }
     }
-    // Handle status filtering
     if (filters.status) {
         whereCondition.status = filters.status;
     }

@@ -24,16 +24,13 @@ export const getAdminListController =  async (req: Request, res: Response) => {
 }
 export const getDoctorsListController = async (req: Request, res: Response) => {
     try {
-        // Type assertion and validation for tenant ID
         const tenantId = req.headers['x-tenant-id'];
         if (!tenantId || typeof tenantId !== 'string') {
             return errorResponse(res, new Error('Tenant ID inválido ou não informado'), 400);
         }
 
-        // Extract and validate pagination parameters
         const { page = '1', take = '10', skip = '0' } = req.query as PaginationQuery;
 
-        // Convert and validate numeric parameters
         const numericParams = {
             tenantId: parseInt(tenantId),
             take: parseInt(take),
@@ -41,12 +38,9 @@ export const getDoctorsListController = async (req: Request, res: Response) => {
             page: parseInt(page)
         };
 
-        // Validate numeric conversions
         if (Object.values(numericParams).some(isNaN)) {
             return errorResponse(res, new Error('Invalid pagination parameters'), 400);
         }
-
-        // Get doctors with pagination
         const result: GetDoctorsResult = await getDoctors(
             numericParams.tenantId,
             numericParams.take,
@@ -68,7 +62,6 @@ export const getDoctorsListController = async (req: Request, res: Response) => {
         }, message);
 
     } catch (error) {
-        // Log the error here if you have a logging system
         console.error('Error in getDoctorsListController', error);
         return errorResponse(res, error);
     }

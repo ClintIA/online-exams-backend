@@ -5,13 +5,14 @@ import { successResponse, errorResponse } from '../utils/httpResponses';
 export const listPatientExamsController = async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'];
-        const { startDate,endDate, status, patientName, patientId } = req.query;
+        const { patientCpf, startDate,endDate, status, patientName, patientId } = req.query;
 
         if (!tenantId && !patientId) {
             return errorResponse(res, new Error('É necessário passar o tenantId ou patientId'), 400);
         }
 
         const filters = {
+            patientCpf: patientCpf ? patientCpf as string : undefined,
             startDate: startDate ? startDate as string : undefined,
             endDate: endDate ? endDate as string : undefined,
             status: status as 'Scheduled' | 'InProgress' | 'Completed',
