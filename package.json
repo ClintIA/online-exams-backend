@@ -33,7 +33,7 @@
     "typeorm": "^0.3.20",
     "typescript": "^5.5.4",
     "uploadthing": "^6.13.2",
-    "vercel": "^37.8.0",
+    "vercel": "^37.14.0",
     "winston": "^3.14.2"
   },
   "devDependencies": {
