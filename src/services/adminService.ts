@@ -81,6 +81,28 @@ export const getAdmins = async (tenantId: number) => {
         }
     })
 }
+export const getDoctors = async (tenantId: number, take: number = 1, skip: number = 0) => {
+    const [doctors, total] = await adminRepository.findAndCount({
+        select: {
+            id: true,
+            fullName: true,
+            email: true,
+            CRM: true,
+            phone: true,
+
+        },
+        take: take,
+        skip: skip,
+        where: {
+            isDoctor: true,
+            tenant: {
+                id: tenantId
+            }
+        }
+    })
+    console.log(doctors)
+    return { doctors, total }
+}
 
 export const getAdminsByCPF = async (cpf: string, tenantId: number) => {
     return await adminRepository.find({

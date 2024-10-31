@@ -1,4 +1,3 @@
-// Modelo TenantExams atualizado com o relacionamento Many-to-Many com Admin
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index, ManyToMany } from 'typeorm';
 import { Tenant } from './Tenant';
 import { Admin } from './Admin';

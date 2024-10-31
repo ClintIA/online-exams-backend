@@ -17,6 +17,12 @@ export class Admin {
     @Column()
     password!: string;
 
+    @Column({nullable: true})
+    CRM!: string;
+
+    @Column({nullable: true})
+    phone!: string;
+
     @Column()
     fullName!: string;
 
