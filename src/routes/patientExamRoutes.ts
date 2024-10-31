@@ -7,9 +7,9 @@ import { createPatientExamController, listPatientExamsController, updatePatientE
 const router = Router();
 
 router.post('/', tenantMiddleware, authMiddleware, isAdminMiddleware, createPatientExamController);
-router.get('/', tenantMiddleware, listPatientExamsController);
-router.put('/:examId', tenantMiddleware, updatePatientExamController);
-router.delete('/:examId', tenantMiddleware, authMiddleware, isAdminMiddleware, deletePatientExamController);
+router.get('/', tenantMiddleware, authMiddleware, listPatientExamsController);
+router.put('/:patientExamId', tenantMiddleware, authMiddleware, isAdminMiddleware, updatePatientExamController);
+router.delete('/:patientExamId', tenantMiddleware, authMiddleware, isAdminMiddleware, deletePatientExamController);
 
 
 export default router;
