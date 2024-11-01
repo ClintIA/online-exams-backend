@@ -31,7 +31,7 @@ export const listPatientExams = async (filters: FilterParams): Promise<PatientEx
         };
     }
     if (filters.startDate || filters.endDate) {
-        whereCondition.examDate = handleFilterDate(filters)
+        whereCondition.examDate = handleFilterDate(filters,1)
     }
     if (filters.status) {
         whereCondition.status = filters.status;
@@ -40,7 +40,7 @@ export const listPatientExams = async (filters: FilterParams): Promise<PatientEx
     return await patientExamsRepository.find({
         where: whereCondition,
         relations: ['patient', 'exam', 'exam.tenant'],
-        order: { createdAt: 'DESC' }
+        order: { examDate: 'DESC' }
     });
 };
 

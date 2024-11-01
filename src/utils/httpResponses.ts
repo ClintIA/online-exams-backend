@@ -15,6 +15,12 @@ export const errorResponse = (res: Response, error: unknown, statusCode: number 
         message: errorMessage
     });
 };
+export const customErrorResponse = (res: Response, error: string, statusCode: number = 400) => {
+    return res.status(statusCode).json({
+        status: 'error',
+        message: error
+    });
+};
 
 export const notFoundResponse = (res: Response, message: string = 'Resource not found') => {
     return res.status(404).json({

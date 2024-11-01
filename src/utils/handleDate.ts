@@ -6,21 +6,20 @@ export const getFormattedDate = (date: string, offsetDays: number = 0): string =
     return dateObj.toISOString().split('T')[0];
 };
 
-export const handleFilterDate = (filters: { startDate?: string, endDate?: string}) => {
-    const whereCondition: any = {}
+export const handleFilterDate = (filters: { startDate?: string, endDate?: string}, offset?: number) => {
     console.log(filters)
     if (filters.startDate && filters.endDate) {
-        return whereCondition.examDate = Between(filters.startDate, getFormattedDate(filters.endDate, 1)
+        return Between(filters.startDate, getFormattedDate(filters.endDate, offset)
         );
     } else if (filters.startDate) {
-        return whereCondition.examDate = Between(
+        return Between(
             filters.startDate,
-            getFormattedDate(filters.startDate, 1)
+            getFormattedDate(filters.startDate, offset)
         );
     } else if (filters.endDate) {
-       return  whereCondition.examDate = Between(
+       return Between(
             filters.endDate,
-           getFormattedDate(filters.endDate, 1)
+           getFormattedDate(filters.endDate, offset)
         );
     }
 }

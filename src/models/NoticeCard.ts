@@ -3,7 +3,7 @@ import {Admin} from "./Admin";
 import {Tenant} from "./Tenant";
 
 @Entity()
-@Index(['id', 'date', 'message', 'createdBy'])
+@Index(['id'])
 export class NoticeCard {
     @PrimaryGeneratedColumn()
     id!: number;
@@ -14,8 +14,8 @@ export class NoticeCard {
     @ManyToOne(() => Admin, admin => admin.id, { nullable: true })
     createdBy?: Admin;
 
-    @Column({ type: 'date'})
-    date!: Date;
+    @Column( 'date')
+    cardDate!: Date;
 
     @ManyToOne(() => Tenant, tenant => tenant.admins)
     tenant!: Tenant;
