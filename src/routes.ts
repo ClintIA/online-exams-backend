@@ -8,6 +8,7 @@ import uploadRoutes from './routes/uploadRoutes';
 import adminRoutes from "./routes/adminRoutes";
 import patientExamRoutes from './routes/patientExamRoutes';
 import patientRoutes from "./routes/patientRoutes";
+import noticeCardRoutes from "./routes/noticeCardRoutes";
 
 dotenv.config();
 
@@ -22,6 +23,6 @@ app.use('/api', uploadRoutes);
 app.use('/clinicexams', tenantExamRoutes)
 app.use('/patientExams', patientExamRoutes)
 app.use('/patient', patientRoutes)
-
+app.use('/noticecards', noticeCardRoutes)
 
 export default app;

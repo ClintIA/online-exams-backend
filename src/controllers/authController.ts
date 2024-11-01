@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { registerPatient, loginPatientByCpf } from '../services/patientService'; 
 import { registerAdmin, loginAdmin } from '../services/adminService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
-import {generatePassword} from "../utils/utils";
+import {generatePassword} from "../utils/passwordGenerator";
 
 export const registerAdminController = async (req: Request, res: Response) => {
     try {
@@ -23,7 +23,6 @@ export const registerPatientController = async (req: Request, res: Response) => 
 
         const password = generatePassword({
             full_name: full_name,
-            cpf: cpf,
             dob: dob,
         })
 

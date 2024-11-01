@@ -3,6 +3,7 @@ import {patientExamsRepository} from '../repositories/patientExamsRepository';
 import {tenantExamsRepository} from '../repositories/tenantExamsRepository';
 import {findDoctorById} from "./adminService";
 import {PatientExams} from '../models/PatientExams';
+import {handleFilterDate} from "../utils/handleDate";
 
 interface FilterParams {
     startDate?: string;
@@ -20,39 +21,17 @@ export const listPatientExams = async (filters: FilterParams): Promise<PatientEx
     if (filters.tenantId) {
         whereCondition.exam = { tenant: { id: filters.tenantId } };
     }
-
     if (filters.patientCpf) {
         whereCondition.patient = { cpf: filters.patientCpf  };
     }
-
     if (filters.patientId || filters.patientName) {
         whereCondition.patient = {
             ...(filters.patientId && { id: filters.patientId }),
             ...(filters.patientName && { full_name: Like(`%${filters.patientName}%`) })
         };
     }
-
     if (filters.startDate || filters.endDate) {
-        const getFormattedDate = (date: string, offsetDays: number = 0): string => {
-            const dateObj = new Date(date);
-            dateObj.setDate(dateObj.getDate() + offsetDays);
-            return dateObj.toISOString().split('T')[0];
-        };
-
-        if (filters.startDate && filters.endDate) {
-            whereCondition.examDate = Between(filters.startDate, getFormattedDate(filters.endDate, 1)
-            );
-        } else if (filters.startDate) {
-            whereCondition.examDate = Between(
-                filters.startDate,
-                getFormattedDate(filters.startDate, 1)
-            );
-        } else if (filters.endDate) {
-            whereCondition.examDate = Between(
-                getFormattedDate(filters.endDate, -1),
-                filters.endDate
-            );
-        }
+        whereCondition.examDate = handleFilterDate(filters,1)
     }
     if (filters.status) {
         whereCondition.status = filters.status;
@@ -61,7 +40,7 @@ export const listPatientExams = async (filters: FilterParams): Promise<PatientEx
     return await patientExamsRepository.find({
         where: whereCondition,
         relations: ['patient', 'exam', 'exam.tenant'],
-        order: { createdAt: 'DESC' }
+        order: { examDate: 'DESC' }
     });
 };
 
@@ -84,6 +63,7 @@ export const updatePatientExam = async (
     examData: { status?: 'Scheduled' | 'InProgress' | 'Completed'; link?: string },
     tenantId: number
 ) => {
+
     const exam = await patientExamsRepository.update({ id: examId }, {
          status: examData.status,
          link: examData.link,
