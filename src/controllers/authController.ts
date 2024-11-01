@@ -23,7 +23,6 @@ export const registerPatientController = async (req: Request, res: Response) => 
 
         const password = generatePassword({
             full_name: full_name,
-            cpf: cpf,
             dob: dob,
         })
 
