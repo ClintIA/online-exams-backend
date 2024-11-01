@@ -11,8 +11,8 @@ import {
 
 const router = Router();
 
-router.post('/',tenantMiddleware, createCardController)
-router.get('/', tenantMiddleware, listNoticeCardController)
-router.delete('/:cardId', tenantMiddleware, deleteCardController)
+router.post('/',authMiddleware, isAdminMiddleware, tenantMiddleware, createCardController)
+router.get('/', authMiddleware, isAdminMiddleware, tenantMiddleware, listNoticeCardController)
+router.delete('/:cardId', authMiddleware, isAdminMiddleware, tenantMiddleware, deleteCardController)
 
 export default router;
