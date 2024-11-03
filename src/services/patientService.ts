@@ -12,17 +12,6 @@ export const findPatientByEmail = async (email: string): Promise<Patient | null>
     return await patientRepository.findOne({ where: { email }, relations: ['tenants'] });
 };
 
-export const findPatientByCpfAndTenant = async (cpf: string, tenantId: number): Promise<Patient | null> => {
-    return await patientRepository.findOne(
-        { where: {
-                cpf: cpf,
-                tenants: {
-                    id: tenantId
-                }
-            },
-            relations: ['tenants'] });
-};
-
 export const listPatientByTenant = async (tenantId: number): Promise<Patient[]> => {
     const tenant = await tenantRepository.findOne({ where: { id: tenantId  } });
     if(!tenant)  {

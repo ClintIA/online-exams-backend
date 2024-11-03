@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import { listPatientExams, createPatientExam, updatePatientExam, deletePatientExam } from '../services/patientExamService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
+import { parseValidInt } from '../utils/parseValidInt';
 
 export const listPatientExamsController = async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'];
-        const { patientCpf, startDate,endDate, status, patientName, patientId } = req.query;
+        const { patientCpf, startDate, endDate, status, patientName, patientId } = req.query;
 
         if (!tenantId && !patientId) {
             return errorResponse(res, new Error('É necessário passar o tenantId ou patientId'), 400);
@@ -76,11 +77,13 @@ export const createPatientExamController = async (req: Request, res: Response) =
 
 export const updatePatientExamController = async (req: Request, res: Response) => {
     try {
-        const examId = parseInt(req.params.examId);
+        const examId = parseValidInt(req.params.patientExamId);
+        if (examId === null) {
+            return errorResponse(res, new Error("Invalid examId: not a number"), 400);
+        }
         const { status, link } = req.body;
-        const tenantId = req.tenantId!;
 
-        const result = await updatePatientExam(examId, { status, link }, tenantId);
+        const result = await updatePatientExam(examId, { status, link });
         return successResponse(res, result, 'Exame do paciente atualizado com sucesso');
     } catch (error) {
         return errorResponse(res, error);
@@ -89,7 +92,10 @@ export const updatePatientExamController = async (req: Request, res: Response) =
 
 export const deletePatientExamController = async (req: Request, res: Response) => {
     try {
-        const examId = parseInt(req.params.examId);
+        const examId = parseValidInt(req.params.examId);
+        if (examId === null) {
+            return errorResponse(res, new Error("Invalid examId: not a number"), 400);
+        }
         const tenantId = req.tenantId!;
 
         await deletePatientExam(examId, tenantId);
