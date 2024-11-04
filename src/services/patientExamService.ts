@@ -63,13 +63,12 @@ export const deletePatientExam = async (examId: number, tenantId: number) => {
 export const updatePatientExam = async (
     examId: number,
     examData: { status?: 'Scheduled' | 'InProgress' | 'Completed'; link?: string },
-    tenantId: number
 ) => {
 
     const exam = await patientExamsRepository.update({ id: examId }, {
-         status: examData.status,
-         link: examData.link,
-     });
+        status: examData.status,
+        link: examData.link,
+    });
     if (!exam) {
         throw new Error('Erro ao salvar link ou Exame não encontrado');
     }

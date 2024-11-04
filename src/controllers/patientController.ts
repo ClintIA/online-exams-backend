@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { successResponse, errorResponse } from '../utils/httpResponses';
-import { findPatientByCpfAndTenant, listPatientByTenant} from "../services/patientService";
+import { findPatientByCpf, listPatientByTenant} from "../services/patientService";
 
 
 export const listPatients = async (req: Request, res: Response) => {
@@ -16,14 +16,18 @@ export const listPatients = async (req: Request, res: Response) => {
     }
 }
 
-export const findPatientByCPFAndTenant = async (req: Request, res: Response) => {
+export const findPatientByCPF = async (req: Request, res: Response) => {
     const { cpf } = req.body;
-    const tenantId = req.tenantId!;
 
     try {
-        const result = await findPatientByCpfAndTenant(cpf,tenantId)
+        const patient = await findPatientByCpf(cpf);
+        if (!patient) {
+            return errorResponse(res, new Error('Paciente não encontrado'), 404);
+        }
 
-        return successResponse(res, result);
+        const { password, ...patientInfoWithoutPassword } = patient;
+
+        return successResponse(res, patientInfoWithoutPassword);
     } catch (error) {
         return errorResponse(res, error);
     }
