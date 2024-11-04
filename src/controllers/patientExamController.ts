@@ -8,8 +8,8 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
         const tenantId = req.headers['x-tenant-id'];
         const { patientCpf, startDate, endDate, status, patientName, patientId } = req.query;
 
-        if (!tenantId && !patientId) {
-            return errorResponse(res, new Error('É necessário passar o tenantId ou patientId'), 400);
+        if (!patientId) {
+            return errorResponse(res, new Error('É necessário passar patientId'), 400);
         }
 
         const filters = {

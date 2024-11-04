@@ -7,7 +7,7 @@ import {isAdminMiddleware} from "../middlewares/isAdminMiddleware";
 const router = Router();
 
 router.get('/',tenantMiddleware, authMiddleware, isAdminMiddleware, tenantMiddleware, listPatients);
-router.get('/cpf', authMiddleware, findPatientByCPF);
+router.post('/cpf', authMiddleware, findPatientByCPF);
 
 
 export default router;
