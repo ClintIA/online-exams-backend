@@ -15,7 +15,7 @@ interface FilterParams {
     patientCpf?: string
 }
 
-export const listPatientExams = async (filters: FilterParams): Promise<PatientExams[]> => {
+export const listPatientExams = async (filters: FilterParams, take: number = 10, skip: number = 0): Promise<PatientExams[]> => {
     const whereCondition: any = {};
 
     if (filters.tenantId) {
@@ -39,6 +39,8 @@ export const listPatientExams = async (filters: FilterParams): Promise<PatientEx
 
     return await patientExamsRepository.find({
         where: whereCondition,
+        take: take,
+        skip: skip,
         relations: ['patient', 'exam', 'exam.tenant'],
         order: { examDate: 'DESC' }
     });

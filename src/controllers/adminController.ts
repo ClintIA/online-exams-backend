@@ -8,7 +8,7 @@ interface PaginationQuery {
 }
 
 interface GetDoctorsResult {
-    doctors: any[]; // Replace 'any' with your Doctor type
+    doctors: any[];
     total: number;
 }
 
