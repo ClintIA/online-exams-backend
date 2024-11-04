@@ -103,7 +103,6 @@ export const getDoctors = async (tenantId: number, take: number = 1, skip: numbe
             }
         }
     })
-    console.log(doctors)
     return { doctors, total }
 }
 
