@@ -15,31 +15,16 @@ const doc = {
     ],
     components: {
         schemas: {
-            someBody: {
-                $name: "Jhon Doe",
-                $age: 29,
-                about: ""
-            },
             someResponse: {
-                name: "Jhon Doe",
-                age: 29,
-                diplomas: [
-                    {
-                        school: "XYZ University",
-                        year: 2020,
-                        completed: true,
-                        internship: {
-                            hours: 290,
-                            location: "XYZ Company"
-                        }
-                    }
-                ]
+                status: "string",
+                message: "string",
+                data: [{}]
             },
-            someEnum: {
-                '@enum': [
-                    "red",
-                    "yellow",
-                    "green"
+            status: {
+                'status': [
+                    "Agendado",
+                    "InProgress",
+                    "Completed"
                 ]
             }
         },

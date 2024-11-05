@@ -946,80 +946,41 @@
   },
   "components": {
     "schemas": {
-      "someBody": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "Jhon Doe"
-          },
-          "age": {
-            "type": "number",
-            "example": 29
-          },
-          "about": {
-            "type": "string",
-            "example": ""
-          }
-        },
-        "required": [
-          "name",
-          "age"
-        ]
-      },
       "someResponse": {
         "type": "object",
         "properties": {
-          "name": {
+          "status": {
             "type": "string",
-            "example": "Jhon Doe"
+            "example": "string"
           },
-          "age": {
-            "type": "number",
-            "example": 29
+          "message": {
+            "type": "string",
+            "example": "string"
           },
-          "diplomas": {
+          "data": {
             "type": "array",
             "items": {
               "type": "object",
-              "properties": {
-                "school": {
-                  "type": "string",
-                  "example": "XYZ University"
-                },
-                "year": {
-                  "type": "number",
-                  "example": 2020
-                },
-                "completed": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "internship": {
-                  "type": "object",
-                  "properties": {
-                    "hours": {
-                      "type": "number",
-                      "example": 290
-                    },
-                    "location": {
-                      "type": "string",
-                      "example": "XYZ Company"
-                    }
-                  }
-                }
-              }
+              "properties": {}
             }
           }
         }
       },
-      "someEnum": {
-        "type": "string",
-        "enum": [
-          "red",
-          "yellow",
-          "green"
-        ]
+      "status": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "array",
+            "example": [
+              "Agendado",
+              "InProgress",
+              "Completed"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       }
     },
     "securitySchemes": {
