@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 import * as dotenv from "dotenv";
-const swaggerAutogen = require('swagger-autogen')({ openapi: '3.0.0' });
+import swaggerAutogen from 'swagger-autogen';
 
 dotenv.config();
 
@@ -43,6 +43,6 @@ const doc = {
 const outputFile = resolve(__dirname, './swagger-output.json');
 const endpointsFiles = [resolve(__dirname, './routes.ts')];
 
-swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
+swaggerAutogen({openapi: '3.0.0'})(outputFile, endpointsFiles, doc).then(() => {
     require('./index.ts');
 });
