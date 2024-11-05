@@ -58,6 +58,7 @@ export const getDoctorsListController = async (req: Request, res: Response) => {
         );
 
         const remaining = result.total - result.doctors.length;
+
         const message = `Mostrando ${result.doctors.length} de ${result.total} médicos (${remaining} faltando)`;
 
         return successResponse(res, {
