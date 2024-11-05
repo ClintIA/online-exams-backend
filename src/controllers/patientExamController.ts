@@ -5,12 +5,8 @@ import { parseValidInt } from '../utils/parseValidInt';
 
 export const listPatientExamsController = async (req: Request, res: Response) => {
     try {
-        const tenantId = req.headers['x-tenant-id'];
-        const { patientCpf, startDate, endDate, status, patientName, patientId } = req.query;
-
-        if (!patientId) {
-            return errorResponse(res, new Error('É necessário passar patientId'), 400);
-        }
+        const { patientCpf,tenantId, startDate, endDate, status, patientName } = req.query;
+        const patientId = req.patientId
 
         const filters = {
             patientCpf: patientCpf ? patientCpf as string : undefined,
@@ -18,7 +14,7 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
             endDate: endDate ? endDate as string : undefined,
             status: status as 'Scheduled' | 'InProgress' | 'Completed',
             patientName: patientName as string,
-            patientId: patientId ? parseInt(patientId as string) : undefined,
+            patientId: patientId ? patientId as number : undefined,
             tenantId: tenantId ? parseInt(tenantId as string) : undefined,
         };
 

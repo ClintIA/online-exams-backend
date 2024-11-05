@@ -17,10 +17,9 @@ export const listPatients = async (req: Request, res: Response) => {
 }
 
 export const findPatientByCPF = async (req: Request, res: Response) => {
-    const { cpf } = req.body;
-
+    const { cpf } = req.query;
     try {
-        const patient = await findPatientByCpf(cpf);
+        const patient = await findPatientByCpf(cpf as string);
         if (!patient) {
             return errorResponse(res, new Error('Paciente não encontrado'), 404);
         }
