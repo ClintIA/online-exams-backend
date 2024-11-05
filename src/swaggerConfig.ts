@@ -1,8 +1,10 @@
 import { resolve } from 'path';
-import dotenv from "dotenv";
+import * as dotenv from "dotenv";
 const swaggerAutogen = require('swagger-autogen')({ openapi: '3.0.0' });
+
 dotenv.config();
 
+export const NODE_ENV = process.env.NODE_ENV === 'production' ? 'https://api.clintia.com.br' : 'http://localhost:3000'
 const doc = {
     info: {
         version: "1.0.0",
@@ -11,7 +13,7 @@ const doc = {
     },
     servers: [
         {
-            url: process.env.NODE_ENV === 'production' ? 'https://api.clintia.com.br' : 'http://localhost:3000',
+            url: NODE_ENV,
         }
     ],
     components: {

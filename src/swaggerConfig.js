@@ -1,7 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.NODE_ENV = void 0;
 var path_1 = require("path");
+var dotenv = require("dotenv");
 var swaggerAutogen = require('swagger-autogen')({ openapi: '3.0.0' });
+dotenv.config();
+exports.NODE_ENV = process.env.NODE_ENV === 'production' ? 'https://api.clintia.com.br' : 'http://localhost:3000';
 var doc = {
     info: {
         version: "1.0.0",
@@ -10,7 +14,7 @@ var doc = {
     },
     servers: [
         {
-            url: 'https://api.clintia.com.br'
+            url: exports.NODE_ENV,
         }
     ],
     components: {

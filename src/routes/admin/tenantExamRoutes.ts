@@ -6,9 +6,9 @@ import { isAdminMiddleware } from '../../middlewares/isAdminMiddleware';
 
 const router = Router();
 
-router.post('/', tenantMiddleware, authMiddleware, isAdminMiddleware, createExamController);
-router.get('/', tenantMiddleware, authMiddleware, isAdminMiddleware, getExamsController);
-router.put('/:clinicExamId', tenantMiddleware, authMiddleware, isAdminMiddleware, updateExamController);
-router.delete('/:clinicExamId', tenantMiddleware, authMiddleware, isAdminMiddleware, deleteExamController);
+router.post('/tenantexam', tenantMiddleware, authMiddleware, isAdminMiddleware, createExamController);
+router.get('/tenantexam', tenantMiddleware, authMiddleware, isAdminMiddleware, getExamsController);
+router.put('/tenantexam/:clinicExamId', tenantMiddleware, authMiddleware, isAdminMiddleware, updateExamController);
+router.delete('/tenantexam/:clinicExamId', tenantMiddleware, authMiddleware, isAdminMiddleware, deleteExamController);
 
 export default router;

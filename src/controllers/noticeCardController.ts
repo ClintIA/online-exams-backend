@@ -4,7 +4,7 @@ import {createCardService, deleteCardService, listNoticeCardService} from "../se
 
 export const listNoticeCardController = async (req: Request, res: Response) => {
     /*
-    #swagger.tags = ['Admin']
+    #swagger.tags = ['Admin/NoticeCard']
     #swagger.summary = 'List Notices Cards  '
     #swagger.description = 'Route to list all notice card or with filters'
     */
@@ -37,7 +37,7 @@ export const listNoticeCardController = async (req: Request, res: Response) => {
 
 export const createCardController = async (req: Request, res: Response) => {
     /*
-    #swagger.tags = ['Admin']
+    #swagger.tags = ['Admin/NoticeCard']
     #swagger.summary = 'Create a Notice Card  '
     #swagger.description = 'Route to create a notice card'
     */
@@ -61,7 +61,7 @@ export const createCardController = async (req: Request, res: Response) => {
 
 export const deleteCardController = async (req: Request, res: Response) => {
     /*
-    #swagger.tags = ['Admin']
+    #swagger.tags = ['Admin/NoticeCard']
     #swagger.summary = 'Delete a Notice Card  '
     #swagger.description = 'Route to delete a notice card'
     */

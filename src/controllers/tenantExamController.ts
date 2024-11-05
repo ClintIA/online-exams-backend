@@ -4,7 +4,7 @@ import { successResponse, errorResponse } from '../utils/httpResponses';
 
 export const createExamController = async (req: Request, res: Response) => {
     /*
-    #swagger.tags = ['Admin']
+    #swagger.tags = ['Admin/TenantExam']
     #swagger.summary = 'Create a Exame'
     #swagger.description = 'Route to create a exam'
     */
@@ -20,7 +20,7 @@ export const createExamController = async (req: Request, res: Response) => {
 
 export const getExamsController = async (req: Request, res: Response) => {
     /*
-    #swagger.tags = ['Admin']
+    #swagger.tags = ['Admin/TenantExam']
     #swagger.summary = 'List All Exame by Tenant'
     #swagger.description = 'Route to list all exams'
     */
@@ -35,7 +35,7 @@ export const getExamsController = async (req: Request, res: Response) => {
 
 export const updateExamController = async (req: Request, res: Response) => {
         /*
-        #swagger.tags = ['Admin']
+        #swagger.tags = ['Admin/TenantExam']
         #swagger.summary = 'Route to update the exam infos'
         #swagger.description = 'Route to update a exam info'
         */
@@ -52,7 +52,7 @@ export const updateExamController = async (req: Request, res: Response) => {
 
 export const deleteExamController = async (req: Request, res: Response) => {
     /*
-    #swagger.tags = ['Admin']
+    #swagger.tags = ['Admin/TenantExam']
     #swagger.summary = 'Route to delete a exam'
     #swagger.description = 'Route to delete a exam'
     */

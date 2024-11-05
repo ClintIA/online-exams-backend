@@ -1,7 +1,6 @@
 import {Request, Response} from 'express';
 import {customErrorResponse, errorResponse, successResponse} from '../utils/httpResponses';
 import {getAdmins, getAdminByCPF, getAdminsByName, getDoctors, getDoctorsByExamName} from "../services/adminService";
-import {error} from "winston";
 interface PaginationQuery {
     page?: string;
     take?: string;
@@ -9,7 +8,7 @@ interface PaginationQuery {
 }
 
 interface GetDoctorsResult {
-    doctors: any[]; // Replace 'any' with your Doctor type
+    doctors: any[];
     total: number;
 }
 

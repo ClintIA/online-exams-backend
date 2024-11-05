@@ -6,7 +6,7 @@ import {getExams} from "../services/tenantExamService";
 
 export const listPatientExamsController = async (req: Request, res: Response) => {
     /*
-     #swagger.tags = ['Admin/Patient']
+     #swagger.tags = ['Admin/PatientExam']
      #swagger.summary = 'List Patient Exams with filters'
      #swagger.description = 'Filters by Date, CPF, Date(YYYY-MM-DD), status, Patient ID, Tenant ID)'
      */
@@ -69,7 +69,7 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
 export const createPatientExamController = async (req: Request, res: Response) => {
 
     /*
-    #swagger.tags = ['Admin']
+    #swagger.tags = ['Admin/PatientExam']
     #swagger.summary = 'Create Patient Exam'
     #swagger.description = 'Booking a exam to a patient'
 */
@@ -86,7 +86,7 @@ export const createPatientExamController = async (req: Request, res: Response) =
 
 export const updatePatientExamController = async (req: Request, res: Response) => {
     /*
-    #swagger.tags = ['Admin']
+    #swagger.tags = ['Admin/PatientExam']
     #swagger.summary = 'Update Patient Exam'
     #swagger.description = 'Save link and update status in exam scheduled'
     */
@@ -106,7 +106,7 @@ export const updatePatientExamController = async (req: Request, res: Response) =
 
 export const deletePatientExamController = async (req: Request, res: Response) => {
     /*
-    #swagger.tags = ['Admin']
+    #swagger.tags = ['Admin/PatientExam']
     #swagger.summary = 'Delete Patient Exam'
     #swagger.description = 'Delete a Scheduled Exam'
     */

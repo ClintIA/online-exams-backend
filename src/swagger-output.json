@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://api.clintia.com.br"
+      "url": "http://localhost:3000"
     }
   ],
   "paths": {
@@ -78,18 +78,11 @@
         "tags": [
           "Admin"
         ],
-        "summary": "List All Exame by Tenant",
-        "description": "Route to list all exams",
+        "summary": "List All Admins by Tenant",
+        "description": "Get All Admins from a Tenant",
         "parameters": [
           {
             "name": "x-tenant-id",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authorization",
             "in": "header",
             "schema": {
               "type": "string"
@@ -99,51 +92,6 @@
         "responses": {
           "default": {
             "description": ""
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Admin"
-        ],
-        "summary": "Create a Exame",
-        "description": "Route to create a exam",
-        "parameters": [
-          {
-            "name": "x-tenant-id",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "exam_name": {
-                    "example": "any"
-                  },
-                  "price": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -461,7 +409,7 @@
     "/api/v1/admin/patientexams": {
       "post": {
         "tags": [
-          "Admin"
+          "Admin/PatientExam"
         ],
         "summary": "Create Patient Exam",
         "description": "Booking a exam to a patient",
@@ -515,7 +463,7 @@
       },
       "get": {
         "tags": [
-          "Admin/Patient"
+          "Admin/PatientExam"
         ],
         "summary": "List Patient Exams with filters",
         "description": "Filters by Date, CPF, Date(YYYY-MM-DD), status, Patient ID, Tenant ID)",
@@ -587,7 +535,7 @@
     "/api/v1/admin/patientexams/{patientExamId}": {
       "put": {
         "tags": [
-          "Admin"
+          "Admin/PatientExam"
         ],
         "summary": "Update Patient Exam",
         "description": "Save link and update status in exam scheduled",
@@ -640,7 +588,7 @@
       },
       "delete": {
         "tags": [
-          "Admin"
+          "Admin/PatientExam"
         ],
         "summary": "Delete Patient Exam",
         "description": "Delete a Scheduled Exam",
@@ -701,10 +649,85 @@
         }
       }
     },
-    "/api/v1/admin/{clinicExamId}": {
+    "/api/v1/admin/tenantexam": {
+      "post": {
+        "tags": [
+          "Admin/TenantExam"
+        ],
+        "summary": "Create a Exame",
+        "description": "Route to create a exam",
+        "parameters": [
+          {
+            "name": "x-tenant-id",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "exam_name": {
+                    "example": "any"
+                  },
+                  "price": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Admin/TenantExam"
+        ],
+        "summary": "List All Exame by Tenant",
+        "description": "Route to list all exams",
+        "parameters": [
+          {
+            "name": "x-tenant-id",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/admin/tenantexam/{clinicExamId}": {
       "put": {
         "tags": [
-          "Admin"
+          "Admin/TenantExam"
         ],
         "summary": "Route to update the exam infos",
         "description": "Route to update a exam info",
@@ -757,7 +780,7 @@
       },
       "delete": {
         "tags": [
-          "Admin"
+          "Admin/TenantExam"
         ],
         "summary": "Route to delete a exam",
         "description": "Route to delete a exam",
@@ -795,7 +818,7 @@
     "/api/v1/admin/noticecard": {
       "post": {
         "tags": [
-          "Admin"
+          "Admin/NoticeCard"
         ],
         "summary": "Create a Notice Card ",
         "description": "Route to create a notice card",
@@ -843,7 +866,7 @@
       },
       "get": {
         "tags": [
-          "Admin"
+          "Admin/NoticeCard"
         ],
         "summary": "List Notices Cards ",
         "description": "Route to list all notice card or with filters",
@@ -901,7 +924,7 @@
     "/api/v1/admin/noticecard/{cardId}": {
       "delete": {
         "tags": [
-          "Admin"
+          "Admin/NoticeCard"
         ],
         "summary": "Delete a Notice Card ",
         "description": "Route to delete a notice card",
@@ -976,7 +999,7 @@
     "/api/v1/patient/exams": {
       "get": {
         "tags": [
-          "Admin/Patient"
+          "Admin/PatientExam"
         ],
         "summary": "List Patient Exams with filters",
         "description": "Filters by Date, CPF, Date(YYYY-MM-DD), status, Patient ID, Tenant ID)",
