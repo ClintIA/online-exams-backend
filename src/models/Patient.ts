@@ -9,6 +9,7 @@ import {
     JoinTable, OneToMany
 } from 'typeorm';
 import { Tenant } from './Tenant';
+import {Canal} from "./Canal";
 
 @Entity()
 @Index(['id', 'cpf'])
@@ -33,6 +34,9 @@ export class Patient {
 
     @Column()
     phone?: string;
+
+    @ManyToOne(() => Canal, canal => canal.id, { nullable: true })
+    canal!: Canal;
 
     @Column()
     address?: string;
