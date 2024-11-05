@@ -3,14 +3,15 @@ import { listPatientExams, createPatientExam, updatePatientExam, deletePatientEx
 import { successResponse, errorResponse } from '../utils/httpResponses';
 import { parseValidInt } from '../utils/parseValidInt';
 
+interface GetExamssResult {
+    exams: any[];
+    total: number;
+}
+
 export const listPatientExamsController = async (req: Request, res: Response) => {
     try {
         const tenantId = req.headers['x-tenant-id'];
-        const { patientCpf, startDate, endDate, status, patientName, patientId } = req.query;
-
-        if (!patientId) {
-            return errorResponse(res, new Error('É necessário passar patientId'), 400);
-        }
+        const { take, skip,patientCpf, startDate, endDate, status, patientName, patientId } = req.query;
 
         const filters = {
             patientCpf: patientCpf ? patientCpf as string : undefined,
@@ -21,10 +22,12 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
             patientId: patientId ? parseInt(patientId as string) : undefined,
             tenantId: tenantId ? parseInt(tenantId as string) : undefined,
         };
+        const numberOfExamToTake = take ? take : 10
+        const numberOfExamToSkip = skip ? skip : 0
 
-        const exams = await listPatientExams(filters);
+        const exams: GetExamssResult = await listPatientExams(filters, parseInt(numberOfExamToTake as string), parseInt(numberOfExamToSkip as string));
 
-        const transformedData = exams.reduce((acc: any, exam: any) => {
+        const transformedData = exams.exams.reduce((acc: any, exam: any) => {
             const tenantIndex = acc.findIndex((tenant: any) => tenant.id === exam.exam.tenant.id);
             
             const examData = {
@@ -52,11 +55,19 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
 
             return acc;
         }, []);
+        console.log(exams.total)
+        const remaining = exams.total - exams.exams.length;
+
         if(transformedData.length === 0) {
             return successResponse(res, null, 'Não foram encontrados exames para essa pesquisa');
         }
-        return successResponse(res, { exames: transformedData }, 'Exames listados com sucesso');
-    } catch (error) {
+        return successResponse(res, { exames: transformedData,
+            pagination: {
+                total: exams.total,
+                take: take,
+                skip: skip,
+                remaining
+            }}, 'Exames listados com sucesso');    } catch (error) {
         return errorResponse(res, error);
     }
 };
