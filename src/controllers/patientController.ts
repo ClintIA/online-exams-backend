@@ -4,6 +4,11 @@ import { findPatientByCpf, listPatientByTenant} from "../services/patientService
 
 
 export const listPatients = async (req: Request, res: Response) => {
+        /*
+     #swagger.tags = ['Admin']
+     #swagger.summary = 'List All Patients by Tenant'
+     #swagger.description = 'List All Patient from a tenant'
+     */
     const tenantId = req.tenantId;
     if(!tenantId)  {
         throw new Error('Tenant Não encontrado');
@@ -17,6 +22,11 @@ export const listPatients = async (req: Request, res: Response) => {
 }
 
 export const findPatientByCPF = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin/Patient']
+    #swagger.summary = 'Find a Patient by CPF'
+    #swagger.description = 'Get patient infos'
+    */
     const { cpf } = req.query;
     try {
         const patient = await findPatientByCpf(cpf as string);

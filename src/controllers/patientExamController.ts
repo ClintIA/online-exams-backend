@@ -2,11 +2,18 @@ import { Request, Response } from 'express';
 import { listPatientExams, createPatientExam, updatePatientExam, deletePatientExam } from '../services/patientExamService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
 import { parseValidInt } from '../utils/parseValidInt';
+import {getExams} from "../services/tenantExamService";
 
 export const listPatientExamsController = async (req: Request, res: Response) => {
+    /*
+     #swagger.tags = ['Admin/Patient']
+     #swagger.summary = 'List Patient Exams with filters'
+     #swagger.description = 'Filters by Date, CPF, Date(YYYY-MM-DD), status, Patient ID, Tenant ID)'
+     */
     try {
-        const { patientCpf,tenantId, startDate, endDate, status, patientName } = req.query;
-        const patientId = req.patientId
+        const { patientCpf, startDate, endDate, status, patientName } = req.query;
+        const tenantId = req.headers['x-tenant-id'];
+        const patientId = req.headers['x-patient-id'];
 
         const filters = {
             patientCpf: patientCpf ? patientCpf as string : undefined,
@@ -14,7 +21,7 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
             endDate: endDate ? endDate as string : undefined,
             status: status as 'Scheduled' | 'InProgress' | 'Completed',
             patientName: patientName as string,
-            patientId: patientId ? patientId as number : undefined,
+            patientId: patientId ? parseInt(patientId as string) : undefined,
             tenantId: tenantId ? parseInt(tenantId as string) : undefined,
         };
 
@@ -60,6 +67,12 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
 
 
 export const createPatientExamController = async (req: Request, res: Response) => {
+
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Create Patient Exam'
+    #swagger.description = 'Booking a exam to a patient'
+*/
     try {
         const { patientId, examId, examDate, doctorId, userId } = req.body;
         const tenantId = req.tenantId!;
@@ -72,6 +85,11 @@ export const createPatientExamController = async (req: Request, res: Response) =
 };
 
 export const updatePatientExamController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Update Patient Exam'
+    #swagger.description = 'Save link and update status in exam scheduled'
+    */
     try {
         const examId = parseValidInt(req.params.patientExamId);
         if (examId === null) {
@@ -87,6 +105,11 @@ export const updatePatientExamController = async (req: Request, res: Response) =
 };
 
 export const deletePatientExamController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Delete Patient Exam'
+    #swagger.description = 'Delete a Scheduled Exam'
+    */
     try {
         const examId = parseValidInt(req.params.examId);
         if (examId === null) {

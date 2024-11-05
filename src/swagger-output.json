@@ -13,7 +13,11 @@
   "paths": {
     "/api/v1/auth/login/admin": {
       "post": {
-        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login as Admin",
+        "description": "Route to Login as admin",
         "responses": {
           "default": {
             "description": ""
@@ -40,7 +44,11 @@
     },
     "/api/v1/auth/login/patient": {
       "post": {
-        "description": "",
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login as patient",
+        "description": "Route to Login as patient",
         "responses": {
           "default": {
             "description": ""
@@ -67,7 +75,11 @@
     },
     "/api/v1/admin/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List All Exame by Tenant",
+        "description": "Route to list all exams",
         "parameters": [
           {
             "name": "x-tenant-id",
@@ -91,7 +103,11 @@
         }
       },
       "post": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Create a Exame",
+        "description": "Route to create a exam",
         "parameters": [
           {
             "name": "x-tenant-id",
@@ -134,7 +150,11 @@
     },
     "/api/v1/admin/cpf": {
       "get": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get Admin info by CPF",
+        "description": "Filter Admins with CPF ",
         "parameters": [
           {
             "name": "x-tenant-id",
@@ -146,6 +166,13 @@
           {
             "name": "authorization",
             "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cpf",
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -160,7 +187,11 @@
     },
     "/api/v1/admin/name": {
       "get": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get Admin info with Name ",
+        "description": "Get Admin infos filter by Name",
         "parameters": [
           {
             "name": "x-tenant-id",
@@ -175,6 +206,13 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "fullName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -186,7 +224,11 @@
     },
     "/api/v1/admin/exam": {
       "get": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get Doctors by Exam ",
+        "description": "Filter Doctors by exam name",
         "parameters": [
           {
             "name": "x-tenant-id",
@@ -219,7 +261,11 @@
     },
     "/api/v1/admin/doctors": {
       "get": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List All Doctors by Tenant with pagination",
+        "description": "Get All Doctors from a Tenant with pagination By default list 10",
         "parameters": [
           {
             "name": "x-tenant-id",
@@ -266,7 +312,11 @@
     },
     "/api/v1/admin/register": {
       "post": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Register a Admin ",
+        "description": "Route to create a new admin/doctor",
         "parameters": [
           {
             "name": "x-tenant-id",
@@ -315,7 +365,11 @@
     },
     "/api/v1/admin/register/patient": {
       "post": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Register a Patient ",
+        "description": "Route to create a new patient",
         "parameters": [
           {
             "name": "authorization",
@@ -376,7 +430,11 @@
     },
     "/api/v1/admin/patients": {
       "get": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List All Patients by Tenant",
+        "description": "List All Patient from a tenant",
         "parameters": [
           {
             "name": "x-tenant-id",
@@ -402,7 +460,11 @@
     },
     "/api/v1/admin/patientexams": {
       "post": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Create Patient Exam",
+        "description": "Booking a exam to a patient",
         "parameters": [
           {
             "name": "x-tenant-id",
@@ -452,7 +514,11 @@
         }
       },
       "get": {
-        "description": "",
+        "tags": [
+          "Admin/Patient"
+        ],
+        "summary": "List Patient Exams with filters",
+        "description": "Filters by Date, CPF, Date(YYYY-MM-DD), status, Patient ID, Tenant ID)",
         "parameters": [
           {
             "name": "authorization",
@@ -469,14 +535,14 @@
             }
           },
           {
-            "name": "patientCpf",
-            "in": "query",
+            "name": "x-patient-id",
+            "in": "header",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "tenantId",
+            "name": "patientCpf",
             "in": "query",
             "schema": {
               "type": "string"
@@ -520,7 +586,11 @@
     },
     "/api/v1/admin/patientexams/{patientExamId}": {
       "put": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Update Patient Exam",
+        "description": "Save link and update status in exam scheduled",
         "parameters": [
           {
             "name": "patientExamId",
@@ -569,7 +639,11 @@
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Delete Patient Exam",
+        "description": "Delete a Scheduled Exam",
         "parameters": [
           {
             "name": "patientExamId",
@@ -629,7 +703,11 @@
     },
     "/api/v1/admin/{clinicExamId}": {
       "put": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Route to update the exam infos",
+        "description": "Route to update a exam info",
         "parameters": [
           {
             "name": "clinicExamId",
@@ -678,7 +756,11 @@
         }
       },
       "delete": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Route to delete a exam",
+        "description": "Route to delete a exam",
         "parameters": [
           {
             "name": "clinicExamId",
@@ -712,7 +794,11 @@
     },
     "/api/v1/admin/noticecard": {
       "post": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Create a Notice Card ",
+        "description": "Route to create a notice card",
         "parameters": [
           {
             "name": "authorization",
@@ -756,7 +842,11 @@
         }
       },
       "get": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List Notices Cards ",
+        "description": "Route to list all notice card or with filters",
         "parameters": [
           {
             "name": "authorization",
@@ -810,7 +900,11 @@
     },
     "/api/v1/admin/noticecard/{cardId}": {
       "delete": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Delete a Notice Card ",
+        "description": "Route to delete a notice card",
         "parameters": [
           {
             "name": "cardId",
@@ -844,7 +938,11 @@
     },
     "/api/v1/patient/cpf": {
       "get": {
-        "description": "",
+        "tags": [
+          "Admin/Patient"
+        ],
+        "summary": "Find a Patient by CPF",
+        "description": "Get patient infos",
         "parameters": [
           {
             "name": "authorization",
@@ -877,7 +975,11 @@
     },
     "/api/v1/patient/exams": {
       "get": {
-        "description": "",
+        "tags": [
+          "Admin/Patient"
+        ],
+        "summary": "List Patient Exams with filters",
+        "description": "Filters by Date, CPF, Date(YYYY-MM-DD), status, Patient ID, Tenant ID)",
         "parameters": [
           {
             "name": "authorization",
@@ -894,14 +996,14 @@
             }
           },
           {
-            "name": "patientCpf",
-            "in": "query",
+            "name": "x-tenant-id",
+            "in": "header",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "tenantId",
+            "name": "patientCpf",
             "in": "query",
             "schema": {
               "type": "string"

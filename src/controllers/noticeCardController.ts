@@ -3,6 +3,11 @@ import {successResponse, errorResponse, customErrorResponse} from '../utils/http
 import {createCardService, deleteCardService, listNoticeCardService} from "../services/noticeCardService";
 
 export const listNoticeCardController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'List Notices Cards  '
+    #swagger.description = 'Route to list all notice card or with filters'
+    */
     try {
         const tenantId = req.tenantId;
         const {
@@ -31,6 +36,11 @@ export const listNoticeCardController = async (req: Request, res: Response) => {
 }
 
 export const createCardController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Create a Notice Card  '
+    #swagger.description = 'Route to create a notice card'
+    */
     try {
         const { message, createdBy, date } = req.body;
         const tenantId = req.tenantId;
@@ -50,6 +60,11 @@ export const createCardController = async (req: Request, res: Response) => {
 }
 
 export const deleteCardController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Delete a Notice Card  '
+    #swagger.description = 'Route to delete a notice card'
+    */
    try {
        const {cardId} = req.params;
 

@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
-import {errorResponse, successResponse} from '../utils/httpResponses';
-import {getAdmins, getAdminsByCPF, getAdminsByName, getDoctors, getDoctorsByExamName} from "../services/adminService";
+import {customErrorResponse, errorResponse, successResponse} from '../utils/httpResponses';
+import {getAdmins, getAdminByCPF, getAdminsByName, getDoctors, getDoctorsByExamName} from "../services/adminService";
+import {error} from "winston";
 interface PaginationQuery {
     page?: string;
     take?: string;
@@ -13,6 +14,11 @@ interface GetDoctorsResult {
 }
 
 export const getAdminListController =  async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'List All Admins by Tenant'
+    #swagger.description = 'Get All Admins from a Tenant'
+    */
     try {
         const tenantId = req.headers['x-tenant-id'];
         const result = await getAdmins(parseInt(tenantId as string));
@@ -23,6 +29,11 @@ export const getAdminListController =  async (req: Request, res: Response) => {
     }
 }
 export const getDoctorsListController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'List All Doctors by Tenant with pagination'
+    #swagger.description = 'Get All Doctors from a Tenant with pagination By default list 10'
+    */
     try {
         const tenantId = req.headers['x-tenant-id'];
         if (!tenantId || typeof tenantId !== 'string') {
@@ -68,11 +79,18 @@ export const getDoctorsListController = async (req: Request, res: Response) => {
 };
 
 export const getAdminsByCPFController = async (req: Request, res: Response) => {
-
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Get Admin info by CPF'
+    #swagger.description = 'Filter Admins with CPF '
+    */
    try {
            const tenantId = req.tenantId!;
-           const { adminCpf } = req.body;
-           const result = await getAdminsByCPF(adminCpf, tenantId)
+           const { cpf } = req.query;
+           const result = await getAdminByCPF(cpf as string, tenantId)
+       if(!result) {
+           return customErrorResponse(res, 'Admin não encontrado');
+       }
        return successResponse(res, result);
 
    }  catch (error) {
@@ -81,11 +99,16 @@ export const getAdminsByCPFController = async (req: Request, res: Response) => {
     }
 }
 export const getAdminsByNameController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Get Admin info with Name '
+    #swagger.description = 'Get Admin infos filter by Name'
+    */
    try {
        const tenantId = req.tenantId!;
-       const { fullName } = req.body;
+       const { fullName } = req.query;
 
-       const result = await getAdminsByName(fullName, tenantId)
+       const result = await getAdminsByName(fullName as string, tenantId)
        return successResponse(res, result);
 
    } catch (error) {
@@ -95,6 +118,11 @@ export const getAdminsByNameController = async (req: Request, res: Response) => 
 }
 
 export const getDoctorsByExamNameController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Get Doctors by Exam  '
+    #swagger.description = 'Filter Doctors by exam name'
+    */
     try {
         const { examName } = req.query;
         const result = await getDoctorsByExamName(examName as string);

@@ -107,15 +107,15 @@ export const getDoctors = async (tenantId: number, take: number = 1, skip: numbe
     return { doctors, total }
 }
 
-export const getAdminsByCPF = async (cpf: string, tenantId: number) => {
-    return await adminRepository.find({
+export const getAdminByCPF = async (cpf: string, tenantId: number) => {
+    return await adminRepository.findOne({
         select: {
             email: true,
             fullName: true,
             cpf: true,
         },
         where: {
-            cpf: ILike("%"+cpf+"%"),
+            cpf: cpf,
             tenant: { id: tenantId },
         },
         relations: ['tenant']

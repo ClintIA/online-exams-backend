@@ -3,6 +3,11 @@ import { createExam, getExams, updateExam, deleteExam } from '../services/tenant
 import { successResponse, errorResponse } from '../utils/httpResponses';
 
 export const createExamController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Create a Exame'
+    #swagger.description = 'Route to create a exam'
+    */
     try {
         const { exam_name, price } = req.body;
         const tenantId = req.tenantId!;
@@ -14,6 +19,11 @@ export const createExamController = async (req: Request, res: Response) => {
 };
 
 export const getExamsController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'List All Exame by Tenant'
+    #swagger.description = 'Route to list all exams'
+    */
     try {
         const tenantId = req.tenantId!;
         const result = await getExams(tenantId);
@@ -24,6 +34,11 @@ export const getExamsController = async (req: Request, res: Response) => {
 };
 
 export const updateExamController = async (req: Request, res: Response) => {
+        /*
+        #swagger.tags = ['Admin']
+        #swagger.summary = 'Route to update the exam infos'
+        #swagger.description = 'Route to update a exam info'
+        */
     try {
         const examId = parseInt(req.params.clinicExamId);
         const { exam_name, price } = req.body;
@@ -36,6 +51,11 @@ export const updateExamController = async (req: Request, res: Response) => {
 };
 
 export const deleteExamController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Route to delete a exam'
+    #swagger.description = 'Route to delete a exam'
+    */
     try {
         const examId = parseInt(req.params.clinicExamId);
         const tenantId = req.tenantId!;
