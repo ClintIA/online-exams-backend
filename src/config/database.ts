@@ -11,7 +11,6 @@ import {PatientClinic} from "../models/PatientClinic";
 
 dotenv.config();
 
-
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: process.env.DB_HOST,
@@ -20,7 +19,7 @@ export const AppDataSource = new DataSource({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     entities: [Admin, NoticeCard, Patient, PatientClinic, Tenant, Product, TenantExams, PatientExams],
-    synchronize: true,
+    synchronize: false,
     logging: true,
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });

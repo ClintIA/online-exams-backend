@@ -5,6 +5,11 @@ import { successResponse, errorResponse } from '../utils/httpResponses';
 import {generatePassword} from "../utils/passwordGenerator";
 
 export const registerAdminController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Register a Admin '
+    #swagger.description = 'Route to create a new admin/doctor'
+    */
     try {
         const { email, adminCpf, password, fullName } = req.body;
         const tenantId = req.tenantId!;
@@ -17,6 +22,11 @@ export const registerAdminController = async (req: Request, res: Response) => {
 };
 
 export const registerPatientController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Register a Patient '
+    #swagger.description = 'Route to create a new patient'
+    */
     try {
         const { full_name, cpf, dob, email, phone, address, gender, health_card_number } = req.body;
         const tenantId = req.tenantId!;
@@ -45,6 +55,11 @@ export const registerPatientController = async (req: Request, res: Response) => 
 };
 
 export const loginPatientController = async (req: Request, res: Response) => {
+    /*
+     #swagger.tags = ['Auth']
+     #swagger.summary = 'Login as patient'
+     #swagger.description = 'Route to Login as patient'
+     */
     try {
         const { cpf, password } = req.body;
 
@@ -56,6 +71,11 @@ export const loginPatientController = async (req: Request, res: Response) => {
 };
 
 export const loginAdminController = async (req: Request, res: Response) => {
+    /*
+     #swagger.tags = ['Auth']
+     #swagger.summary = 'Login as Admin'
+     #swagger.description = 'Route to Login as admin'
+     */
     try {
         const { email, password } = req.body;
 

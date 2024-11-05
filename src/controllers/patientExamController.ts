@@ -7,29 +7,33 @@ interface GetExamssResult {
     exams: any[];
     total: number;
 }
-
 export const listPatientExamsController = async (req: Request, res: Response) => {
-    try {
-        const tenantId = req.headers['x-tenant-id'];
-        const { take, skip,patientCpf, startDate, endDate, status, patientName, patientId } = req.query;
+    /*
+     #swagger.tags = ['Admin/PatientExam']
+     #swagger.summary = 'List Patient Exams with filters'
+     #swagger.description = 'Filters by Date, CPF, Date(YYYY-MM-DD), status, Patient ID, Tenant ID)'
+     */
+        try {
+            const tenantId = req.headers['x-tenant-id'];
+            const patientId = req.headers['x-patient-id'];
+            const { take, skip,patientCpf, startDate, endDate, status, patientName } = req.query;
 
-        const filters = {
-            patientCpf: patientCpf ? patientCpf as string : undefined,
-            startDate: startDate ? startDate as string : undefined,
-            endDate: endDate ? endDate as string : undefined,
-            status: status as 'Scheduled' | 'InProgress' | 'Completed',
-            patientName: patientName as string,
-            patientId: patientId ? parseInt(patientId as string) : undefined,
-            tenantId: tenantId ? parseInt(tenantId as string) : undefined,
-        };
-        const numberOfExamToTake = take ? take : 10
-        const numberOfExamToSkip = skip ? skip : 0
+            const filters = {
+                patientCpf: patientCpf ? patientCpf as string : undefined,
+                startDate: startDate ? startDate as string : undefined,
+                endDate: endDate ? endDate as string : undefined,
+                status: status as 'Scheduled' | 'InProgress' | 'Completed',
+                patientName: patientName as string,
+                patientId: patientId ? parseInt(patientId as string) : undefined,
+                tenantId: tenantId ? parseInt(tenantId as string) : undefined,
+            };
+            const numberOfExamToTake = take ? take : 10
+            const numberOfExamToSkip = skip ? skip : 0
 
-        const exams: GetExamssResult = await listPatientExams(filters, parseInt(numberOfExamToTake as string), parseInt(numberOfExamToSkip as string));
+            const exams: GetExamssResult = await listPatientExams(filters, parseInt(numberOfExamToTake as string), parseInt(numberOfExamToSkip as string));
 
-        const transformedData = exams.exams.reduce((acc: any, exam: any) => {
-            const tenantIndex = acc.findIndex((tenant: any) => tenant.id === exam.exam.tenant.id);
-            
+            const transformedData = exams.exams.reduce((acc: any, exam: any) => {
+                const tenantIndex = acc.findIndex((tenant: any) => tenant.id === exam.exam.tenant.id);
             const examData = {
                 id: exam.id,
                 link: exam.link,
@@ -75,6 +79,12 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
 
 
 export const createPatientExamController = async (req: Request, res: Response) => {
+
+    /*
+    #swagger.tags = ['Admin/PatientExam']
+    #swagger.summary = 'Create Patient Exam'
+    #swagger.description = 'Booking a exam to a patient'
+*/
     try {
         const { patientId, examId, examDate, doctorId, userId } = req.body;
         const tenantId = req.tenantId!;
@@ -87,6 +97,11 @@ export const createPatientExamController = async (req: Request, res: Response) =
 };
 
 export const updatePatientExamController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin/PatientExam']
+    #swagger.summary = 'Update Patient Exam'
+    #swagger.description = 'Save link and update status in exam scheduled'
+    */
     try {
         const examId = parseValidInt(req.params.patientExamId);
         if (examId === null) {
@@ -102,6 +117,11 @@ export const updatePatientExamController = async (req: Request, res: Response) =
 };
 
 export const deletePatientExamController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin/PatientExam']
+    #swagger.summary = 'Delete Patient Exam'
+    #swagger.description = 'Delete a Scheduled Exam'
+    */
     try {
         const examId = parseValidInt(req.params.examId);
         if (examId === null) {

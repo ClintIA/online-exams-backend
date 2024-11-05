@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { createRouteHandler } from "uploadthing/express";
-import { ourFileRouter } from "../uploadthing";
-import { authMiddleware } from '../middlewares/authMiddleware';
-import { isAdminMiddleware } from '../middlewares/isAdminMiddleware';
-import { tenantMiddleware } from '../middlewares/tenantMiddleware';
+import { ourFileRouter } from "../../uploadthing";
+import { authMiddleware } from '../../middlewares/authMiddleware';
+import { isAdminMiddleware } from '../../middlewares/isAdminMiddleware';
+import { tenantMiddleware } from '../../middlewares/tenantMiddleware';
 import dotenv from 'dotenv';
 
 dotenv.config();
