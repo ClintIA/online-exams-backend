@@ -5,11 +5,12 @@ import app from "./routes";
 import {connectDatabase} from "./config/database";
 
 const PORT = process.env.PORT || 3000;
+const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
 
 const startServer = async () => {
     try {
         app.use(bodyParser.json());
-        app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+        app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument,{ customCssUrl: CSS_URL }));
 
         await connectDatabase();
         console.log('Database Connected');
