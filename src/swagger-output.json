@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "https://api.clintia.com.br"
     }
   ],
   "paths": {
@@ -485,6 +485,20 @@
           {
             "name": "x-patient-id",
             "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
             "schema": {
               "type": "string"
             }
@@ -1021,6 +1035,20 @@
           {
             "name": "x-tenant-id",
             "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
             "schema": {
               "type": "string"
             }
