@@ -2,34 +2,38 @@ import { Request, Response } from 'express';
 import { listPatientExams, createPatientExam, updatePatientExam, deletePatientExam } from '../services/patientExamService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
 import { parseValidInt } from '../utils/parseValidInt';
-import {getExams} from "../services/tenantExamService";
 
+interface GetExamssResult {
+    exams: any[];
+    total: number;
+}
 export const listPatientExamsController = async (req: Request, res: Response) => {
     /*
      #swagger.tags = ['Admin/PatientExam']
      #swagger.summary = 'List Patient Exams with filters'
      #swagger.description = 'Filters by Date, CPF, Date(YYYY-MM-DD), status, Patient ID, Tenant ID)'
      */
-    try {
-        const { patientCpf, startDate, endDate, status, patientName } = req.query;
-        const tenantId = req.headers['x-tenant-id'];
-        const patientId = req.headers['x-patient-id'];
+        try {
+            const tenantId = req.headers['x-tenant-id'];
+            const patientId = req.headers['x-patient-id'];
+            const { take, skip,patientCpf, startDate, endDate, status, patientName } = req.query;
 
-        const filters = {
-            patientCpf: patientCpf ? patientCpf as string : undefined,
-            startDate: startDate ? startDate as string : undefined,
-            endDate: endDate ? endDate as string : undefined,
-            status: status as 'Scheduled' | 'InProgress' | 'Completed',
-            patientName: patientName as string,
-            patientId: patientId ? parseInt(patientId as string) : undefined,
-            tenantId: tenantId ? parseInt(tenantId as string) : undefined,
-        };
+            const filters = {
+                patientCpf: patientCpf ? patientCpf as string : undefined,
+                startDate: startDate ? startDate as string : undefined,
+                endDate: endDate ? endDate as string : undefined,
+                status: status as 'Scheduled' | 'InProgress' | 'Completed',
+                patientName: patientName as string,
+                patientId: patientId ? parseInt(patientId as string) : undefined,
+                tenantId: tenantId ? parseInt(tenantId as string) : undefined,
+            };
+            const numberOfExamToTake = take ? take : 10
+            const numberOfExamToSkip = skip ? skip : 0
 
-        const exams = await listPatientExams(filters);
+            const exams: GetExamssResult = await listPatientExams(filters, parseInt(numberOfExamToTake as string), parseInt(numberOfExamToSkip as string));
 
-        const transformedData = exams.reduce((acc: any, exam: any) => {
-            const tenantIndex = acc.findIndex((tenant: any) => tenant.id === exam.exam.tenant.id);
-            
+            const transformedData = exams.exams.reduce((acc: any, exam: any) => {
+                const tenantIndex = acc.findIndex((tenant: any) => tenant.id === exam.exam.tenant.id);
             const examData = {
                 id: exam.id,
                 link: exam.link,
@@ -55,11 +59,19 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
 
             return acc;
         }, []);
+        console.log(exams.total)
+        const remaining = exams.total - exams.exams.length;
+
         if(transformedData.length === 0) {
             return successResponse(res, null, 'Não foram encontrados exames para essa pesquisa');
         }
-        return successResponse(res, { exames: transformedData }, 'Exames listados com sucesso');
-    } catch (error) {
+        return successResponse(res, { exames: transformedData,
+            pagination: {
+                total: exams.total,
+                take: take,
+                skip: skip,
+                remaining
+            }}, 'Exames listados com sucesso');    } catch (error) {
         return errorResponse(res, error);
     }
 };
