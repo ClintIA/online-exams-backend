@@ -5,7 +5,7 @@ import app from "./routes";
 import {connectDatabase} from "./config/database";
 
 const PORT = process.env.PORT || 3000;
-const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
+const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui.min.css";
 
 const startServer = async () => {
     try {
