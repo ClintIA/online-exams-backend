@@ -3,9 +3,10 @@ import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwtHelper';
 import { adminRepository } from '../repositories/adminRepository';
 import {ILike} from "typeorm";
+import {authMiddleware} from "../middlewares/authMiddleware";
 
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
-    return await adminRepository.findOne({ where: { email } });
+    return await adminRepository.findOne({ where: { email: email }, relations: ['tenant'] });
 };
 
 export const registerAdmin = async (adminData: { email: string, adminCpf: string, password: string, fullName: string }, tenantId: number) => {
@@ -33,7 +34,7 @@ export const loginAdmin = async (email: string, password: string) => {
 
     const isPasswordValid = await bcrypt.compare(password, admin.password);
     if (!isPasswordValid) throw new Error('Senha inválida');
-
+    console.log(admin)
     const token = generateToken(admin.id, true, admin.tenant.id);
     admin.sessionToken = token;
     await adminRepository.save(admin);
