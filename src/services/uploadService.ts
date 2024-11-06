@@ -1,11 +1,12 @@
 import { patientRepository } from '../repositories/patientRepository';
+import { findPatientByCpf } from './patientService';
 
 export const saveFileLinkToPatient = async (patientCpf: string, fileUrl: string) => {
     console.log("Salvando link do arquivo no banco de dados...");
     console.log("CPF do paciente:", patientCpf);
     console.log("URL do arquivo:", fileUrl);
 
-    const patient = await patientRepository.findOne({ where: { cpf: patientCpf } });
+    const patient = await findPatientByCpf(patientCpf);
 
     if (!patient) {
         console.error('Paciente não encontrado');

@@ -5,3 +5,11 @@ export const generatePassword = (patientData: { full_name: string, dob: string})
     return nome.toLowerCase() +
         dataNascimento.substring(0, 4)
 }
+
+export const generatePasswordByCpfAndName = (cpf: string, name: string) => {
+    const nome = name.toLowerCase().replace(/\s/g, '')
+    const cpfNumber = cpf.replace(/\D/g, '')
+
+    return nome.toLowerCase() +
+        cpfNumber.substring(0, 4)
+}

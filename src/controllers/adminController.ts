@@ -85,9 +85,9 @@ export const getAdminsByCPFController = async (req: Request, res: Response) => {
     #swagger.description = 'Filter Admins with CPF '
     */
    try {
-           const tenantId = req.tenantId!;
-           const { cpf } = req.query;
-           const result = await getAdminByCPF(cpf as string, tenantId)
+        const { cpf } = req.query;
+        const result = await getAdminByCPF(cpf as string)
+
        if(!result) {
            return customErrorResponse(res, 'Admin não encontrado');
        }
@@ -105,10 +105,9 @@ export const getAdminsByNameController = async (req: Request, res: Response) => 
     #swagger.description = 'Get Admin infos filter by Name'
     */
    try {
-       const tenantId = req.tenantId!;
        const { fullName } = req.query;
 
-       const result = await getAdminsByName(fullName as string, tenantId)
+       const result = await getAdminsByName(fullName as string)
        return successResponse(res, result);
 
    } catch (error) {
