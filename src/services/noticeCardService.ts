@@ -1,8 +1,6 @@
 import {handleFilterDate} from "../utils/handleDate";
 import {noticeCardRepository} from "../repositories/noticeCardRepository";
 import {NoticeCard} from "../models/NoticeCard";
-import {findTenantById} from "./tenantService";
-import {findAdminById} from "./adminService";
 import {ILike, Like} from "typeorm";
 
 interface FilterParams {
