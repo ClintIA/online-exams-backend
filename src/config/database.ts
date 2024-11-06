@@ -8,7 +8,6 @@ import { TenantExams } from '../models/TenantExams';
 import { PatientExams } from '../models/PatientExams';
 import {NoticeCard} from "../models/NoticeCard";
 import {PatientClinic} from "../models/PatientClinic";
-import {Canal} from "../models/Canal";
 
 dotenv.config();
 
@@ -19,8 +18,8 @@ export const AppDataSource = new DataSource({
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [Admin, NoticeCard, Patient, PatientClinic, Tenant, Product, TenantExams, PatientExams, Canal],
-    synchronize: false,
+    entities: [Admin, NoticeCard, Patient, PatientClinic, Tenant, Product, TenantExams, PatientExams],
+    synchronize: true,
     logging: true,
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });

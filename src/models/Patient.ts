@@ -3,13 +3,11 @@ import {
     PrimaryGeneratedColumn,
     Column,
     CreateDateColumn,
-    ManyToOne,
     ManyToMany,
     Index,
-    JoinTable, OneToMany
+    JoinTable
 } from 'typeorm';
 import { Tenant } from './Tenant';
-import {Canal} from "./Canal";
 
 @Entity()
 @Index(['id', 'cpf'])
@@ -35,8 +33,8 @@ export class Patient {
     @Column()
     phone?: string;
 
-    @ManyToOne(() => Canal, canal => canal.id, { nullable: true })
-    canal!: Canal;
+    @Column({ nullable: true })
+    canal!: string;
 
     @Column()
     address?: string;

@@ -2,7 +2,7 @@ import { Admin } from '../models/Admin';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwtHelper';
 import { adminRepository } from '../repositories/adminRepository';
-import {ILike, Like} from "typeorm";
+import {ILike} from "typeorm";
 
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
     return await adminRepository.findOne({ where: { email }, relations: ['tenant'] });

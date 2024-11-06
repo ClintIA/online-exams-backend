@@ -14,7 +14,7 @@ export class TenantExams {
     @Column('decimal', { precision: 10, scale: 2 })
     price!: number;
 
-    @Column('decimal', { precision: 10, scale: 2 })
+    @Column('decimal', { precision: 10, scale: 2, nullable: true }, )
     doctorPrice!: number;
 
     @CreateDateColumn()
