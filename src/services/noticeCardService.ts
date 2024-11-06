@@ -71,7 +71,7 @@ export const deleteCardService = async (cardId: number) => {
         const deleteResult = await noticeCardRepository.delete(cardId);
 
         if (deleteResult.affected === 0) {
-            throw new Error('Aviso não encontrado');
+            return new Error('Aviso não encontrado');
         }
 
         return { message: "Aviso deletado com sucesso" };
