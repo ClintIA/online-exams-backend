@@ -30,7 +30,7 @@ export const registerPatientController = async (req: Request, res: Response) => 
     #swagger.description = 'Route to create a new patient'
     */
     try {
-        const { full_name, cpf, dob, email, phone, address, gender, health_card_number } = req.body;
+        const { full_name, cpf, dob, email, phone, address, canal, gender, health_card_number } = req.body;
         const tenantId = req.tenantId!;
 
         const password = generatePassword({
@@ -46,6 +46,7 @@ export const registerPatientController = async (req: Request, res: Response) => 
             email,
             phone,
             address,
+            canal,
             gender,
             health_card_number
         }, tenantId);
