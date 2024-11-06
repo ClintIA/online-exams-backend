@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { registerPatient, loginPatientByCpf } from '../services/patientService'; 
 import { registerAdmin, loginAdmin } from '../services/adminService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
-import {generatePassword} from "../utils/passwordGenerator";
+import {generatePassword, generatePasswordByCpfAndName} from "../utils/passwordGenerator";
 
 export const registerAdminController = async (req: Request, res: Response) => {
     /*
@@ -11,8 +11,10 @@ export const registerAdminController = async (req: Request, res: Response) => {
     #swagger.description = 'Route to create a new admin/doctor'
     */
     try {
-        const { email, adminCpf, password, fullName } = req.body;
+        const { email, adminCpf, fullName } = req.body;
         const tenantId = req.tenantId!;
+
+        const password = generatePasswordByCpfAndName(adminCpf, fullName);
         
         const result = await registerAdmin({ email, adminCpf, password, fullName }, tenantId);
         return successResponse(res, result, 'Admin registrado com sucesso', 201);

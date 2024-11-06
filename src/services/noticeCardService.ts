@@ -1,8 +1,6 @@
 import {handleFilterDate} from "../utils/handleDate";
 import {noticeCardRepository} from "../repositories/noticeCardRepository";
 import {NoticeCard} from "../models/NoticeCard";
-import {findTenantById} from "./tenantService";
-import {findAdminById} from "./adminService";
 import {ILike, Like} from "typeorm";
 
 interface FilterParams {
@@ -12,6 +10,7 @@ interface FilterParams {
     tenantId?: number;
     createdBy?: number;
 }
+
 export const listNoticeCardService = async (filters: FilterParams): Promise<NoticeCard[]> => {
    try {
        const whereCondition: any = {};
@@ -51,40 +50,32 @@ export const listNoticeCardService = async (filters: FilterParams): Promise<Noti
    }
 }
 
-export const createCardService = async (cardData: { message: string, createdBy: number, date: string },tenantId: number) => {
-    const tenant = await findTenantById(tenantId);
-    const admin = await findAdminById(cardData.createdBy, tenantId)
-    if(tenant && admin) {
-        const newDate = new Date(cardData.date);
-        try {
-            const newCard = noticeCardRepository.create({
-                message: cardData.message,
-                createdBy: admin,
-                cardDate: newDate,
-                tenant: tenant
-            })
-            await noticeCardRepository.save(newCard)
-            return  { message: "Aviso Registrado com sucesso" };
-        } catch (error) {
-            throw new Error("Tenant ou Admin não encontrado")
-        }
-    }
-}
+export const createCardService = async (
+    cardData: { message: string; createdBy: number; date: string },
+    tenantId: number
+) => {
+    const newCard = noticeCardRepository.create({
+        message: cardData.message,
+        createdBy: { id: cardData.createdBy },
+        cardDate: new Date(cardData.date),
+        tenant: { id: tenantId }
+    });
+
+    await noticeCardRepository.save(newCard);
+    return { message: "Aviso registrado com sucesso" };
+};
+
 
 export const deleteCardService = async (cardId: number) => {
-    try  {
-        const findCard = await noticeCardRepository.findOne({ where: { id: cardId } })
-        if(!findCard) {
-            new Error('Aviso não encontrado')
-            return
+    try {
+        const deleteResult = await noticeCardRepository.delete(cardId);
+
+        if (deleteResult.affected === 0) {
+            throw new Error('Aviso não encontrado');
         }
-         await noticeCardRepository.createQueryBuilder()
-            .delete()
-            .from(NoticeCard)
-            .where("id = :cardId", { cardId: cardId })
-            .execute();
-        return { message: "Aviso Deletado com sucesso" };
+
+        return { message: "Aviso deletado com sucesso" };
     } catch (error) {
-        throw new Error("Erro ao deletar aviso")
+        throw new Error("Erro ao deletar aviso");
     }
-}
+};

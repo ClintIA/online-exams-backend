@@ -1,7 +1,6 @@
-import {Between, Like} from 'typeorm';
+import {Like} from 'typeorm';
 import {patientExamsRepository} from '../repositories/patientExamsRepository';
 import {tenantExamsRepository} from '../repositories/tenantExamsRepository';
-import {findDoctorById} from "./adminService";
 import {PatientExams} from '../models/PatientExams';
 import {handleFilterDate} from "../utils/handleDate";
 
@@ -49,38 +48,31 @@ export const listPatientExams = async (filters: FilterParams, take: number = 10,
 };
 
 export const deletePatientExam = async (examId: number, tenantId: number) => {
-    const exam = await patientExamsRepository.findOne({
-        where: {
-            id: examId,
-            exam: {tenant: {id: tenantId}},
-        },
+    const deleteResult = await patientExamsRepository.delete({
+        id: examId,
+        exam: { tenant: { id: tenantId } }
     });
-    if (!exam) {
-        throw new Error('Exame não encontrado');
-    }
 
-    await patientExamsRepository.remove(exam);
+    if (!deleteResult.affected) throw new Error('Exame não encontrado');
+    return { message: "Exame deletado com sucesso" };
 };
 
 export const updatePatientExam = async (
     examId: number,
-    examData: { status?: 'Scheduled' | 'InProgress' | 'Completed'; link?: string },
+    examData: { status?: 'Scheduled' | 'InProgress' | 'Completed'; link?: string }
 ) => {
-
-    const exam = await patientExamsRepository.update({ id: examId }, {
-        status: examData.status,
-        link: examData.link,
-    });
-    if (!exam) {
-        throw new Error('Erro ao salvar link ou Exame não encontrado');
-    }
-
-    Object.assign(exam, examData);
-
     if (examData.status === 'Completed' && !examData.link) {
         throw new Error('Link do exame é necessário para status de concluído');
     }
-    return {message: 'Exame atualizado com sucesso'};
+
+    const updateResult = await patientExamsRepository.update({ id: examId }, {
+        status: examData.status,
+        link: examData.link
+    });
+
+    if (!updateResult.affected) throw new Error('Erro ao salvar link ou Exame não encontrado');
+
+    return { message: 'Exame atualizado com sucesso' };
 };
 
 export const createPatientExam = async (
@@ -89,38 +81,20 @@ export const createPatientExam = async (
         examId: number;
         examDate: Date;
         userId: number;
-        doctorId: number;
+        doctorId?: number;
     },
-    tenantId: number
 ) => {
-    const exam = await tenantExamsRepository.findOne({
-        where: {id: examData.examId, tenant: {id: tenantId}},
+    const newPatientExam = patientExamsRepository.create({
+        exam: { id: examData.examId },
+        patient: { id: examData.patientId },
+        createdBy: { id: examData.userId },
+        examDate: examData.examDate,
+        status: 'Scheduled',
+        ...(examData.doctorId && { doctor: { id: examData.doctorId } })
     });
 
-    if (!exam) {
-        throw new Error('Exame não encontrado');
-    }
-    const doctor = await findDoctorById(examData.doctorId, tenantId)
-    let newPatientExam: PatientExams;
-     if(doctor) {
-          newPatientExam = patientExamsRepository.create({
-             exam,
-             patient: { id: examData.patientId },
-             createdBy: { id: examData.userId },
-             examDate: examData.examDate,
-             status: 'Scheduled',
-             doctor: doctor
-         });
-     } else {
-          newPatientExam = patientExamsRepository.create({
-             exam,
-             patient: { id: examData.patientId },
-             createdBy: { id: examData.userId },
-             examDate: examData.examDate,
-             status: 'Scheduled',
-         });
-     }
     await patientExamsRepository.save(newPatientExam);
     return { message: 'Exame do paciente criado com sucesso' };
 };
+
 
