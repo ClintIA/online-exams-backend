@@ -9,9 +9,9 @@ export const createExamController = async (req: Request, res: Response) => {
     #swagger.description = 'Route to create a exam'
     */
     try {
-        const { exam_name, price } = req.body;
+        const { exam_name, price, doctorPrice } = req.body;
         const tenantId = req.tenantId!;
-        const result = await createExam({ exam_name, price }, tenantId);
+        const result = await createExam({ exam_name, price, doctorPrice }, tenantId);
         return successResponse(res, result, 'Exame criado com sucesso', 201);
     } catch (error) {
         return errorResponse(res, error);
@@ -41,9 +41,9 @@ export const updateExamController = async (req: Request, res: Response) => {
         */
     try {
         const examId = parseInt(req.params.clinicExamId);
-        const { exam_name, price } = req.body;
+        const { exam_name, price, doctorPrice } = req.body;
         const tenantId = req.tenantId!;
-        const result = await updateExam(examId, { exam_name, price }, tenantId);
+        const result = await updateExam(examId, { exam_name, price, doctorPrice }, tenantId);
         return successResponse(res, result, 'Exame atualizado com sucesso');
     } catch (error) {
         return errorResponse(res, error);

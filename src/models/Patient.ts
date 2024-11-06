@@ -37,6 +37,9 @@ export class Patient {
     @Column()
     address?: string;
 
+    @Column()
+    canal?: string;
+
     @Column({ nullable: true })
     gender?: string;
 
