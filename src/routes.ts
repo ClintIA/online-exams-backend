@@ -8,7 +8,6 @@ import adminRoutes from "./routes/admin/adminRoutes";
 import patientRoutes from "./routes/user/patientRoutes";
 import noticeCardRoutes from "./routes/admin/noticeCardRoutes";
 import adminExamRoutes from "./routes/admin/adminExamRoutes";
-import adminUploadRoutes from "./routes/admin/adminUploadRoutes";
 import adminPatientRoutes from "./routes/admin/adminPatientRoutes";
 import patientExamRoutes from "./routes/user/patientExamRoutes";
 
@@ -25,7 +24,6 @@ app.use('/api/v1/admin', [
     adminRoutes,
     adminPatientRoutes,
     adminExamRoutes,
-    adminUploadRoutes,
     tenantExamRoutes,
     noticeCardRoutes
 ])
