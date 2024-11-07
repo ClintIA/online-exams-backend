@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { successResponse, errorResponse } from '../utils/httpResponses';
-import { findPatientByCpf, listPatientByTenant} from "../services/patientService";
+import {findPatientByCpf, listPatientByTenant, updatePatientService} from "../services/patientService";
 
 
 export const listPatients = async (req: Request, res: Response) => {
@@ -9,12 +9,49 @@ export const listPatients = async (req: Request, res: Response) => {
      #swagger.summary = 'List All Patients by Tenant'
      #swagger.description = 'List All Patient from a tenant'
      */
+    const { take, skip,patientCpf, patientName } = req.query;
+    const tenantId = req.tenantId;
+    const filters = {
+        patientCpf: patientCpf ? patientCpf as string : undefined,
+        patientName: patientName? patientName as string : undefined,
+    };
+    if(!tenantId)  {
+        throw new Error('Tenant Não encontrado');
+    }
+    console.log(filters);
+    const numberOfExamToTake = take ? take : 1000
+    const numberOfExamToSkip = skip ? skip : 0
+    try {
+        const result = await listPatientByTenant(filters,tenantId, parseInt(numberOfExamToTake as string), parseInt(numberOfExamToSkip as string))
+        return successResponse(res, result);
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+}
+
+export const updatePatient = async (req: Request, res: Response) => {
+    /*
+ #swagger.tags = ['Admin']
+ #swagger.summary = 'Update a Patients'
+ #swagger.description = 'Route to update a Patient from a tenant'
+ */
+    const { full_name, cpf, dob, email, phone, address, canal, gender, health_card_number } = req.body;
     const tenantId = req.tenantId;
     if(!tenantId)  {
         throw new Error('Tenant Não encontrado');
     }
     try {
-        const result = await listPatientByTenant(tenantId)
+        const result = await updatePatientService({
+            full_name,
+            cpf,
+            dob: new Date(dob),
+            email,
+            phone,
+            address,
+            canal,
+            gender,
+            health_card_number
+        })
         return successResponse(res, result);
     } catch (error) {
         return errorResponse(res, error);
