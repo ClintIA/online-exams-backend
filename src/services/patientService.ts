@@ -4,7 +4,7 @@ import {patientRepository} from '../repositories/patientRepository';
 import bcrypt from 'bcryptjs';
 
 export const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
-    return await patientRepository.findOne({ where: { cpf } });
+    return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
 };
 
 export const listPatientByTenant = async (tenantId: number): Promise<Patient[]> => {
@@ -29,7 +29,6 @@ export const registerPatient = async (patientData: {
     const passwordToFront = patientData.password;
 
     let patient = await findPatientByCpf(patientData.cpf);
-
     if (patient) {
         if (patient.tenants.some(t => t.id === tenantId)) {
             throw new Error('Paciente já está associado a essa clínica');
