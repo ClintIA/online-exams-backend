@@ -7,7 +7,6 @@ export const getFormattedDate = (date: string, offsetDays: number = 0): string =
 };
 
 export const handleFilterDate = (filters: { startDate?: string, endDate?: string}, offset?: number) => {
-    console.log(filters)
     if (filters.startDate && filters.endDate) {
         return Between(filters.startDate, getFormattedDate(filters.endDate, offset)
         );

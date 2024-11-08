@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 import * as dotenv from "dotenv";
-import swaggerAutogen from 'swagger-autogen';
+import swaggerAutogen from "swagger-autogen";
 
 dotenv.config();
 

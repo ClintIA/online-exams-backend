@@ -11,7 +11,7 @@ import {
 import { Tenant } from './Tenant';
 
 @Entity()
-@Index(['id', 'cpf'])
+@Index(['id'])
 export class Patient {
     @PrimaryGeneratedColumn()
     id!: number;

@@ -36,6 +36,7 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
                 const tenantIndex = acc.findIndex((tenant: any) => tenant.id === exam.exam.tenant.id);
             const examData = {
                 id: exam.id,
+                patient: exam.patient.full_name,
                 link: exam.link,
                 createdAt: exam.createdAt,
                 examDate: exam.examDate,
@@ -59,7 +60,6 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
 
             return acc;
         }, []);
-        console.log(exams.total)
         const remaining = exams.total - exams.exams.length;
 
         if(transformedData.length === 0) {
