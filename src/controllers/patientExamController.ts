@@ -36,6 +36,7 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
                 const tenantIndex = acc.findIndex((tenant: any) => tenant.id === exam.exam.tenant.id);
             const examData = {
                 id: exam.id,
+                patient: exam.patient.full_name,
                 link: exam.link,
                 createdAt: exam.createdAt,
                 examDate: exam.examDate,

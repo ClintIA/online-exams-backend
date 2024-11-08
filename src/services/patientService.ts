@@ -87,7 +87,7 @@ export const registerPatient = async (patientData: {
     }
 
     await patientRepository.save(patient);
-    return { message: 'Paciente registrado com sucesso', password: passwordToFront };
+    return { message: 'Paciente registrado com sucesso' };
 };
 
 

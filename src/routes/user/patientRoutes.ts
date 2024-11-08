@@ -1,8 +1,6 @@
 import { Router } from 'express';
-import { tenantMiddleware } from '../../middlewares/tenantMiddleware';
-import { findPatientByCPF, listPatients} from "../../controllers/patientController";
+import { findPatientByCPF} from "../../controllers/patientController";
 import {authMiddleware} from "../../middlewares/authMiddleware";
-import {isAdminMiddleware} from "../../middlewares/isAdminMiddleware";
 import {patientMiddleware} from "../../middlewares/patientMiddleware";
 
 const router = Router();
