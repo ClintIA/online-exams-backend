@@ -1,6 +1,11 @@
 import { Request, Response } from 'express';
 import { successResponse, errorResponse } from '../utils/httpResponses';
-import {findPatientByCpf, listPatientByTenant, updatePatientService} from "../services/patientService";
+import {
+    deletePatientService,
+    findPatientByCpf,
+    listPatientByTenant,
+    updatePatientService
+} from "../services/patientService";
 
 
 export const listPatients = async (req: Request, res: Response) => {
@@ -18,7 +23,6 @@ export const listPatients = async (req: Request, res: Response) => {
     if(!tenantId)  {
         throw new Error('Tenant Não encontrado');
     }
-    console.log(filters);
     const numberOfExamToTake = take ? take : 1000
     const numberOfExamToSkip = skip ? skip : 0
     try {
@@ -31,7 +35,7 @@ export const listPatients = async (req: Request, res: Response) => {
 
 export const updatePatient = async (req: Request, res: Response) => {
     /*
- #swagger.tags = ['Admin']
+ #swagger.tags = ['Admin/Patient']
  #swagger.summary = 'Update a Patients'
  #swagger.description = 'Route to update a Patient from a tenant'
  */
@@ -57,7 +61,24 @@ export const updatePatient = async (req: Request, res: Response) => {
         return errorResponse(res, error);
     }
 }
-
+export const deletePatient = async (req: Request, res: Response) => {
+    /*
+ #swagger.tags = ['Admin/Patient']
+ #swagger.summary = 'Update a Patients'
+ #swagger.description = 'Route to update a Patient from a tenant'
+ */
+    const { patientId } = req.params;
+    const tenantId = req.tenantId;
+    if(!tenantId)  {
+        throw new Error('Tenant Não encontrado');
+    }
+    try {
+        const result = await deletePatientService(parseInt(patientId as string));
+        return successResponse(res, result);
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+}
 export const findPatientByCPF = async (req: Request, res: Response) => {
     /*
     #swagger.tags = ['Admin/Patient']

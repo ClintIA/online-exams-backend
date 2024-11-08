@@ -34,7 +34,6 @@ export const loginAdmin = async (email: string, password: string) => {
 
     const isPasswordValid = await bcrypt.compare(password, admin.password);
     if (!isPasswordValid) throw new Error('Senha inválida');
-    console.log(admin)
     const token = generateToken(admin.id, true, admin.tenant.id);
     admin.sessionToken = token;
     await adminRepository.save(admin);

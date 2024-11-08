@@ -22,7 +22,6 @@ export const listPatientByTenant = async (filters: {
     if (filters.patientName) {
         whereCondition.full_name = Like(`%${filters.patientName}%`);
     }
-    console.log(whereCondition);
 
     return await patientRepository.find({
         where: whereCondition,
@@ -31,6 +30,10 @@ export const listPatientByTenant = async (filters: {
     });
 
 };
+export const deletePatientService = async (patientId: number) => {
+     await patientRepository.delete( { id: patientId } );
+     return { message: "Paciente Deletado com sucesso" };
+}
 export const updatePatientService = async (patientData: {
     full_name?: string;
     cpf?: string;

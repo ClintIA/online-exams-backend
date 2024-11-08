@@ -59,7 +59,6 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
 
             return acc;
         }, []);
-        console.log(exams.total)
         const remaining = exams.total - exams.exams.length;
 
         if(transformedData.length === 0) {
