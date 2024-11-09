@@ -346,28 +346,31 @@
                 "type": "object",
                 "properties": {
                   "full_name": {
-                    "example": "any"
+                    "example": "Patient Example"
                   },
                   "cpf": {
-                    "example": "any"
+                    "example": "23587088012"
                   },
                   "dob": {
-                    "example": "any"
+                    "example": "2024-01-01"
                   },
                   "email": {
-                    "example": "any"
+                    "example": "patient@hotmail.com"
                   },
                   "phone": {
-                    "example": "any"
+                    "example": "5521999999999"
                   },
                   "address": {
-                    "example": "any"
+                    "example": "Rua Patient"
                   },
                   "gender": {
-                    "example": "any"
+                    "example": "Masculino"
                   },
                   "health_card_number": {
-                    "example": "any"
+                    "example": "1234567"
+                  },
+                  "canal": {
+                    "example": "Indicação"
                   }
                 }
               }
