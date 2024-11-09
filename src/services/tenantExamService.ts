@@ -9,8 +9,24 @@ export const createExam = async (examData: { exam_name: string, price: number, d
 };
 
 export const getExams = async (tenantId: number) => {
-    return await tenantExamsRepository.find({
-        where: {tenant: {id: tenantId}}
+    return await tenantExamsRepository.find(
+        {
+            where: {
+                tenant: {
+                    id: tenantId
+                }
+            },
+            select: {
+                id: true,
+                exam_name: true,
+                price: true,
+                doctorPrice: true,
+                doctors: {
+                    id: true,
+                    fullName: true,
+                }
+            },
+            relations: ['doctors']
     });
 };
 
