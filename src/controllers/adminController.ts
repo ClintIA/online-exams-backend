@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import {customErrorResponse, errorResponse, successResponse} from '../utils/httpResponses';
-import {getAdmins, getAdminByCPF, getAdminsByName, getDoctors, getDoctorsByExamName} from "../services/adminService";
+import {getAdmins, getAdminByCPF, getAdminsByName, getDoctors, getDoctorsByExamName, updateAdmin, deleteAdmin} from "../services/adminService";
 interface PaginationQuery {
     page?: string;
     take?: string;
@@ -126,6 +126,45 @@ export const getDoctorsByExamNameController = async (req: Request, res: Response
         const { examName } = req.query;
         const result = await getDoctorsByExamName(examName as string);
         return successResponse(res, result, 'Doutores associados ao exame listados com sucesso');
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+};
+
+/**
+ * Atualiza informações de um admin existente
+ */
+export const updateAdminController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Update Admin'
+    #swagger.description = 'Update admin details such as email, full name, and CPF'
+    */
+    try {
+        const adminId = parseInt(req.params.id);
+        const { email, fullName, adminCpf, CRM, phone } = req.body;
+        
+        const result = await updateAdmin(adminId, { email, fullName, cpf: adminCpf, CRM, phone });
+        return successResponse(res, result, 'Admin atualizado com sucesso');
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+};
+
+/**
+ * Deleta um admin existente
+ */
+export const deleteAdminController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Delete Admin'
+    #swagger.description = 'Delete an admin from the database by admin ID'
+    */
+    try {
+        const adminId = parseInt(req.params.id);
+        
+        await deleteAdmin(adminId);
+        return successResponse(res, null, 'Admin deletado com sucesso');
     } catch (error) {
         return errorResponse(res, error);
     }
