@@ -75,7 +75,18 @@ export const updatePatientExam = async (
 
     if (!updateResult.affected) throw new Error('Erro ao salvar link ou Exame não encontrado');
 
-    return {message: 'Exame atualizado com sucesso'};
+    const updatedExam = await patientExamsRepository.findOne({
+        where: { id: examId },
+        relations: ['patient']
+    });
+
+    if (!updatedExam) throw new Error('Exame não encontrado após atualização');
+
+    return {
+        message: 'Exame atualizado com sucesso',
+        patientName: updatedExam.patient.full_name,
+        patientPhone: updatedExam.patient.phone
+    };
 };
 
 export const createPatientExam = async (

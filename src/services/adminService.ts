@@ -8,7 +8,15 @@ const findAdminByEmail = async (email: string): Promise<Admin | null> => {
     return await adminRepository.findOne({ where: { email: email }, relations: ['tenant'] });
 };
 
-export const registerAdmin = async (adminData: { email: string, adminCpf: string, password: string, fullName: string }, tenantId: number) => {
+export const registerAdmin = async (adminData: {
+    email: string,
+    adminCpf: string,
+    password: string,
+    fullName: string,
+    CRM?: string,
+    phone?: string,
+    isDoctor: boolean
+}, tenantId: number) => {
     const hashedPassword = await bcrypt.hash(adminData.password, 10);
 
     const newAdmin = adminRepository.create({
@@ -16,6 +24,9 @@ export const registerAdmin = async (adminData: { email: string, adminCpf: string
         password: hashedPassword,
         cpf: adminData.adminCpf,
         fullName: adminData.fullName,
+        CRM: adminData.CRM,
+        phone: adminData.phone,
+        isDoctor: adminData.isDoctor,
         tenant: { id: tenantId }
     });
 
@@ -26,6 +37,7 @@ export const registerAdmin = async (adminData: { email: string, adminCpf: string
         throw new Error("Erro ao registrar admin: Verifique se o email ou CPF já existe.");
     }
 };
+
 
 export const loginAdmin = async (email: string, password: string) => {
     const admin = await findAdminByEmail(email);

@@ -3,20 +3,38 @@ import { registerPatient, loginPatientByCpf } from '../services/patientService';
 import { registerAdmin, loginAdmin } from '../services/adminService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
 import {generatePassword, generatePasswordByCpfAndName} from "../utils/passwordGenerator";
+import { sendLoginInfoToAdmin, sendLoginInfoToClient } from './notificationController';
 
 export const registerAdminController = async (req: Request, res: Response) => {
     /*
     #swagger.tags = ['Admin']
-    #swagger.summary = 'Register a Admin '
+    #swagger.summary = 'Register a Admin'
     #swagger.description = 'Route to create a new admin/doctor'
     */
     try {
-        const { email, adminCpf, fullName } = req.body;
+        const { email, adminCpf, fullName, CRM, phone, isDoctor } = req.body;
         const tenantId = req.tenantId!;
 
         const password = generatePasswordByCpfAndName(adminCpf, fullName);
-        
-        const result = await registerAdmin({ email, adminCpf, password, fullName }, tenantId);
+
+        const result = await registerAdmin({
+            email,
+            adminCpf,
+            password,
+            fullName,
+            CRM,
+            phone,
+            isDoctor: isDoctor || false
+        }, tenantId);
+
+        await sendLoginInfoToAdmin({
+            name: fullName,
+            phoneNumber: phone,
+            login: adminCpf,
+            password: password,
+            tenantId: tenantId
+        });
+
         return successResponse(res, result, 'Admin registrado com sucesso', 201);
     } catch (error) {
         return errorResponse(res, error);
@@ -27,7 +45,7 @@ export const registerPatientController = async (req: Request, res: Response) => 
     /*
     #swagger.tags = ['Admin']
     #swagger.summary = 'Register a Patient '
-    #swagger.description = 'Route to create a new patient'
+    #swagger.description = 'Route to create a new patient and send notification'
     */
     try {
         const { full_name, cpf, dob, email, phone, address, canal, gender, health_card_number } = req.body;
@@ -50,6 +68,14 @@ export const registerPatientController = async (req: Request, res: Response) => 
             gender,
             health_card_number
         }, tenantId);
+
+        await sendLoginInfoToClient({
+            name: full_name,
+            phoneNumber: phone,
+            login: cpf,
+            password: password,
+            tenantId: tenantId
+        });
 
         return successResponse(res, result, 'Paciente registrado com sucesso', 201);
     } catch (error) {

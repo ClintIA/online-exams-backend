@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { listPatientExams, createPatientExam, updatePatientExam, deletePatientExam } from '../services/patientExamService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
 import { parseValidInt } from '../utils/parseValidInt';
+import { sendExamReadyNotification } from './notificationController';
 
 interface GetExamssResult {
     exams: any[];
@@ -102,6 +103,7 @@ export const updatePatientExamController = async (req: Request, res: Response) =
     #swagger.description = 'Save link and update status in exam scheduled'
     */
     try {
+        const tenantId = req.tenantId!;
         const examId = parseValidInt(req.params.patientExamId);
         if (examId === null) {
             return errorResponse(res, new Error("Invalid examId: not a number"), 400);
@@ -109,6 +111,13 @@ export const updatePatientExamController = async (req: Request, res: Response) =
         const { status, link } = req.body;
 
         const result = await updatePatientExam(examId, { status, link });
+
+        await sendExamReadyNotification({
+            name: result.patientName,
+            phoneNumber: result.patientPhone!,
+            tenantId: tenantId
+        });
+        
         return successResponse(res, result, 'Exame do paciente atualizado com sucesso');
     } catch (error) {
         return errorResponse(res, error);
