@@ -80,3 +80,19 @@ export const getDoctorsByExamName = async (examName: string) => {
         select: { id: true, fullName: true }
     });
 };
+
+export const updateAdmin = async (adminId: number, updateData: { email?: string; fullName?: string; cpf?: string; CRM?: string; phone?: string }) => {
+    const result = await adminRepository.update(adminId, updateData);
+
+    if (result.affected === 0) throw new Error('Admin não encontrado');
+    
+    return { message: 'Admin atualizado com sucesso' };
+};
+
+export const deleteAdmin = async (adminId: number) => {
+    const result = await adminRepository.delete(adminId);
+
+    if (result.affected === 0) throw new Error('Admin não encontrado');
+    
+    return { message: 'Admin deletado com sucesso' };
+};
