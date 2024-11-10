@@ -46,7 +46,7 @@ export const sendLoginInfoToAdmin = async (adminData: SendLoginInfoDTO) => {
         name,
         clinicName: clinicData.name,
         clinicWhatsAppLink,
-        platformLink: process.env.AdminPlatformLink,
+        platformLink: process.env.ADMIN_PLATFORM_LINK,
         login,
         password
     });
@@ -66,7 +66,7 @@ export const sendExamReadyNotification = async (clientData: SendExamReadyNotific
     await sendWhatsAppMessage(formattedNumber.toString(), WhatsAppMessageType.ExamReady, {
         name,
         clinicName: clinicData.name,
-        platformLink: process.env.ExamPlatformLink,
+        platformLink: process.env.EXAM_PLATFORM_LINK,
         clinicWhatsAppLink
     });
 };
