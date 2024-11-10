@@ -52,11 +52,11 @@ export const getDoctorsListController = async (req: Request, res: Response) => {
         if (Object.values(numericParams).some(isNaN)) {
             return errorResponse(res, new Error('Invalid pagination parameters'), 400);
         }
-        const result: GetDoctorsResult = await getDoctors(
-            numericParams.tenantId,
-            numericParams.take,
-            numericParams.skip
-        );
+        const result: GetDoctorsResult = await getDoctors({
+            tenantId: numericParams.tenantId,
+            take: numericParams.take,
+            skip: numericParams.skip
+        });
 
         const remaining = result.total - result.doctors.length;
 
