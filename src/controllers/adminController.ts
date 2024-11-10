@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
 import {customErrorResponse, errorResponse, successResponse} from '../utils/httpResponses';
 import {getAdmins, getAdminByCPF, getAdminsByName, getDoctors, getDoctorsByExamName, updateAdmin, deleteAdmin} from "../services/adminService";
+
 interface PaginationQuery {
     page?: string;
     take?: string;

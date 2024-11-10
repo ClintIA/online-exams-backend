@@ -1,5 +1,8 @@
 import { findTenantById } from '../services/tenantService';
 import { sendWhatsAppMessage } from '../services/whatsappService';
+import { SendExamReadyNotificationDTO } from '../types/dto/notification/sendExamReadyNotificationDTO';
+import { SendExamScheduledDTO } from '../types/dto/notification/sendExamScheduledDTO';
+import { SendLoginInfoDTO } from '../types/dto/notification/sendLoginInfoDTO';
 import { WhatsAppMessageType } from '../types/enums/whatsappMessages';
 import { formatPhoneNumber } from '../utils/formatPhoneNumber';
 import { generateWhatsAppLink } from '../utils/generateWhatsAppLink';
@@ -7,17 +10,9 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const sendLoginInfoToClient = async (clientData: {
-    name: string;
-    phoneNumber: string;
-    login: string;
-    password: string;
-    tenantId: number;
-}) => {
+export const sendLoginInfoToClient = async (clientData: SendLoginInfoDTO) => {
     const { name, phoneNumber, login, password, tenantId } = clientData;
-
-    const formatedNumber = formatPhoneNumber(phoneNumber);
-
+    const formattedNumber = formatPhoneNumber(phoneNumber);
     const clinicData = await findTenantById(tenantId);
 
     if (!clinicData) {
@@ -26,7 +21,7 @@ export const sendLoginInfoToClient = async (clientData: {
 
     const clinicWhatsAppLink = generateWhatsAppLink(clinicData.whatsAppNumber);
 
-    await sendWhatsAppMessage(formatedNumber.toString(), WhatsAppMessageType.LoginInfo, {
+    await sendWhatsAppMessage(formattedNumber.toString(), WhatsAppMessageType.LoginInfo, {
         name,
         clinicName: clinicData.name,
         clinicWhatsAppLink,
@@ -36,17 +31,9 @@ export const sendLoginInfoToClient = async (clientData: {
     });
 };
 
-export const sendLoginInfoToAdmin = async (adminData: {
-    name: string;
-    phoneNumber: string;
-    login: string;
-    password: string;
-    tenantId: number;
-}) => {
+export const sendLoginInfoToAdmin = async (adminData: SendLoginInfoDTO) => {
     const { name, phoneNumber, login, password, tenantId } = adminData;
-
-    const formatedNumber = formatPhoneNumber(phoneNumber);
-
+    const formattedNumber = formatPhoneNumber(phoneNumber);
     const clinicData = await findTenantById(tenantId);
 
     if (!clinicData) {
@@ -55,7 +42,7 @@ export const sendLoginInfoToAdmin = async (adminData: {
 
     const clinicWhatsAppLink = generateWhatsAppLink(clinicData.whatsAppNumber);
 
-    await sendWhatsAppMessage(formatedNumber.toString(), WhatsAppMessageType.AdminLoginInfo, {
+    await sendWhatsAppMessage(formattedNumber.toString(), WhatsAppMessageType.AdminLoginInfo, {
         name,
         clinicName: clinicData.name,
         clinicWhatsAppLink,
@@ -65,15 +52,9 @@ export const sendLoginInfoToAdmin = async (adminData: {
     });
 };
 
-export const sendExamReadyNotification = async (clientData: {
-    name: string;
-    phoneNumber: string;
-    tenantId: number;
-}) => {
+export const sendExamReadyNotification = async (clientData: SendExamReadyNotificationDTO) => {
     const { name, phoneNumber, tenantId } = clientData;
-
-    const formatedNumber = formatPhoneNumber(phoneNumber);
-
+    const formattedNumber = formatPhoneNumber(phoneNumber);
     const clinicData = await findTenantById(tenantId);
 
     if (!clinicData) {
@@ -82,7 +63,7 @@ export const sendExamReadyNotification = async (clientData: {
 
     const clinicWhatsAppLink = generateWhatsAppLink(clinicData.whatsAppNumber);
 
-    await sendWhatsAppMessage(formatedNumber.toString(), WhatsAppMessageType.ExamReady, {
+    await sendWhatsAppMessage(formattedNumber.toString(), WhatsAppMessageType.ExamReady, {
         name,
         clinicName: clinicData.name,
         platformLink: process.env.ExamPlatformLink,
@@ -90,14 +71,8 @@ export const sendExamReadyNotification = async (clientData: {
     });
 };
 
-export const sendExamScheduled = async (clientData: {
-    name: string;
-    phoneNumber: string;
-    tenantId: number;
-    examDateTime: string;
-}) => {
+export const sendExamScheduled = async (clientData: SendExamScheduledDTO) => {
     const { name, phoneNumber, tenantId, examDateTime } = clientData;
-
     const formattedNumber = formatPhoneNumber(phoneNumber);
     const clinicData = await findTenantById(tenantId);
 
