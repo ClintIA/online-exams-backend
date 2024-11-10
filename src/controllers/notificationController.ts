@@ -89,3 +89,28 @@ export const sendExamReadyNotification = async (clientData: {
         clinicWhatsAppLink
     });
 };
+
+export const sendExamScheduled = async (clientData: {
+    name: string;
+    phoneNumber: string;
+    tenantId: number;
+    examDateTime: string;
+}) => {
+    const { name, phoneNumber, tenantId, examDateTime } = clientData;
+
+    const formattedNumber = formatPhoneNumber(phoneNumber);
+    const clinicData = await findTenantById(tenantId);
+
+    if (!clinicData) {
+        throw new Error('Tenant not found');
+    }
+
+    const clinicWhatsAppLink = generateWhatsAppLink(clinicData.whatsAppNumber);
+
+    await sendWhatsAppMessage(formattedNumber.toString(), WhatsAppMessageType.ExamScheduled, {
+        name,
+        clinicName: clinicData.name,
+        examDateTime,
+        clinicWhatsAppLink
+    });
+};

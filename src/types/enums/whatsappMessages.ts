@@ -1,5 +1,6 @@
 export enum WhatsAppMessageType {
     LoginInfo = "loginInfo",
     ExamReady = "examReady",
-    AdminLoginInfo = "adminLoginInfo"
+    AdminLoginInfo = "adminLoginInfo",
+    ExamScheduled = "examScheduled"
 }

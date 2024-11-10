@@ -129,7 +129,11 @@ export const createPatientExam = async (
             status: 'Scheduled',
         });
         await patientExamsRepository.save(newPatientExam);
-        return { message: 'Exame do paciente criado com sucesso' };
+        return { 
+            message: 'Exame do paciente criado com sucesso',
+            patientName: newPatientExam.patient.full_name,
+            patientPhone: newPatientExam.patient.phone
+        };
     }
 
 };
