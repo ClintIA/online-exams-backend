@@ -118,7 +118,7 @@ export const updatePatientExamController = async (req: Request, res: Response) =
             tenantId: tenantId
         });
         
-        return successResponse(res, result, 'Exame do paciente atualizado com sucesso');
+        return successResponse(res, 'Exame do paciente atualizado com sucesso');
     } catch (error) {
         return errorResponse(res, error);
     }

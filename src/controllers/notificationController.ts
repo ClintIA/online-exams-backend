@@ -1,6 +1,7 @@
 import { findTenantById } from '../services/tenantService';
 import { sendWhatsAppMessage } from '../services/whatsappService';
 import { WhatsAppMessageType } from '../types/enums/whatsappMessages';
+import { formatPhoneNumber } from '../utils/formatPhoneNumber';
 import { generateWhatsAppLink } from '../utils/generateWhatsAppLink';
 import dotenv from 'dotenv';
 
@@ -15,6 +16,8 @@ export const sendLoginInfoToClient = async (clientData: {
 }) => {
     const { name, phoneNumber, login, password, tenantId } = clientData;
 
+    const formatedNumber = formatPhoneNumber(phoneNumber);
+
     const clinicData = await findTenantById(tenantId);
 
     if (!clinicData) {
@@ -23,7 +26,7 @@ export const sendLoginInfoToClient = async (clientData: {
 
     const clinicWhatsAppLink = generateWhatsAppLink(clinicData.whatsAppNumber);
 
-    await sendWhatsAppMessage(phoneNumber, WhatsAppMessageType.LoginInfo, {
+    await sendWhatsAppMessage(formatedNumber.toString(), WhatsAppMessageType.LoginInfo, {
         name,
         clinicName: clinicData.name,
         clinicWhatsAppLink,
@@ -42,6 +45,8 @@ export const sendLoginInfoToAdmin = async (adminData: {
 }) => {
     const { name, phoneNumber, login, password, tenantId } = adminData;
 
+    const formatedNumber = formatPhoneNumber(phoneNumber);
+
     const clinicData = await findTenantById(tenantId);
 
     if (!clinicData) {
@@ -50,7 +55,7 @@ export const sendLoginInfoToAdmin = async (adminData: {
 
     const clinicWhatsAppLink = generateWhatsAppLink(clinicData.whatsAppNumber);
 
-    await sendWhatsAppMessage(phoneNumber, WhatsAppMessageType.AdminLoginInfo, {
+    await sendWhatsAppMessage(formatedNumber.toString(), WhatsAppMessageType.AdminLoginInfo, {
         name,
         clinicName: clinicData.name,
         clinicWhatsAppLink,
@@ -67,6 +72,8 @@ export const sendExamReadyNotification = async (clientData: {
 }) => {
     const { name, phoneNumber, tenantId } = clientData;
 
+    const formatedNumber = formatPhoneNumber(phoneNumber);
+
     const clinicData = await findTenantById(tenantId);
 
     if (!clinicData) {
@@ -75,7 +82,7 @@ export const sendExamReadyNotification = async (clientData: {
 
     const clinicWhatsAppLink = generateWhatsAppLink(clinicData.whatsAppNumber);
 
-    await sendWhatsAppMessage(phoneNumber, WhatsAppMessageType.ExamReady, {
+    await sendWhatsAppMessage(formatedNumber.toString(), WhatsAppMessageType.ExamReady, {
         name,
         clinicName: clinicData.name,
         platformLink: process.env.ExamPlatformLink,

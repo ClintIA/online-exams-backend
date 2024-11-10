@@ -300,10 +300,6 @@
                     "type": "string",
                     "example": "12345678900"
                   },
-                  "password": {
-                    "type": "string",
-                    "example": "password123"
-                  },
                   "fullName": {
                     "type": "string",
                     "example": "John Doe"
