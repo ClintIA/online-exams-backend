@@ -1,0 +1,6 @@
+{
+    "loginInfo": "Olá {{name}}, você foi cadastrado(a) na clínica {{clinicName}}.\n\nAqui estão suas informações de acesso:\nLogin: {{login}}\nSenha: {{password}}\n\nAcesse {{platformLink}} para visualizar seus exames.\n\nSe tiver alguma dúvida, entre em contato com a clínica através do link: {{clinicWhatsAppLink}}",
+    "examReady": "Olá {{name}}, o exame que você realizou na clínica {{clinicName}} está pronto!\n\nAcesse {{platformLink}} para visualizar o resultado.\n\nEm caso de dúvidas, entre em contato com a clínica através do link: {{clinicWhatsAppLink}}",
+    "adminLoginInfo": "Olá {{name}}, bem-vindo(a) à equipe da clínica {{clinicName}}!\n\nAqui estão suas informações de acesso:\nLogin: {{login}}\nSenha: {{password}}\n\nAcesse {{platformLink}} para gerenciar a clínica e realizar suas tarefas administrativas.\n\nSe precisar de ajuda, entre em contato com o time de suporte da clínica pelo link: {{clinicWhatsAppLink}}",
+    "examScheduled": "Olá {{name}}, o seu exame foi agendado na clínica {{clinicName}}.\n\nData e Hora: {{examDateTime}}\n\nCaso tenha alguma dúvida ou precise reagendar, entre em contato com a clínica pelo link: {{clinicWhatsAppLink}}"
+}

@@ -2,21 +2,22 @@ import { Admin } from '../models/Admin';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwtHelper';
 import { adminRepository } from '../repositories/adminRepository';
-import {ILike} from "typeorm";
-import {authMiddleware} from "../middlewares/authMiddleware";
+import { ILike } from "typeorm";
+import { GetDoctorsDTO } from '../types/dto/admin/getDoctorsDTO';
+import { UpdateAdminDTO } from '../types/dto/admin/updateAdminDTO';
+import { LoginAdminDTO } from '../types/dto/auth/loginAdminDTO';
+import { RegisterAdminDTO } from '../types/dto/auth/registerAdminDTO';
 
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
-    return await adminRepository.findOne({ where: { email: email }, relations: ['tenant'] });
+    return await adminRepository.findOne({ where: { email }, relations: ['tenant'] });
 };
 
-export const registerAdmin = async (adminData: { email: string, adminCpf: string, password: string, fullName: string }, tenantId: number) => {
-    const hashedPassword = await bcrypt.hash(adminData.password, 10);
+export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: number) => {
+    const hashedPassword = await bcrypt.hash(adminData.password!, 10);
 
     const newAdmin = adminRepository.create({
-        email: adminData.email,
+        ...adminData,
         password: hashedPassword,
-        cpf: adminData.adminCpf,
-        fullName: adminData.fullName,
         tenant: { id: tenantId }
     });
 
@@ -28,18 +29,19 @@ export const registerAdmin = async (adminData: { email: string, adminCpf: string
     }
 };
 
-export const loginAdmin = async (email: string, password: string) => {
-    const admin = await findAdminByEmail(email);
+export const loginAdmin = async (loginData: LoginAdminDTO) => {
+    const admin = await findAdminByEmail(loginData.email);
     if (!admin) throw new Error('Admin não encontrado');
 
-    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    const isPasswordValid = await bcrypt.compare(loginData.password, admin.password);
     if (!isPasswordValid) throw new Error('Senha inválida');
+
     const token = generateToken(admin.id, true, admin.tenant.id);
     admin.sessionToken = token;
+
     await adminRepository.save(admin);
     return token;
 };
-
 
 export const getAdmins = async (tenantId: number) => {
     return await adminRepository.find({
@@ -48,8 +50,7 @@ export const getAdmins = async (tenantId: number) => {
     });
 };
 
-
-export const getDoctors = async (tenantId: number, take: number = 10, skip: number = 0) => {
+export const getDoctors = async ({ tenantId, take = 10, skip = 0 }: GetDoctorsDTO) => {
     const [doctors, total] = await adminRepository.findAndCount({
         select: { id: true, fullName: true, email: true, CRM: true, phone: true },
         take,
@@ -79,4 +80,20 @@ export const getDoctorsByExamName = async (examName: string) => {
         relations: ['exams'],
         select: { id: true, fullName: true }
     });
+};
+
+export const updateAdmin = async (adminId: number, updateData: UpdateAdminDTO) => {
+    const result = await adminRepository.update(adminId, updateData);
+
+    if (result.affected === 0) throw new Error('Admin não encontrado');
+    
+    return { message: 'Admin atualizado com sucesso' };
+};
+
+export const deleteAdmin = async (adminId: number) => {
+    const result = await adminRepository.delete(adminId);
+
+    if (result.affected === 0) throw new Error('Admin não encontrado');
+    
+    return { message: 'Admin deletado com sucesso' };
 };

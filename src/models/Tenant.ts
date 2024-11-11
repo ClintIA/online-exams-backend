@@ -25,6 +25,9 @@ export class Tenant {
     @Column({default: 0})
     uploadUsage!: number;
 
+    @Column({ unique: true })
+    whatsAppNumber!: string;
+
     @ManyToMany(() => Patient, patient => patient.tenants)
     patients!: Patient[];
 

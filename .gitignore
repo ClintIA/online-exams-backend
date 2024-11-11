@@ -6,3 +6,4 @@ dist
 .env.*
 .idea/*
 .wwebjs_auth
+.wwebjs_cache

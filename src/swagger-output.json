@@ -293,18 +293,36 @@
                 "type": "object",
                 "properties": {
                   "email": {
-                    "example": "any"
+                    "type": "string",
+                    "example": "admin@example.com"
                   },
                   "adminCpf": {
-                    "example": "any"
-                  },
-                  "password": {
-                    "example": "any"
+                    "type": "string",
+                    "example": "12345678900"
                   },
                   "fullName": {
-                    "example": "any"
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "CRM": {
+                    "type": "string",
+                    "example": "12345-SP",
+                    "nullable": true,
+                    "description": "Registro opcional do CRM para doutores"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "+5511987654321",
+                    "nullable": true,
+                    "description": "Número de telefone opcional"
+                  },
+                  "isDoctor": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "Indica se o admin é um doutor"
                   }
-                }
+                },
+                "required": ["email", "adminCpf", "password", "fullName", "isDoctor"]
               }
             }
           }
@@ -346,28 +364,31 @@
                 "type": "object",
                 "properties": {
                   "full_name": {
-                    "example": "any"
+                    "example": "Patient Example"
                   },
                   "cpf": {
-                    "example": "any"
+                    "example": "23587088012"
                   },
                   "dob": {
-                    "example": "any"
+                    "example": "2024-01-01"
                   },
                   "email": {
-                    "example": "any"
+                    "example": "patient@hotmail.com"
                   },
                   "phone": {
-                    "example": "any"
+                    "example": "5521999999999"
                   },
                   "address": {
-                    "example": "any"
+                    "example": "Rua Patient"
                   },
                   "gender": {
-                    "example": "any"
+                    "example": "Masculino"
                   },
                   "health_card_number": {
-                    "example": "any"
+                    "example": "1234567"
+                  },
+                  "canal": {
+                    "example": "Indicação"
                   }
                 }
               }

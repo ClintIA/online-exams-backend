@@ -6,27 +6,31 @@ import {
     listPatientByTenant,
     updatePatientService
 } from "../services/patientService";
-
+import { PatientFiltersDTO } from '../types/dto/patient/patientFiltersDTO';
+import { UpdatePatientDTO } from '../types/dto/patient/updatePatientDTO';
 
 export const listPatients = async (req: Request, res: Response) => {
-        /*
-     #swagger.tags = ['Admin']
-     #swagger.summary = 'List All Patients by Tenant'
-     #swagger.description = 'List All Patient from a tenant'
-     */
-    const { take, skip,patientCpf, patientName } = req.query;
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'List All Patients by Tenant'
+    #swagger.description = 'List All Patients from a tenant'
+    */
+    const { take, skip, patientCpf, patientName } = req.query;
     const tenantId = req.tenantId;
-    const filters = {
-        patientCpf: patientCpf ? patientCpf as string : undefined,
-        patientName: patientName? patientName as string : undefined,
+    const filters: PatientFiltersDTO = {
+        patientCpf: patientCpf as string | undefined,
+        patientName: patientName as string | undefined,
     };
-    if(!tenantId)  {
-        throw new Error('Tenant Não encontrado');
+
+    if (!tenantId) {
+        throw new Error('Tenant não encontrado');
     }
-    const numberOfExamToTake = take ? take : 1000
-    const numberOfExamToSkip = skip ? skip : 0
+
+    const takeNumber = take ? parseInt(take as string, 10) : 1000;
+    const skipNumber = skip ? parseInt(skip as string, 10) : 0;
+
     try {
-        const result = await listPatientByTenant(filters,tenantId, parseInt(numberOfExamToTake as string), parseInt(numberOfExamToSkip as string))
+        const result = await listPatientByTenant(filters, tenantId, takeNumber, skipNumber);
         return successResponse(res, result);
     } catch (error) {
         return errorResponse(res, error);
@@ -35,57 +39,54 @@ export const listPatients = async (req: Request, res: Response) => {
 
 export const updatePatient = async (req: Request, res: Response) => {
     /*
- #swagger.tags = ['Admin/Patient']
- #swagger.summary = 'Update a Patients'
- #swagger.description = 'Route to update a Patient from a tenant'
- */
-    const { full_name, cpf, dob, email, phone, address, canal, gender, health_card_number } = req.body;
+    #swagger.tags = ['Admin/Patient']
+    #swagger.summary = 'Update a Patient'
+    #swagger.description = 'Route to update a Patient from a tenant'
+    */
     const tenantId = req.tenantId;
-    if(!tenantId)  {
-        throw new Error('Tenant Não encontrado');
+    const patientData: UpdatePatientDTO = req.body;
+
+    if (!tenantId) {
+        throw new Error('Tenant não encontrado');
     }
+
     try {
-        const result = await updatePatientService({
-            full_name,
-            cpf,
-            dob: new Date(dob),
-            email,
-            phone,
-            address,
-            canal,
-            gender,
-            health_card_number
-        })
+        const result = await updatePatientService(patientData);
         return successResponse(res, result);
     } catch (error) {
         return errorResponse(res, error);
     }
 }
+
 export const deletePatient = async (req: Request, res: Response) => {
     /*
- #swagger.tags = ['Admin/Patient']
- #swagger.summary = 'Update a Patients'
- #swagger.description = 'Route to update a Patient from a tenant'
- */
+    #swagger.tags = ['Admin/Patient']
+    #swagger.summary = 'Delete a Patient'
+    #swagger.description = 'Route to delete a Patient from a tenant'
+    */
     const { patientId } = req.params;
     const tenantId = req.tenantId;
-    if(!tenantId)  {
-        throw new Error('Tenant Não encontrado');
+
+    if (!tenantId) {
+        throw new Error('Tenant não encontrado');
     }
+
     try {
-        const result = await deletePatientService(parseInt(patientId as string));
+        const result = await deletePatientService(parseInt(patientId as string, 10));
         return successResponse(res, result);
     } catch (error) {
         return errorResponse(res, error);
     }
 }
+
 export const findPatientByCPF = async (req: Request, res: Response) => {
     /*
     #swagger.tags = ['Admin/Patient']
     #swagger.summary = 'Find a Patient by CPF'
-    #swagger.description = 'Get patient infos'
+    #swagger.description = 'Get patient info by CPF'
     */
     const { cpf } = req.query;
+
     try {
         const patient = await findPatientByCpf(cpf as string);
         if (!patient) {
@@ -93,7 +94,6 @@ export const findPatientByCPF = async (req: Request, res: Response) => {
         }
 
         const { password, ...patientInfoWithoutPassword } = patient;
-
         return successResponse(res, patientInfoWithoutPassword);
     } catch (error) {
         return errorResponse(res, error);
