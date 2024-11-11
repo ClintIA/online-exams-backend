@@ -9,6 +9,7 @@ Este repositório contém o código para um sistema de gerenciamento de exames m
 - **TypeORM**
 - **Express**
 - **PostgreSQL**
+- **WhatsApp WEB JS**
 
 ## Instalação
 
@@ -39,9 +40,11 @@ Este repositório contém o código para um sistema de gerenciamento de exames m
    DB_PASSWORD=sua-senha
    DB_NAME=nome-do-banco
    JWT_SECRET=sua-chave-secreta-jwt
+   EXAM_PLATFORM_LINK=link-da-plataforma-de-exames
+   ADMIN_PLATFORM_LINK=link-da-plataforma-admin
    ```
 
-4. Inicialize o banco de dados:
+4. Inicialize a aplicação:
    ```bash
    npm run start
    ```
@@ -49,6 +52,8 @@ Este repositório contém o código para um sistema de gerenciamento de exames m
    ```bash
    yarn start
    ```
+
+5. Escaneie o QR Code que irá aparecer na tela com o seu WhatsApp.
 
 ## Uso
 
@@ -74,7 +79,10 @@ src/
 ├── controllers/          # Controladores das rotas
 ├── middlewares/          # Middlewares de autenticação e autorização
 ├── models/               # Modelos do banco de dados
+├── repositories/         # Repositórios de conexão com o banco
 ├── routes/               # Definições das rotas
 ├── services/             # Lógica de negócios
+├── templates/            # Templates de envio de notificação
+├── types/                # Todos os tipos e interfaces da aplicação
 └── utils/                # Funções utilitárias
 ```

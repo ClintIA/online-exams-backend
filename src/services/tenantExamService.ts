@@ -1,23 +1,32 @@
-import {tenantExamsRepository} from '../repositories/tenantExamsRepository';
+import { tenantExamsRepository } from '../repositories/tenantExamsRepository';
+import { CreateExamDTO } from '../types/dto/tenantExam/createExamDTO';
+import { ListExamsDTO } from '../types/dto/tenantExam/listExamsDTO';
+import { UpdateExamDTO } from '../types/dto/tenantExam/updateExamDTO';
 
-export const createExam = async (examData: { exam_name: string, price: number, doctorPrice: number }, tenantId: number) => {
+export const createExam = async (examData: CreateExamDTO) => {
     await tenantExamsRepository.save({
-        ...examData,
-        tenant: { id: tenantId }
+        exam_name: examData.exam_name,
+        price: examData.price,
+        doctorPrice: examData.doctorPrice,
+        tenant: { id: examData.tenantId }
     });
     return { message: 'Exame criado com sucesso' };
 };
 
-export const getExams = async (tenantId: number) => {
+export const getExams = async (filters: ListExamsDTO) => {
     return await tenantExamsRepository.find({
-        where: {tenant: {id: tenantId}}
+        where: { tenant: { id: filters.tenantId } }
     });
 };
 
-export const updateExam = async (examId: number, examData: { exam_name: string, price: number, doctorPrice: number }, tenantId: number) => {
+export const updateExam = async (examId: number, examData: UpdateExamDTO) => {
     const result = await tenantExamsRepository.update(
-        { id: examId, tenant: { id: tenantId } },
-        examData
+        { id: examId, tenant: { id: examData.tenantId } },
+        {
+            exam_name: examData.exam_name,
+            price: examData.price,
+            doctorPrice: examData.doctorPrice
+        }
     );
 
     if (result.affected === 0) {

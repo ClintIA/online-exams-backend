@@ -1,19 +1,17 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { TokenPayload } from '../types/interfaces/tokenPayload';
 
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-interface TokenPayload {
-    userId: number;
-    tenantId?: number;
-    isAdmin: boolean;
-}
-
 export const generateToken = (userId: number, isAdmin: boolean, tenantId?: number): string => {
     const payload: TokenPayload = isAdmin ? { userId, tenantId: tenantId!, isAdmin } : { userId, isAdmin };
-    return jwt.sign(payload, JWT_SECRET!, { expiresIn: '1h' });
+    
+    const expiresIn = isAdmin ? '7d' : '3d';
+
+    return jwt.sign(payload, JWT_SECRET!, { expiresIn });
 };
 
 export const verifyToken = (token: string): TokenPayload => {

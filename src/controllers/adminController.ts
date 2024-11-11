@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
 import {customErrorResponse, errorResponse, successResponse} from '../utils/httpResponses';
 import {getAdmins, getAdminByCPF, getAdminsByName, getDoctors, getDoctorsByExamName, updateAdmin, deleteAdmin} from "../services/adminService";
+
 interface PaginationQuery {
     page?: string;
     take?: string;
@@ -51,11 +52,11 @@ export const getDoctorsListController = async (req: Request, res: Response) => {
         if (Object.values(numericParams).some(isNaN)) {
             return errorResponse(res, new Error('Invalid pagination parameters'), 400);
         }
-        const result: GetDoctorsResult = await getDoctors(
-            numericParams.tenantId,
-            numericParams.take,
-            numericParams.skip
-        );
+        const result: GetDoctorsResult = await getDoctors({
+            tenantId: numericParams.tenantId,
+            take: numericParams.take,
+            skip: numericParams.skip
+        });
 
         const remaining = result.total - result.doctors.length;
 
