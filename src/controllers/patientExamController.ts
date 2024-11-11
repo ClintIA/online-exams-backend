@@ -62,12 +62,12 @@ export const createPatientExamController = async (req: Request, res: Response) =
 
         const result = await createPatientExam(examData);
 
-        await sendExamScheduled({
-            name: result.patientName!,
-            phoneNumber: result.patientPhone!,
-            tenantId,
-            examDateTime: examData.examDate.toISOString()
-        });
+        //  await sendExamScheduled({
+        //     name: result.patientName!,
+        //     phoneNumber: result.patientPhone!,
+        //     tenantId,
+        //     examDateTime: examData.examDate.toISOString()
+        // });
 
         return successResponse(res, result, 'Exame do paciente criado com sucesso', 201);
     } catch (error) {
@@ -87,16 +87,16 @@ export const updatePatientExamController = async (req: Request, res: Response) =
         const examData: UpdatePatientExamDTO = req.body;
 
         if (!examId) {
-            throw new Error('ID do exame é obrigatório');
+            return new Error('ID do exame é obrigatório');
         }
 
         const result = await updatePatientExam(examId, examData);
 
-        await sendExamReadyNotification({
-            name: result.patientName!,
-            phoneNumber: result.patientPhone!,
-            tenantId
-        });
+        // await sendExamReadyNotification({
+        //     name: result.patientName!,
+        //     phoneNumber: result.patientPhone!,
+        //     tenantId
+        // });
 
         return successResponse(res, 'Exame do paciente atualizado com sucesso');
     } catch (error) {
@@ -114,7 +114,7 @@ export const deletePatientExamController = async (req: Request, res: Response) =
         const tenantId = req.tenantId!;
         const examId = parseValidInt(req.params.examId);
         if (!examId) {
-            throw new Error('ID do exame é obrigatório');
+            return new Error('ID do exame é obrigatório');
         }
 
         await deletePatientExam({ examId, tenantId });

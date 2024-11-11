@@ -26,13 +26,13 @@ export const registerAdminController = async (req: Request, res: Response) => {
             tenantId
         );
 
-        await sendLoginInfoToAdmin({
-            name: adminData.fullName,
-            phoneNumber: adminData.phone || "",
-            login: adminData.adminCpf,
-            password: password,
-            tenantId: tenantId
-        });
+        // await sendLoginInfoToAdmin({
+        //     name: adminData.fullName,
+        //     phoneNumber: adminData.phone || "",
+        //     login: adminData.adminCpf,
+        //     password: password,
+        //     tenantId: tenantId
+        // });
 
         return successResponse(res, result, 'Admin registrado com sucesso', 201);
     } catch (error) {
@@ -60,13 +60,13 @@ export const registerPatientController = async (req: Request, res: Response) => 
             tenantId
         );
 
-        await sendLoginInfoToClient({
-            name: patientData.full_name,
-            phoneNumber: patientData.phone,
-            login: patientData.cpf,
-            password: password,
-            tenantId: tenantId
-        });
+        // await sendLoginInfoToClient({
+        //     name: patientData.full_name,
+        //     phoneNumber: patientData.phone,
+        //     login: patientData.cpf,
+        //     password: password,
+        //     tenantId: tenantId
+        // });
 
         return successResponse(res, result, 'Paciente registrado com sucesso', 201);
     } catch (error) {
