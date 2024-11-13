@@ -49,7 +49,7 @@ export const updateExamController = async (req: Request, res: Response) => {
 
         const examData: UpdateExamDTO = { exam_name, price, doctorPrice, tenantId, doctors };
         const result = await updateExam(examId, examData);
-        return successResponse(res, result, 'Exame atualizado com sucesso');
+        return successResponse(res, result );
     } catch (error) {
         return errorResponse(res, error);
     }
