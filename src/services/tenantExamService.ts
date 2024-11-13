@@ -48,13 +48,12 @@ export const updateExam = async (examId: number, examData: UpdateExamDTO) => {
         doctorPrice: examData.doctorPrice,
         doctors: doctors
     })
-    const result = await tenantExamsRepository.update(
-        {id: examId },
+    const result = await tenantExamsRepository.save(
         updateExam
     );
 
-    if (result.affected === 0) {
-        throw new Error('Exame não encontrado');
+    if (!result) {
+        throw new Error('Exame ao atualizar exame');
     }
 
     return { message: 'Exame atualizado com sucesso' };
