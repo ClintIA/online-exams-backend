@@ -12,6 +12,10 @@ const findAdminByEmail = async (email: string): Promise<Admin | null> => {
     return await adminRepository.findOne({ where: { email }, relations: ['tenant'] });
 };
 
+export const findDoctorsById = async (id: number): Promise<Admin | null> => {
+    return await adminRepository.findOne({ where: { id } });
+};
+
 export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: number) => {
     const hashedPassword = await bcrypt.hash(adminData.password!, 10);
 

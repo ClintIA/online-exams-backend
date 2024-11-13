@@ -1,6 +1,6 @@
 import swaggerUi from 'swagger-ui-express';
 import bodyParser from 'body-parser';
-import swaggerDocument from '../src/swagger-output.json'
+import swaggerDocument from './swagger-output.json'
 import app from "./routes";
 import {connectDatabase} from "./config/database";
 import { initializeWhatsApp } from './config/whatsapp';

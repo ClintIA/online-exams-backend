@@ -3,4 +3,5 @@ export interface UpdateExamDTO {
     price: number;
     doctorPrice: number;
     tenantId: number;
+    doctors: string[]
 }

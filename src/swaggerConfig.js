@@ -1,11 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NODE_ENV = void 0;
 var path_1 = require("path");
 var dotenv = require("dotenv");
 var swagger_autogen_1 = require("swagger-autogen");
 dotenv.config();
-exports.NODE_ENV = process.env.NODE_ENV === 'production' ? 'https://api.clintia.com.br' : 'http://localhost:3000';
 var doc = {
     info: {
         version: "1.0.0",
@@ -14,7 +12,7 @@ var doc = {
     },
     servers: [
         {
-            url: exports.NODE_ENV,
+            url: 'https://api.clintia.com.br',
         }
     ],
     components: {
@@ -43,5 +41,5 @@ var doc = {
 var outputFile = (0, path_1.resolve)(__dirname, './swagger-output.json');
 var endpointsFiles = [(0, path_1.resolve)(__dirname, './routes.ts')];
 (0, swagger_autogen_1.default)({ openapi: '3.0.0' })(outputFile, endpointsFiles, doc).then(function () {
-    require('./index.ts');
+    require('./index');
 });
