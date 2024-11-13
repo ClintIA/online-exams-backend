@@ -4,6 +4,8 @@ import { ListExamsDTO } from '../types/dto/tenantExam/listExamsDTO';
 import { UpdateExamDTO } from '../types/dto/tenantExam/updateExamDTO';
 import {findDoctorsById} from "./adminService";
 import {Admin} from "../models/Admin";
+import {updatePatient} from "../controllers/patientController";
+import {updateExamController} from "../controllers/tenantExamController";
 
 export const createExam = async (examData: CreateExamDTO) => {
     const doctors: Admin[] = [];
@@ -40,17 +42,19 @@ export const updateExam = async (examId: number, examData: UpdateExamDTO) => {
             doctors.push(doctor);
         }
     }
-    const result = await tenantExamsRepository.save(
-        {
-            exam_name: examData.exam_name,
-            price: examData.price,
-            doctorPrice: examData.doctorPrice,
-            doctors: doctors
-        }
+    const updateExam = tenantExamsRepository.create({
+        exam_name: examData.exam_name,
+        price: examData.price,
+        doctorPrice: examData.doctorPrice,
+        doctors: doctors
+    })
+    const result = await tenantExamsRepository.update(
+        {id: examId },
+        updateExam
     );
 
-    if (!result) {
-        throw new Error('Erro ao atualizar exame');
+    if (result.affected === 0) {
+        throw new Error('Exame não encontrado');
     }
 
     return { message: 'Exame atualizado com sucesso' };
