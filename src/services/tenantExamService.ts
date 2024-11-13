@@ -43,6 +43,7 @@ export const updateExam = async (examId: number, examData: UpdateExamDTO) => {
         }
     }
     const updateExam = tenantExamsRepository.create({
+        id: examId,
         exam_name: examData.exam_name,
         price: examData.price,
         doctorPrice: examData.doctorPrice,
