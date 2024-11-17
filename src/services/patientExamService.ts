@@ -46,7 +46,7 @@ export const createPatientExam = async (examData: CreatePatientExamDTO) => {
     const exam = await tenantExamsRepository.findOne({ where: { id: examData.examId } });
     const patient = await patientRepository.findOne({ where: { id: examData.patientId } });
     const createdBy = await adminRepository.findOne({ where: { id: examData.userId } });
-    
+    const doctor = await adminRepository.findOne({ where: { id: examData.doctorId } });
     if (!exam || !patient || !createdBy) {
         throw new Error('Dados inválidos');
     }
@@ -60,11 +60,16 @@ export const createPatientExam = async (examData: CreatePatientExamDTO) => {
         ...(examData.doctorId && { doctor: { id: examData.doctorId } })
     });
 
-    await patientExamsRepository.save(newPatientExam);
+    const result = await patientExamsRepository.save(newPatientExam);
+    const confirmationData = {
+        exam_name: result.exam.exam_name,
+        exameDate: result.examDate,
+        doctor: doctor?.fullName,
+        patientName: result.patient.full_name,
+        patientPhone: result.patient.phone
+    }
     return { 
-        message: 'Exame do paciente criado com sucesso', 
-        patientName: newPatientExam.patient.full_name,
-        patientPhone: newPatientExam.patient.phone 
+        data: confirmationData
     };
 };
 
