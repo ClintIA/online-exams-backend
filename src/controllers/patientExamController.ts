@@ -63,8 +63,8 @@ export const createPatientExamController = async (req: Request, res: Response) =
         const result = await createPatientExam(examData);
 
         //  await sendExamScheduled({
-        //     name: result.data.patientName!,
-        //     phoneNumber: result.data.patientPhone!,
+        //     name: result.patientName!,
+        //     phoneNumber: result.patientPhone!,
         //     tenantId,
         //     examDateTime: examData.examDate.toISOString()
         // });
