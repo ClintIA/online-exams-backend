@@ -3,7 +3,6 @@ import {
     PrimaryGeneratedColumn,
     Column,
     CreateDateColumn,
-    ManyToOne,
     ManyToMany,
     Index,
     JoinTable, OneToMany
@@ -35,7 +34,7 @@ export class Patient {
     phone?: string;
 
     @Column()
-    address?: string;
+    cep?: number;
 
     @Column()
     canal?: string;

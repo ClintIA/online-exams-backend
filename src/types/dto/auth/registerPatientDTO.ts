@@ -4,9 +4,9 @@ export interface RegisterPatientDTO {
     dob: string;
     email: string;
     phone: string;
-    address: string;
+    cep: number;
     canal: string;
-    gender?: string;
+    gender: "Masculino" | "Feminino" | "Prefiro não informar";
     health_card_number?: string;
     password?: string;
 }
