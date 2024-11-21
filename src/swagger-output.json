@@ -1118,6 +1118,131 @@
       }
     }
   },
+  "/api/v1/patient/exams/attendance/{examId}": {
+  "patch": {
+    "tags": [
+      "Admin/PatientExam"
+    ],
+    "summary": "Update Exam Attendance",
+    "description": "Update the attendance status of a patient exam by exam ID",
+    "parameters": [
+      {
+        "name": "authorization",
+        "in": "header",
+        "schema": {
+          "type": "string"
+        },
+        "required": true,
+        "description": "Authorization token"
+      },
+      {
+        "name": "examId",
+        "in": "path",
+        "schema": {
+          "type": "integer"
+        },
+        "required": true,
+        "description": "ID of the exam to update"
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "attended": {
+                "type": "boolean",
+                "description": "Attendance status for the exam (true for attended, false for not attended)"
+              }
+            },
+            "required": [
+              "attended"
+            ]
+          },
+          "example": {
+            "attended": true
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Attendance status updated successfully",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "message": "Attendance status updated successfully"
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Invalid request data",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "error": "Invalid examId or missing required fields"
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Exam not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "error": "Exam not found"
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              },
+              "example": {
+                "error": "An unexpected error occurred"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  },
   "components": {
     "schemas": {
       "someResponse": {

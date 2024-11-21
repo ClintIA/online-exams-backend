@@ -38,4 +38,7 @@ export class PatientExams {
 
     @Column({ type: 'enum', enum: ['Scheduled', 'InProgress', 'Completed'], default: 'Scheduled' })
     status!: 'Scheduled' | 'InProgress' | 'Completed';
+
+    @Column({ type: 'boolean', default: false })
+    attended!: boolean;
 }
