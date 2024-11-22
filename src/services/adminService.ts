@@ -7,6 +7,7 @@ import { GetDoctorsDTO } from '../types/dto/admin/getDoctorsDTO';
 import { UpdateAdminDTO } from '../types/dto/admin/updateAdminDTO';
 import { LoginAdminDTO } from '../types/dto/auth/loginAdminDTO';
 import { RegisterAdminDTO } from '../types/dto/auth/registerAdminDTO';
+import {tenantRepository} from "../repositories/tenantRepository";
 
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
     return await adminRepository.findOne({ where: { email }, relations: ['tenant'] });
@@ -18,11 +19,14 @@ export const findDoctorsById = async (id: number): Promise<Admin | null> => {
 
 export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: number) => {
     const hashedPassword = await bcrypt.hash(adminData.password!, 10);
-
+    const tenant = await tenantRepository.findOne({ where: { id: tenantId } });
+    if(!tenant){
+        throw new Error('Tenant not found!');
+    }
     const newAdmin = adminRepository.create({
         ...adminData,
         password: hashedPassword,
-        tenant: { id: tenantId }
+        tenant: tenant
     });
 
     try {
