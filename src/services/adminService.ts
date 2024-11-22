@@ -28,7 +28,7 @@ export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: numbe
         password: hashedPassword,
         tenant: tenant
     });
-
+    console.log(newAdmin);
     try {
         await adminRepository.save(newAdmin);
         return { message: 'Admin registrado com sucesso' };

@@ -19,7 +19,7 @@ export const registerAdminController = async (req: Request, res: Response) => {
         const adminData: RegisterAdminDTO = req.body;
         const tenantId = req.tenantId!;
 
-        const password = generatePasswordByCpfAndName(adminData.adminCpf, adminData.fullName);
+        const password = generatePasswordByCpfAndName(adminData.cpf, adminData.fullName);
 
         const result = await registerAdmin(
             { ...adminData, password, isDoctor: adminData.isDoctor ?? false },

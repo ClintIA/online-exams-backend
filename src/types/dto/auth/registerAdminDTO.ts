@@ -1,6 +1,6 @@
 export interface RegisterAdminDTO {
     email: string;
-    adminCpf: string;
+    cpf: string;
     fullName: string;
     CRM?: string;
     phone?: string;
