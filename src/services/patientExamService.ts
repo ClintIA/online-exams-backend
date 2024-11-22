@@ -8,6 +8,7 @@ import { CreatePatientExamDTO } from '../types/dto/patientExam/createPatientExam
 import { DeletePatientExamDTO } from '../types/dto/patientExam/deletePatientExamDTO';
 import { ListPatientExamsDTO } from '../types/dto/patientExam/listPatientExamsDTO';
 import { UpdatePatientExamDTO } from '../types/dto/patientExam/updatePatientExamDTO';
+import { UpdateExamAttendanceDTO } from '../types/dto/patientExam/updateExamAttendanceDTO';
 
 export const listPatientExams = async (filters: ListPatientExamsDTO) => {
     const whereCondition: any = {};
@@ -102,3 +103,14 @@ export const deletePatientExam = async ({ examId, tenantId }: DeletePatientExamD
     if (!deleteResult.affected) throw new Error('Exame não encontrado');
     return { message: 'Exame deletado com sucesso' };
 };
+
+export const updateExamAttendance = async (examId: UpdateExamAttendanceDTO['examId'], attended: UpdateExamAttendanceDTO['attended']) => {
+    const updateResult = await patientExamsRepository.update({ id: examId }, { attended });
+
+    if (!updateResult.affected) {
+        throw new Error('Exame não encontrado ou não atualizado');
+    }
+
+    return { message: 'Status de presença atualizado com sucesso' };
+};
+

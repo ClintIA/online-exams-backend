@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { listPatientExams, createPatientExam, updatePatientExam, deletePatientExam } from '../services/patientExamService';
+import { listPatientExams, createPatientExam, updatePatientExam, deletePatientExam, updateExamAttendance } from '../services/patientExamService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
 import { parseValidInt } from '../utils/parseValidInt';
 import { sendExamReadyNotification, sendExamScheduled } from './notificationController';
@@ -123,3 +123,29 @@ export const deletePatientExamController = async (req: Request, res: Response) =
         return errorResponse(res, error);
     }
 };
+
+import { UpdateExamAttendanceDTO } from '../types/dto/patientExam/updateExamAttendanceDTO';
+
+export const updateExamAttendanceController = async (req: Request, res: Response) => {
+    /*
+     #swagger.tags = ['Admin/PatientExam']
+     #swagger.summary = 'Update Exam Attendance'
+     #swagger.description = 'Update the attendance status of a patient exam'
+    */
+    try {
+        const examId = parseValidInt(req.params.examId);
+        const { attended }: UpdateExamAttendanceDTO = req.body;
+
+        if (examId === null || attended === undefined) {
+            return errorResponse(res, new Error('Dados incompletos'), 400);
+        }
+
+        const updateData: UpdateExamAttendanceDTO = { examId, attended };
+
+        const result = await updateExamAttendance(updateData.examId, updateData.attended);
+        return successResponse(res, result, 'Status de presença atualizado com sucesso');
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+};
+
