@@ -51,10 +51,9 @@ export const loginAdmin = async (loginData: LoginAdminDTO) => {
     return token;
 };
 
-export const getAdmins = async (tenantId: number) => {
+export const getOnlyAdmins = async (tenantId: number) => {
     return await adminRepository.find({
-        select: { email: true, cpf: true, fullName: true },
-        where: { tenant: { id: tenantId } }
+        where: { tenant: { id: tenantId }, isDoctor: false }
     });
 };
 

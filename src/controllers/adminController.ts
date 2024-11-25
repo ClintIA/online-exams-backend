@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import {customErrorResponse, errorResponse, successResponse} from '../utils/httpResponses';
-import {getAdmins, getAdminByCPF, getAdminsByName, getDoctors, getDoctorsByExamName, updateAdmin, deleteAdmin} from "../services/adminService";
+import {getOnlyAdmins, getAdminByCPF, getAdminsByName, getDoctors, getDoctorsByExamName, updateAdmin, deleteAdmin} from "../services/adminService";
 
 interface PaginationQuery {
     page?: string;
@@ -21,7 +21,7 @@ export const getAdminListController =  async (req: Request, res: Response) => {
     */
     try {
         const tenantId = req.headers['x-tenant-id'];
-        const result = await getAdmins(parseInt(tenantId as string));
+        const result = await getOnlyAdmins(parseInt(tenantId as string));
         return successResponse(res, result);
 
     } catch (error) {
