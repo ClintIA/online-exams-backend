@@ -15,7 +15,7 @@ router.post('/patientexams', tenantMiddleware, authMiddleware, isAdminMiddleware
 router.get('/patientexams', authMiddleware, tenantMiddleware, isAdminMiddleware, listPatientExamsController);
 router.put('/patientexams/:patientExamId', tenantMiddleware, authMiddleware, isAdminMiddleware, updatePatientExamController);
 router.delete('/patientexams/:patientExamId', tenantMiddleware, authMiddleware, isAdminMiddleware, deletePatientExamController);
-router.patch('/patientexams/attendance/:examId', tenantMiddleware, authMiddleware, isAdminMiddleware, updateExamAttendanceController);
+router.put('/patientexams/attendance/:examId', tenantMiddleware, authMiddleware, isAdminMiddleware, updateExamAttendanceController);
 
 
 export default router;
