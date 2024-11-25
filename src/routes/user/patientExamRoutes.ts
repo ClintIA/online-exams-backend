@@ -6,6 +6,5 @@ import {patientMiddleware} from "../../middlewares/patientMiddleware";
 const router = Router();
 
 router.get('/exams', authMiddleware, patientMiddleware, listPatientExamsController);
-router.patch('/exams/attendance/:examId', authMiddleware, updateExamAttendanceController);
 
 export default router;
