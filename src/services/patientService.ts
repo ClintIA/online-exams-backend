@@ -67,9 +67,10 @@ export const registerPatient = async (patientData: RegisterPatientDTO, tenantId:
         });
     }
 
-   const result = await patientRepository.save(patient);
-    const resultWithoutPassword = { ...result, password: undefined };
-    return { data: resultWithoutPassword, message: 'Paciente registrado com sucesso' };
+    const result = await patientRepository.save(patient);
+    const resultWithoutPassword = { ...result, password: undefined }
+
+    return { data: resultWithoutPassword, message : 'Paciente registrado com sucesso' };
 };
 
 export const loginPatientByCpf = async (loginData: LoginPatientDTO) => {

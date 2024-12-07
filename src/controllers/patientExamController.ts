@@ -1,9 +1,16 @@
 import { Request, Response } from 'express';
-import { listPatientExams, createPatientExam, updatePatientExam, deletePatientExam, updateExamAttendance } from '../services/patientExamService';
+import {
+    listPatientExams,
+    createPatientExam,
+    updatePatientExam,
+    deletePatientExam,
+    updateExamAttendance,
+    createPatientExamWithPatient
+} from '../services/patientExamService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
 import { parseValidInt } from '../utils/parseValidInt';
 import { sendExamReadyNotification, sendExamScheduled } from './notificationController';
-import { CreatePatientExamDTO } from '../types/dto/patientExam/createPatientExamDTO';
+import {CreatePatientExamDTO, CreatePatientExamWithPatientDTO} from '../types/dto/patientExam/createPatientExamDTO';
 import { ListPatientExamsDTO } from '../types/dto/patientExam/listPatientExamsDTO';
 import { UpdatePatientExamDTO } from '../types/dto/patientExam/updatePatientExamDTO';
 
@@ -49,7 +56,28 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
         return errorResponse(res, error);
     }
 };
+export const createPatientExamNewPatientController = async (req: Request, res: Response) => {
+        /*
+         #swagger.tags = ['Admin/PatientExam with New Patient']
+         #swagger.summary = 'Create Patient Exam with register new patient'
+         #swagger.description = 'Booking an exam for a new patient'
+        */
+    try {
+    const tenantId = req.tenantId!;
+    const examData: CreatePatientExamWithPatientDTO = { ...req.body, examDate: new Date(req.body.examDate) };
+    const result = await createPatientExamWithPatient(examData, tenantId);
 
+    //  await sendExamScheduled({
+    //     name: result.patientName!,
+    //     phoneNumber: result.patientPhone!,
+    //     tenantId,
+    //     examDateTime: examData.examDate.toISOString()
+    // });
+        return successResponse(res, result, 'Exame do paciente criado com sucesso', 201);
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+}
 export const createPatientExamController = async (req: Request, res: Response) => {
     /*
      #swagger.tags = ['Admin/PatientExam']

@@ -6,7 +6,7 @@ export interface RegisterPatientDTO {
     phone: string;
     cep: number;
     canal: string;
-    gender: "Masculino" | "Feminino" | "Prefiro não informar";
+    gender: "Masculino" | "Feminino" | "Prefiro não informar" | "Outros";
     health_card_number?: string;
     password?: string;
 }

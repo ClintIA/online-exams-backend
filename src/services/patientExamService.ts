@@ -4,11 +4,13 @@ import { tenantExamsRepository } from '../repositories/tenantExamsRepository';
 import { handleFilterDate } from '../utils/handleDate';
 import { adminRepository } from '../repositories/adminRepository';
 import { patientRepository } from '../repositories/patientRepository';
-import { CreatePatientExamDTO } from '../types/dto/patientExam/createPatientExamDTO';
+import {CreatePatientExamDTO, CreatePatientExamWithPatientDTO} from '../types/dto/patientExam/createPatientExamDTO';
 import { DeletePatientExamDTO } from '../types/dto/patientExam/deletePatientExamDTO';
 import { ListPatientExamsDTO } from '../types/dto/patientExam/listPatientExamsDTO';
 import { UpdatePatientExamDTO } from '../types/dto/patientExam/updatePatientExamDTO';
 import { UpdateExamAttendanceDTO } from '../types/dto/patientExam/updateExamAttendanceDTO';
+import {registerPatient} from "./patientService";
+import {generatePassword} from "../utils/passwordGenerator";
 
 export const listPatientExams = async (filters: ListPatientExamsDTO) => {
     const whereCondition: any = {};
@@ -31,7 +33,6 @@ export const listPatientExams = async (filters: ListPatientExamsDTO) => {
     if (filters.status) {
         whereCondition.status = filters.status;
     }
-
     const [exams, total] = await patientExamsRepository.findAndCount({
         where: whereCondition,
         take: filters.take,
@@ -39,10 +40,21 @@ export const listPatientExams = async (filters: ListPatientExamsDTO) => {
         relations: ['patient', 'exam', 'exam.tenant','doctor'],
         order: { examDate: 'DESC' }
     });
-
     return { exams, total };
 };
+export const createPatientExamWithPatient = async (examData: CreatePatientExamWithPatientDTO, tenantId: number) => {
+    try {
+        const password = generatePassword({
+            full_name: examData.patientData.full_name,
+            dob: examData.patientData.dob,
+        });
+        const newPatient = await registerPatient({ ...examData.patientData, password }, tenantId);
 
+        return await createPatientExam({ ...examData, patientId: newPatient.data.id });
+    } catch (error) {
+        throw new Error('Erro ao criar paciente');
+    }
+}
 export const createPatientExam = async (examData: CreatePatientExamDTO) => {
     const exam = await tenantExamsRepository.findOne({ where: { id: examData.examId } });
     const patient = await patientRepository.findOne({ where: { id: examData.patientId } });
