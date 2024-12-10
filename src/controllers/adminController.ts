@@ -143,9 +143,9 @@ export const updateAdminController = async (req: Request, res: Response) => {
     */
     try {
         const adminId = parseInt(req.params.id);
-        const { email, fullName, cpf, CRM, phone } = req.body;
+        const { email, fullName, cpf, CRM, phone, occupation } = req.body;
         
-        const result = await updateAdmin(adminId, { email, fullName, cpf, CRM, phone });
+        const result = await updateAdmin(adminId, { email, fullName, cpf, CRM, phone, occupation });
         return successResponse(res, result, 'Admin atualizado com sucesso');
     } catch (error) {
         return errorResponse(res, error);

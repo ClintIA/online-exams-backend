@@ -4,4 +4,5 @@ export interface UpdateAdminDTO {
     cpf?: string;
     CRM?: string;
     phone?: string;
+    occupation?: string
 }
