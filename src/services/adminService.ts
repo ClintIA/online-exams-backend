@@ -59,7 +59,7 @@ export const getOnlyAdmins = async (tenantId: number) => {
 
 export const getDoctors = async ({ tenantId, take = 10, skip = 0 }: GetDoctorsDTO) => {
     const [doctors, total] = await adminRepository.findAndCount({
-        select: { id: true, fullName: true, cpf: true, email: true, CRM: true, phone: true, created_at: true },
+        select: { id: true, fullName: true, cpf: true, email: true, CRM: true,occupation: true, phone: true, created_at: true },
         take,
         skip,
         where: { isDoctor: true, tenant: { id: tenantId } }

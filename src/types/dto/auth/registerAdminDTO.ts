@@ -6,4 +6,5 @@ export interface RegisterAdminDTO {
     phone?: string;
     isDoctor?: boolean;
     password?: string;
+    occupation?: string
 }

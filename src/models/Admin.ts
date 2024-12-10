@@ -3,7 +3,7 @@ import { Tenant } from './Tenant';
 import { TenantExams } from './TenantExams';
 
 @Entity()
-@Index(['id', 'cpf', 'fullName'])
+@Index(['id', 'cpf', 'fullName', 'occupation'])
 export class Admin {
     @PrimaryGeneratedColumn()
     id!: number;
@@ -25,6 +25,9 @@ export class Admin {
 
     @Column()
     fullName!: string;
+
+    @Column({ nullable: true})
+    occupation?: string;
 
     @Column({ nullable: true })
     sessionToken?: string;
