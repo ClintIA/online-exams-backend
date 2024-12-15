@@ -8,7 +8,6 @@ import { RegisterPatientDTO } from '../types/dto/auth/registerPatientDTO';
 import { LoginAdminDTO } from '../types/dto/auth/loginAdminDTO';
 import { RegisterAdminDTO } from '../types/dto/auth/registerAdminDTO';
 import { LoginPatientDTO } from '../types/dto/auth/loginPatientDTO';
-import {addDoctorToExam} from "../services/tenantExamService";
 
 export const registerAdminController = async (req: Request, res: Response) => {
     /*

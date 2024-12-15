@@ -24,8 +24,6 @@ export const getAdminListController =  async (req: Request, res: Response) => {
         return errorResponse(res, error);
     }
 }
-
-
 export const getAdminsByCPFController = async (req: Request, res: Response) => {
     /*
     #swagger.tags = ['Admin']
@@ -83,9 +81,7 @@ export const updateAdminController = async (req: Request, res: Response) => {
     }
 };
 
-/**
- * Deleta um admin existente
- */
+
 export const deleteAdminController = async (req: Request, res: Response) => {
     /*
     #swagger.tags = ['Admin']

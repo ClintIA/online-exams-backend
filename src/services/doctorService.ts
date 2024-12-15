@@ -3,6 +3,14 @@ import {doctorRepository} from "../repositories/doctorRepository";
 import {ILike} from "typeorm";
 import {Request, Response} from "express";
 import {errorResponse, successResponse} from "../utils/httpResponses";
+import {RegisterAdminDTO} from "../types/dto/auth/registerAdminDTO";
+import {generatePasswordByCpfAndName} from "../utils/passwordGenerator";
+import {registerAdmin} from "./adminService";
+import bcrypt from "bcryptjs";
+import {tenantRepository} from "../repositories/tenantRepository";
+import {adminRepository} from "../repositories/adminRepository";
+import {RegisterDoctorDTO} from "../types/dto/doctor/registerDoctorDTO";
+import {UpdateAdminDTO} from "../types/dto/admin/updateAdminDTO";
 
 interface PaginationQuery {
     page?: string;
@@ -23,7 +31,24 @@ export const getDoctors = async ({ tenantId, take = 10, skip = 0 }: GetDoctorsDT
     });
     return { doctors, total };
 };
-
+export const registerDoctor = async (doctorData: RegisterDoctorDTO, tenantId: number) => {
+    const hashedPassword = await bcrypt.hash(doctorData.password!, 10);
+    const tenant = await tenantRepository.findOne({ where: { id: tenantId } });
+    if(!tenant){
+        throw new Error('Tenant not found!');
+    }
+    const newAdmin = doctorRepository.create({
+        ...doctorData,
+        password: hashedPassword,
+        tenant: tenant
+    });
+    try {
+        const result = await adminRepository.save(newAdmin);
+        return { data: result, message: 'Admin registrado com sucesso' };
+    } catch (error) {
+        throw new Error("Erro ao registrar admin: Verifique se o email ou CPF já existe.");
+    }
+};
 export const getDoctorsByExamNameController = async (req: Request, res: Response) => {
     /*
     #swagger.tags = ['Admin']
@@ -94,4 +119,20 @@ export const getDoctorsByExamName = async (examName: string) => {
         relations: ['exams'],
         select: { id: true, fullName: true }
     });
+};
+
+export const updateDoctorService = async (doctorID: number, updateData: RegisterDoctorDTO) => {
+    const result = await doctorRepository.update(doctorID, updateData);
+
+    if (result.affected === 0) throw new Error('Admin não encontrado');
+
+    return { message: 'Admin atualizado com sucesso' };
+};
+
+export const deleteDoctorService = async (doctorID: number) => {
+    const result = await doctorRepository.delete(doctorID);
+
+    if (result.affected === 0) throw new Error('Admin não encontrado');
+
+    return { message: 'Admin deletado com sucesso' };
 };
