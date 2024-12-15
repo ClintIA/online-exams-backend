@@ -6,6 +6,7 @@ import {findDoctorsById} from "./adminService";
 import {Admin} from "../models/Admin";
 import {updatePatient} from "../controllers/patientController";
 import {updateExamController} from "../controllers/tenantExamController";
+import {tenantMiddleware} from "../middlewares/tenantMiddleware";
 
 export const createExam = async (examData: CreateExamDTO) => {
     const doctors: Admin[] = [];
@@ -31,6 +32,25 @@ export const getExams = async (filters: ListExamsDTO) => {
     return await tenantExamsRepository.find({
         where: { tenant: { id: filters.tenantId } }, relations: ['doctors']
     });
+};
+export const addDoctorToExam = async (examsID: string[], doctor: Admin) => {
+    for (const id of examsID) {
+        const doctors: Admin[] = []
+    await tenantExamsRepository.findOne({ where: { id: parseInt(id) } }).then(
+            async (result) => {
+                if(result) {
+                    doctors.push(doctor)
+                    await tenantExamsRepository.save(
+                    { ...result, doctors: doctors}
+                    )
+                } else {
+                    throw new Error('Erro ao Cadastrar Exame')
+                }
+            }
+        )
+
+    }
+    return { message: 'Médico adicionado ao exame com sucesso' };
 };
 
 export const updateExam = async (examId: number, examData: UpdateExamDTO) => {

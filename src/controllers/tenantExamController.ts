@@ -21,6 +21,7 @@ export const createExamController = async (req: Request, res: Response) => {
     }
 };
 
+
 export const getExamsController = async (req: Request, res: Response) => {
     /*
     #swagger.tags = ['Admin/TenantExam']

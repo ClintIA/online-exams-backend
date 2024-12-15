@@ -8,6 +8,7 @@ import { RegisterPatientDTO } from '../types/dto/auth/registerPatientDTO';
 import { LoginAdminDTO } from '../types/dto/auth/loginAdminDTO';
 import { RegisterAdminDTO } from '../types/dto/auth/registerAdminDTO';
 import { LoginPatientDTO } from '../types/dto/auth/loginPatientDTO';
+import {addDoctorToExam} from "../services/tenantExamService";
 
 export const registerAdminController = async (req: Request, res: Response) => {
     /*
@@ -16,16 +17,23 @@ export const registerAdminController = async (req: Request, res: Response) => {
     #swagger.description = 'Route to create a new admin/doctor'
     */
     try {
-        const adminData: RegisterAdminDTO = req.body;
+        const newAdmin: RegisterAdminDTO = req.body.adminData;
+        const exams: string[] = req.body.exams;
         const tenantId = req.tenantId!;
 
-        const password = generatePasswordByCpfAndName(adminData.cpf, adminData.fullName);
+        const password = generatePasswordByCpfAndName(newAdmin.cpf, newAdmin.fullName);
 
         const result = await registerAdmin(
-            { ...adminData, password, isDoctor: adminData.isDoctor ?? false },
+            { ...newAdmin, password, isDoctor: newAdmin.isDoctor ?? false },
             tenantId
         );
 
+        if(exams) {
+            const addDoctor = await addDoctorToExam(exams, result.data)
+            if(!addDoctor) {
+                 new Error('Erro ao Cadastrar Médico')
+            }
+        }
         // await sendLoginInfoToAdmin({
         //     name: adminData.fullName,
         //     phoneNumber: adminData.phone || "",

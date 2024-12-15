@@ -29,8 +29,8 @@ export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: numbe
         tenant: tenant
     });
     try {
-        await adminRepository.save(newAdmin);
-        return { message: 'Admin registrado com sucesso' };
+        const result = await adminRepository.save(newAdmin);
+        return { data: result, message: 'Admin registrado com sucesso' };
     } catch (error) {
         throw new Error("Erro ao registrar admin: Verifique se o email ou CPF já existe.");
     }

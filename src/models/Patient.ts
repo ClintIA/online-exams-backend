@@ -33,7 +33,7 @@ export class Patient {
     @Column()
     phone?: string;
 
-    @Column()
+    @Column({ nullable: true })
     cep?: number;
 
     @Column()
