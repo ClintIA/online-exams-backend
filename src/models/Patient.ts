@@ -5,7 +5,7 @@ import {
     CreateDateColumn,
     ManyToMany,
     Index,
-    JoinTable, OneToMany
+    JoinTable
 } from 'typeorm';
 import { Tenant } from './Tenant';
 
@@ -33,8 +33,11 @@ export class Patient {
     @Column()
     phone?: string;
 
-    @Column({ nullable: true })
+    @Column()
     cep?: number;
+
+    @Column({ default: 'patient' } )
+    role!: string;
 
     @Column()
     canal?: string;

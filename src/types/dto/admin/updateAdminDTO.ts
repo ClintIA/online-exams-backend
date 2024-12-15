@@ -1,8 +1,8 @@
 export interface UpdateAdminDTO {
-    email?: string;
-    fullName?: string;
-    cpf?: string;
-    CRM?: string;
+    email: string;
+    cpf: string;
+    fullName: string;
     phone?: string;
-    occupation?: string
+    role?: string;
+    cep?: string;
 }

@@ -13,10 +13,6 @@ const findAdminByEmail = async (email: string): Promise<Admin | null> => {
     return await adminRepository.findOne({ where: { email }, relations: ['tenant'] });
 };
 
-export const findDoctorsById = async (id: number): Promise<Admin | null> => {
-    return await adminRepository.findOne({ where: { id } });
-};
-
 export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: number) => {
     const hashedPassword = await bcrypt.hash(adminData.password!, 10);
     const tenant = await tenantRepository.findOne({ where: { id: tenantId } });
@@ -50,22 +46,13 @@ export const loginAdmin = async (loginData: LoginAdminDTO) => {
     return token;
 };
 
-export const getOnlyAdmins = async (tenantId: number) => {
+export const getAdmins = async (tenantId: number) => {
     return await adminRepository.find({
         select: { id: true, fullName: true, cpf: true, email: true, phone: true, created_at: true },
-        where: { tenant: { id: tenantId }, isDoctor: false }
+        where: { tenant: { id: tenantId } }
     });
 };
 
-export const getDoctors = async ({ tenantId, take = 10, skip = 0 }: GetDoctorsDTO) => {
-    const [doctors, total] = await adminRepository.findAndCount({
-        select: { id: true, fullName: true, cpf: true, email: true, CRM: true,occupation: true, phone: true, created_at: true },
-        take,
-        skip,
-        where: { isDoctor: true, tenant: { id: tenantId } }
-    });
-    return { doctors, total };
-};
 
 export const getAdminByCPF = async (cpf: string) => {
     return await adminRepository.findOne({
@@ -81,13 +68,6 @@ export const getAdminsByName = async (name: string) => {
     });
 };
 
-export const getDoctorsByExamName = async (examName: string) => {
-    return await adminRepository.find({
-        where: { exams: { exam_name: ILike(`%${examName}%`) }, isDoctor: true },
-        relations: ['exams'],
-        select: { id: true, fullName: true }
-    });
-};
 
 export const updateAdmin = async (adminId: number, updateData: UpdateAdminDTO) => {
     const result = await adminRepository.update(adminId, updateData);

@@ -17,23 +17,16 @@ export const registerAdminController = async (req: Request, res: Response) => {
     #swagger.description = 'Route to create a new admin/doctor'
     */
     try {
-        const newAdmin: RegisterAdminDTO = req.body.adminData;
-        const exams: string[] = req.body.exams;
+        const newAdmin: RegisterAdminDTO = req.body;
         const tenantId = req.tenantId!;
 
         const password = generatePasswordByCpfAndName(newAdmin.cpf, newAdmin.fullName);
 
         const result = await registerAdmin(
-            { ...newAdmin, password, isDoctor: newAdmin.isDoctor ?? false },
+            { ...newAdmin, password},
             tenantId
         );
 
-        if(exams) {
-            const addDoctor = await addDoctorToExam(exams, result.data)
-            if(!addDoctor) {
-                 new Error('Erro ao Cadastrar Médico')
-            }
-        }
         // await sendLoginInfoToAdmin({
         //     name: adminData.fullName,
         //     phoneNumber: adminData.phone || "",
