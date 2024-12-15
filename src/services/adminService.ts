@@ -3,7 +3,6 @@ import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/jwtHelper';
 import { adminRepository } from '../repositories/adminRepository';
 import { ILike } from "typeorm";
-import { GetDoctorsDTO } from '../types/dto/admin/getDoctorsDTO';
 import { UpdateAdminDTO } from '../types/dto/admin/updateAdminDTO';
 import { LoginAdminDTO } from '../types/dto/auth/loginAdminDTO';
 import { RegisterAdminDTO } from '../types/dto/auth/registerAdminDTO';

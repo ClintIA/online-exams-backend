@@ -8,6 +8,7 @@ import {
     JoinTable
 } from 'typeorm';
 import { Tenant } from './Tenant';
+import {ProfileRole} from "../types/enums/role";
 
 @Entity()
 @Index(['id'])
@@ -37,7 +38,7 @@ export class Patient {
     cep?: number;
 
     @Column({ default: 'patient' } )
-    role!: string;
+    role!: ProfileRole;
 
     @Column()
     canal?: string;

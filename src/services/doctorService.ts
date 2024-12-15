@@ -1,16 +1,11 @@
-import {GetDoctorsDTO} from "../types/dto/admin/getDoctorsDTO";
+import {GetDoctorsDTO} from "../types/dto/doctor/getDoctorsDTO";
 import {doctorRepository} from "../repositories/doctorRepository";
 import {ILike} from "typeorm";
 import {Request, Response} from "express";
 import {errorResponse, successResponse} from "../utils/httpResponses";
-import {RegisterAdminDTO} from "../types/dto/auth/registerAdminDTO";
-import {generatePasswordByCpfAndName} from "../utils/passwordGenerator";
-import {registerAdmin} from "./adminService";
 import bcrypt from "bcryptjs";
 import {tenantRepository} from "../repositories/tenantRepository";
-import {adminRepository} from "../repositories/adminRepository";
 import {RegisterDoctorDTO} from "../types/dto/doctor/registerDoctorDTO";
-import {UpdateAdminDTO} from "../types/dto/admin/updateAdminDTO";
 
 interface PaginationQuery {
     page?: string;
@@ -37,21 +32,21 @@ export const registerDoctor = async (doctorData: RegisterDoctorDTO, tenantId: nu
     if(!tenant){
         throw new Error('Tenant not found!');
     }
-    const newAdmin = doctorRepository.create({
+    const newDoctor = doctorRepository.create({
         ...doctorData,
         password: hashedPassword,
         tenant: tenant
     });
     try {
-        const result = await adminRepository.save(newAdmin);
-        return { data: result, message: 'Admin registrado com sucesso' };
+        const result = await doctorRepository.save(newDoctor);
+        return { data: result, message: 'Médico registrado com sucesso' };
     } catch (error) {
-        throw new Error("Erro ao registrar admin: Verifique se o email ou CPF já existe.");
+        throw new Error("Erro ao registrar médico: Verifique se o email ou CPF já existe.");
     }
 };
 export const getDoctorsByExamNameController = async (req: Request, res: Response) => {
     /*
-    #swagger.tags = ['Admin']
+    #swagger.tags = ['Doctor']
     #swagger.summary = 'Get Doctors by Exam  '
     #swagger.description = 'Filter Doctors by exam name'
     */
@@ -65,7 +60,7 @@ export const getDoctorsByExamNameController = async (req: Request, res: Response
 };
 export const getDoctorsListController = async (req: Request, res: Response) => {
     /*
-    #swagger.tags = ['Admin']
+    #swagger.tags = ['Doctor']
     #swagger.summary = 'List All Doctors by Tenant with pagination'
     #swagger.description = 'Get All Doctors from a Tenant with pagination By default list 10'
     */
@@ -121,18 +116,26 @@ export const getDoctorsByExamName = async (examName: string) => {
     });
 };
 
+export const findDoctorsById = async (id: number) => {
+    return await doctorRepository.findOne({
+        where: {
+            id
+        }
+    })
+}
+
 export const updateDoctorService = async (doctorID: number, updateData: RegisterDoctorDTO) => {
     const result = await doctorRepository.update(doctorID, updateData);
 
-    if (result.affected === 0) throw new Error('Admin não encontrado');
+    if (result.affected === 0) throw new Error('Médico não encontrado');
 
-    return { message: 'Admin atualizado com sucesso' };
+    return { message: 'Médico atualizado com sucesso' };
 };
 
 export const deleteDoctorService = async (doctorID: number) => {
     const result = await doctorRepository.delete(doctorID);
 
-    if (result.affected === 0) throw new Error('Admin não encontrado');
+    if (result.affected === 0) throw new Error('Médico não encontrado');
 
-    return { message: 'Admin deletado com sucesso' };
+    return { message: 'Médico deletado com sucesso' };
 };

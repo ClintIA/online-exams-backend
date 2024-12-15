@@ -1,15 +1,16 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { TokenPayload } from '../types/interfaces/tokenPayload';
+import {ProfileRole} from "../types/enums/role";
 
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export const generateToken = (userId: number, isAdmin: boolean, tenantId?: number): string => {
-    const payload: TokenPayload = isAdmin ? { userId, tenantId: tenantId!, isAdmin } : { userId, isAdmin };
+export const generateToken = (userId: number, role: ProfileRole, tenantId?: number): string => {
+    const payload: TokenPayload =  { userId, tenantId: tenantId!, role };
     
-    const expiresIn = isAdmin ? '7d' : '3d';
+    const expiresIn = role === 'admin' ? '7d' : '3d';
 
     return jwt.sign(payload, JWT_SECRET!, { expiresIn });
 };

@@ -2,14 +2,11 @@ import { tenantExamsRepository } from '../repositories/tenantExamsRepository';
 import { CreateExamDTO } from '../types/dto/tenantExam/createExamDTO';
 import { ListExamsDTO } from '../types/dto/tenantExam/listExamsDTO';
 import { UpdateExamDTO } from '../types/dto/tenantExam/updateExamDTO';
-import {findDoctorsById} from "./adminService";
-import {Admin} from "../models/Admin";
-import {updatePatient} from "../controllers/patientController";
-import {updateExamController} from "../controllers/tenantExamController";
-import {tenantMiddleware} from "../middlewares/tenantMiddleware";
+import {Doctor} from "../models/Doctor";
+import {findDoctorsById} from "./doctorService";
 
 export const createExam = async (examData: CreateExamDTO) => {
-    const doctors: Admin[] = [];
+    const doctors: Doctor[] = [];
 
     for (const doctorId of examData.doctors) {
         const doctor =  await findDoctorsById(parseInt(doctorId));
@@ -33,9 +30,9 @@ export const getExams = async (filters: ListExamsDTO) => {
         where: { tenant: { id: filters.tenantId } }, relations: ['doctors']
     });
 };
-export const addDoctorToExam = async (examsID: string[], doctor: Admin) => {
+export const addDoctorToExam = async (examsID: string[], doctor: Doctor) => {
     for (const id of examsID) {
-        const doctors: Admin[] = []
+        const doctors: Doctor[] = []
     await tenantExamsRepository.findOne({ where: { id: parseInt(id) } }).then(
             async (result) => {
                 if(result) {
@@ -54,7 +51,7 @@ export const addDoctorToExam = async (examsID: string[], doctor: Admin) => {
 };
 
 export const updateExam = async (examId: number, examData: UpdateExamDTO) => {
-    const doctors: Admin[] = [];
+    const doctors: Doctor[] = [];
 
     for (const doctorId of examData.doctors) {
         const doctor =  await findDoctorsById(parseInt(doctorId));

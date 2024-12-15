@@ -11,6 +11,7 @@ import { UpdatePatientExamDTO } from '../types/dto/patientExam/updatePatientExam
 import { UpdateExamAttendanceDTO } from '../types/dto/patientExam/updateExamAttendanceDTO';
 import {registerPatient} from "./patientService";
 import {generatePassword} from "../utils/passwordGenerator";
+import {doctorRepository} from "../repositories/doctorRepository";
 
 export const listPatientExams = async (filters: ListPatientExamsDTO) => {
     const whereCondition: any = {};
@@ -59,7 +60,7 @@ export const createPatientExam = async (examData: CreatePatientExamDTO) => {
     const exam = await tenantExamsRepository.findOne({ where: { id: examData.examId } });
     const patient = await patientRepository.findOne({ where: { id: examData.patientId } });
     const createdBy = await adminRepository.findOne({ where: { id: examData.userId } });
-    const doctor = await adminRepository.findOne({ where: { id: examData.doctorId } });
+    const doctor = await doctorRepository.findOne({ where: { id: examData.doctorId } });
     if (!exam || !patient || !createdBy) {
         throw new Error('Dados inválidos');
     }
