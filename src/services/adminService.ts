@@ -1,12 +1,13 @@
-import { Admin } from '../models/Admin';
+import {Admin} from '../models/Admin';
 import bcrypt from 'bcryptjs';
-import { generateToken } from '../utils/jwtHelper';
-import { adminRepository } from '../repositories/adminRepository';
-import { ILike } from "typeorm";
-import { UpdateAdminDTO } from '../types/dto/admin/updateAdminDTO';
-import { LoginAdminDTO } from '../types/dto/auth/loginAdminDTO';
-import { RegisterAdminDTO } from '../types/dto/auth/registerAdminDTO';
+import {generateToken} from '../utils/jwtHelper';
+import {adminRepository} from '../repositories/adminRepository';
+import {ILike} from "typeorm";
+import {UpdateAdminDTO} from '../types/dto/admin/updateAdminDTO';
+import {LoginAdminDTO} from '../types/dto/auth/loginAdminDTO';
+import {RegisterAdminDTO} from '../types/dto/auth/registerAdminDTO';
 import {tenantRepository} from "../repositories/tenantRepository";
+import {ProfileRole} from "../types/enums/role";
 
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
     return await adminRepository.findOne({ where: { email }, relations: ['tenant'] });
@@ -38,7 +39,7 @@ export const loginAdmin = async (loginData: LoginAdminDTO) => {
     const isPasswordValid = await bcrypt.compare(loginData.password, admin.password);
     if (!isPasswordValid) throw new Error('Senha inválida');
 
-    const token = generateToken(admin.id, true, admin.tenant.id);
+    const token = generateToken(admin.id, ProfileRole.admin, admin.tenant.id);
     admin.sessionToken = token;
 
     await adminRepository.save(admin);
@@ -47,7 +48,7 @@ export const loginAdmin = async (loginData: LoginAdminDTO) => {
 
 export const getAdmins = async (tenantId: number) => {
     return await adminRepository.find({
-        select: { id: true, fullName: true, cpf: true, email: true, phone: true, created_at: true },
+        select: { id: true, fullName: true, cpf: true, email: true, phone: true, created_at: true, role: true },
         where: { tenant: { id: tenantId } }
     });
 };
@@ -55,14 +56,14 @@ export const getAdmins = async (tenantId: number) => {
 
 export const getAdminByCPF = async (cpf: string) => {
     return await adminRepository.findOne({
-        select: { email: true, fullName: true, cpf: true },
+        select: { email: true, fullName: true, cpf: true, role: true },
         where: { cpf }
     });
 };
 
 export const getAdminsByName = async (name: string) => {
     return await adminRepository.find({
-        select: { email: true, fullName: true, cpf: true },
+        select: { email: true, fullName: true, cpf: true, role: true },
         where: { fullName: ILike(`%${name}%`) }
     });
 };

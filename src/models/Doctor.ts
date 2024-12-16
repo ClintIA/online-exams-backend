@@ -22,7 +22,7 @@ export class Doctor {
     cep!: string;
 
     @Column({ default: 'doctor' })
-    role!: ProfileRole;
+    role?: ProfileRole;
 
     @Column({ unique: true })
     CNPJ!: string;

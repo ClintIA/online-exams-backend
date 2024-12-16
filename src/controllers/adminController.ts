@@ -72,9 +72,9 @@ export const updateAdminController = async (req: Request, res: Response) => {
     */
     try {
         const adminId = parseInt(req.params.id);
-        const { email, fullName, cpf, cep, phone } = req.body;
+        const { email, fullName, cpf, cep, phone, role } = req.body;
         
-        const result = await updateAdmin(adminId, { email, fullName, cpf, phone, cep });
+        const result = await updateAdmin(adminId, { email, fullName, cpf, phone, cep, role });
         return successResponse(res, result, 'Admin atualizado com sucesso');
     } catch (error) {
         return errorResponse(res, error);
