@@ -114,3 +114,21 @@ export const loginAdminController = async (req: Request, res: Response) => {
     }
 };
 
+export const forgetPasswordController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Auth']
+    #swagger.summary = 'Forget Password'
+    #swagger.description = 'Route to recover password'
+    */
+    try {
+        const { email } = req.body;
+        // const tenantId = req.tenantId!;
+
+        // const result = await forgetPassword(email, tenantId);
+
+        return successResponse(res, 'Email enviado com sucesso');
+    }
+    catch (error) {
+        return errorResponse(res, error);
+    }
+};
