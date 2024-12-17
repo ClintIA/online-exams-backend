@@ -20,8 +20,8 @@ export class Admin {
     @Column({nullable: true})
     phone!: string;
 
-    @Column({ nullable: true } )
-    role!: ProfileRole;
+    @Column( { enum: ProfileRole, nullable: true } )
+    role!: string;
 
     @Column({nullable: true})
     cep!: string;

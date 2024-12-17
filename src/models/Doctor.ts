@@ -21,8 +21,8 @@ export class Doctor {
     @Column()
     cep!: string;
 
-    @Column({ default: 'doctor' })
-    role?: ProfileRole;
+    @Column( { enum: ProfileRole, default: 'doctor' } )
+    role!: string;
 
     @Column({ unique: true })
     CNPJ!: string;

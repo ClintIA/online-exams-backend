@@ -1,8 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../utils/jwtHelper';
-import { errorResponse } from '../utils/httpResponses';
-import { adminRepository } from '../repositories/adminRepository';
-import { patientRepository } from '../repositories/patientRepository';
+import {NextFunction, Request, Response} from 'express';
+import {verifyToken} from '../utils/jwtHelper';
+import {errorResponse} from '../utils/httpResponses';
+import {adminRepository} from '../repositories/adminRepository';
+import {patientRepository} from '../repositories/patientRepository';
+import {ProfileRole} from "../types/enums/role";
+import {doctorRepository} from "../repositories/doctorRepository";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
@@ -17,20 +19,31 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         const decoded = verifyToken(token);
         req.user = decoded;
 
-        const { userId, isAdmin } = decoded;
+        const { userId, role } = decoded;
 
         let validSession = false;
-
-        if (isAdmin) {
-            const admin = await adminRepository.findOne({ where: { id: userId } });
-            if (admin && admin.sessionToken === token) {
-                validSession = true;
-            }
-        } else {
-            const patient = await patientRepository.findOne({ where: { id: userId } });
-            if (patient && patient.sessionToken === token) {
-                validSession = true;
-            }
+        switch (role) {
+            case ProfileRole.admin || ProfileRole.default:
+                const admin = await adminRepository.findOne({ where: { id: userId } });
+                if (admin && admin.sessionToken === token) {
+                    validSession = true;
+                }
+                break;
+            case ProfileRole.patient:
+                const patient = await patientRepository.findOne({ where: { id: userId } });
+                if (patient && patient.sessionToken === token) {
+                    validSession = true;
+                }
+                break;
+            case ProfileRole.doctor:
+                const doctor = await doctorRepository.findOne({ where: { id: userId } });
+                if (doctor && doctor.sessionToken === token) {
+                    validSession = true;
+                }
+                break
+            default:
+                validSession = false;
+                break;
         }
 
         if (!validSession) {

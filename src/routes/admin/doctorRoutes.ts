@@ -14,11 +14,11 @@ import {
 
 const router = Router();
 
-router.get('/exam', tenantMiddleware, authMiddleware, isAdminMiddleware, getDoctorsByExamNameController)
-router.get('/', tenantMiddleware, authMiddleware, isAdminMiddleware,getDoctorsListController)
-router.post('/', authMiddleware, isAdminMiddleware, tenantMiddleware, registerDoctorController);
-router.put('/update/:id', tenantMiddleware, authMiddleware, isAdminMiddleware, updateDoctorController);
-router.delete('/delete/:id', tenantMiddleware, authMiddleware, isAdminMiddleware, deleteDoctorController);
+router.get('doctors/exam', tenantMiddleware, authMiddleware, isAdminMiddleware, getDoctorsByExamNameController)
+router.get('doctors/', tenantMiddleware, authMiddleware, isAdminMiddleware,getDoctorsListController)
+router.post('doctors/', authMiddleware, isAdminMiddleware, tenantMiddleware, registerDoctorController);
+router.put('doctors/update/:id', tenantMiddleware, authMiddleware, isAdminMiddleware, updateDoctorController);
+router.delete('doctors/delete/:id', tenantMiddleware, authMiddleware, isAdminMiddleware, deleteDoctorController);
 
 
 export default router;

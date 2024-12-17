@@ -4,4 +4,5 @@ export enum ProfileRole {
     default = 'default' ,
     doctor = 'doctor' ,
     master = 'master',
+    marketing = 'marketing'
 }

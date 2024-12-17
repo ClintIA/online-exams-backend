@@ -37,8 +37,8 @@ export class Patient {
     @Column()
     cep?: number;
 
-    @Column({ default: 'patient' } )
-    role!: ProfileRole;
+    @Column( { enum: ProfileRole, default: 'patient' } )
+    role!: string;
 
     @Column()
     canal?: string;
