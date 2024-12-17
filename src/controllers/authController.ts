@@ -113,4 +113,3 @@ export const loginAdminController = async (req: Request, res: Response) => {
         return errorResponse(res, error, 401);
     }
 };
-
