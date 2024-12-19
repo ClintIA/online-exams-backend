@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import {ProfileRole} from "./enums/role";
+import {ProfileRole} from "./enums/ProfileRole";
 
 declare module 'express' {
     export interface Request {
@@ -8,7 +8,7 @@ declare module 'express' {
         user?: {
             userId: number;
             tenantId?: number;
-            role: ProfileRole;
+            role: string;
         };
     }
 }

@@ -3,7 +3,6 @@ import {verifyToken} from '../utils/jwtHelper';
 import {errorResponse} from '../utils/httpResponses';
 import {adminRepository} from '../repositories/adminRepository';
 import {patientRepository} from '../repositories/patientRepository';
-import {ProfileRole} from "../types/enums/role";
 import {doctorRepository} from "../repositories/doctorRepository";
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
@@ -22,27 +21,25 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         const { userId, role } = decoded;
 
         let validSession = false;
+
         switch (role) {
-            case ProfileRole.admin || ProfileRole.default:
-                const admin = await adminRepository.findOne({ where: { id: userId } });
-                if (admin && admin.sessionToken === token) {
-                    validSession = true;
-                }
-                break;
-            case ProfileRole.patient:
+            case 'patient':
                 const patient = await patientRepository.findOne({ where: { id: userId } });
                 if (patient && patient.sessionToken === token) {
                     validSession = true;
                 }
                 break;
-            case ProfileRole.doctor:
+            case 'doctor':
                 const doctor = await doctorRepository.findOne({ where: { id: userId } });
                 if (doctor && doctor.sessionToken === token) {
                     validSession = true;
                 }
                 break
             default:
-                validSession = false;
+                const admin = await adminRepository.findOne({ where: { id: userId } });
+                if (admin && admin.sessionToken === token) {
+                    validSession = true;
+                }
                 break;
         }
 

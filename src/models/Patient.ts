@@ -8,7 +8,7 @@ import {
     JoinTable
 } from 'typeorm';
 import { Tenant } from './Tenant';
-import {ProfileRole} from "../types/enums/role";
+import {ProfileRole} from "../types/enums/ProfileRole";
 
 @Entity()
 @Index(['id'])

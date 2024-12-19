@@ -7,7 +7,6 @@ import {PatientFiltersDTO} from '../types/dto/patient/patientFiltersDTO';
 import {UpdatePatientDTO} from '../types/dto/patient/updatePatientDTO';
 import {RegisterPatientDTO} from '../types/dto/auth/registerPatientDTO';
 import {LoginPatientDTO} from '../types/dto/auth/loginPatientDTO';
-import {ProfileRole} from "../types/enums/role";
 
 export const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
     return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
@@ -86,7 +85,7 @@ export const loginPatientByCpf = async (loginData: LoginPatientDTO) => {
         throw new Error('Senha inválida');
     }
 
-    const token = generateToken(patient.id, ProfileRole.patient);
+    const token = generateToken(patient.id, patient.role);
     patient.sessionToken = token;
 
     await patientRepository.save(patient);

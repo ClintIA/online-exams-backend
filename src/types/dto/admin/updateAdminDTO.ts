@@ -1,10 +1,10 @@
-import {ProfileRole} from "../../enums/role";
+import {ProfileRole} from "../../enums/ProfileRole";
 
 export interface UpdateAdminDTO {
     email: string;
     cpf: string;
     fullName: string;
     phone?: string;
-    role?: ProfileRole;
+    role?: string;
     cep?: string;
 }

@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index } from 'typeorm';
 import { Tenant } from './Tenant';
-import {ProfileRole} from "../types/enums/role";
+import {ProfileRole} from "../types/enums/ProfileRole";
 
 @Entity()
 @Index(['id', 'cpf', 'fullName'])
@@ -20,7 +20,7 @@ export class Admin {
     @Column({nullable: true})
     phone!: string;
 
-    @Column( { enum: ProfileRole, nullable: true } )
+    @Column({ enum: ProfileRole, nullable: true })
     role!: string;
 
     @Column({nullable: true})

@@ -7,7 +7,6 @@ import {UpdateAdminDTO} from '../types/dto/admin/updateAdminDTO';
 import {LoginAdminDTO} from '../types/dto/auth/loginAdminDTO';
 import {RegisterAdminDTO} from '../types/dto/auth/registerAdminDTO';
 import {tenantRepository} from "../repositories/tenantRepository";
-import {ProfileRole} from "../types/enums/role";
 
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
     return await adminRepository.findOne({ where: { email }, relations: ['tenant'] });
@@ -39,7 +38,8 @@ export const loginAdmin = async (loginData: LoginAdminDTO) => {
     const isPasswordValid = await bcrypt.compare(loginData.password, admin.password);
     if (!isPasswordValid) throw new Error('Senha inválida');
 
-    const token = generateToken(admin.id, ProfileRole.admin, admin.tenant.id);
+
+    const token = generateToken(admin.id, admin.role, admin.tenant.id);
     admin.sessionToken = token;
 
     await adminRepository.save(admin);
@@ -48,11 +48,10 @@ export const loginAdmin = async (loginData: LoginAdminDTO) => {
 
 export const getAdmins = async (tenantId: number) => {
     return await adminRepository.find({
-        select: { id: true, fullName: true, cpf: true, email: true, phone: true, created_at: true, role: true },
+        select: { id: true, fullName: true, cpf: true, email: true, cep: true, phone: true, created_at: true, role: true },
         where: { tenant: { id: tenantId } }
     });
 };
-
 
 export const getAdminByCPF = async (cpf: string) => {
     return await adminRepository.findOne({
@@ -78,6 +77,11 @@ export const updateAdmin = async (adminId: number, updateData: UpdateAdminDTO) =
 };
 
 export const deleteAdmin = async (adminId: number) => {
+    const admin = await adminRepository.findOne({ where: { id: adminId}});
+
+    if(admin?.role === 'master') {
+        throw new Error("Não é possível deletar o admin selecionado")
+    }
     const result = await adminRepository.delete(adminId);
 
     if (result.affected === 0) throw new Error('Admin não encontrado');

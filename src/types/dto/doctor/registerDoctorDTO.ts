@@ -1,11 +1,11 @@
-import {ProfileRole} from "../../enums/role";
+import {ProfileRole} from "../../enums/ProfileRole";
 
 export interface RegisterDoctorDTO {
     cpf: string;
     fullName: string;
     CRM?: string;
     phone?: string;
-    role?: ProfileRole;
+    role?: string;
     cep?: string;
     CNPJ?:string;
     occupation?:string;

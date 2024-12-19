@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index, ManyToMany, JoinTable } from 'typeorm';
 import { Tenant } from './Tenant';
 import { TenantExams } from './TenantExams';
-import {ProfileRole} from "../types/enums/role";
+import {ProfileRole} from "../types/enums/ProfileRole";
 
 @Entity()
 @Index(['id', 'CRM', 'fullName', 'occupation'])
@@ -25,7 +25,7 @@ export class Doctor {
     role!: string;
 
     @Column({ unique: true })
-    CNPJ!: string;
+    cnpj!: string;
 
     @Column({ nullable: true })
     phone!: string;
