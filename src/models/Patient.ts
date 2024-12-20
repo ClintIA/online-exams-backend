@@ -34,8 +34,8 @@ export class Patient {
     @Column()
     phone?: string;
 
-    @Column()
-    cep?: number;
+    @Column({ nullable: true })
+    cep?: string;
 
     @Column( { enum: ProfileRole, default: 'patient' } )
     role!: string;

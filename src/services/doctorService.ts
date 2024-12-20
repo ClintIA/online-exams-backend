@@ -19,7 +19,8 @@ interface GetDoctorsResult {
 }
 export const getDoctors = async ({ tenantId, take = 10, skip = 0 }: GetDoctorsDTO) => {
     const [doctors, total] = await doctorRepository.findAndCount({
-        select: { id: true, fullName: true, cpf: true, CRM: true,occupation: true, phone: true, created_at: true },
+        select: { id: true, fullName: true, cpf: true, role:true, CRM: true,occupation: true, phone: true, created_at: true },
+        relations: ['exams'],
         take,
         skip,
         where: { tenant: { id: tenantId } }
@@ -35,7 +36,8 @@ export const registerDoctor = async (doctorData: RegisterDoctorDTO, tenantId: nu
     const newDoctor = doctorRepository.create({
         ...doctorData,
         password: hashedPassword,
-        tenant: tenant
+        tenant: tenant,
+        role: 'doctor'
     });
     try {
         const result = await doctorRepository.save(newDoctor);

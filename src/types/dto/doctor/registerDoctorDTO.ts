@@ -1,4 +1,3 @@
-import {ProfileRole} from "../../enums/ProfileRole";
 
 export interface RegisterDoctorDTO {
     cpf: string;

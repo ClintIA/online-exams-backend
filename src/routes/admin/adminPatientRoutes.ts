@@ -7,7 +7,7 @@ import {isAdminMiddleware} from "../../middlewares/isAdminMiddleware";
 const router = Router();
 
 router.get('/patients', tenantMiddleware, authMiddleware, isAdminMiddleware, listPatients);
-router.put('/patient', tenantMiddleware, authMiddleware, isAdminMiddleware, updatePatient);
+router.put('/patient/:patientId', tenantMiddleware, authMiddleware, isAdminMiddleware, updatePatient);
 router.delete('/patient/:patientId', tenantMiddleware, authMiddleware, isAdminMiddleware, deletePatient);
 
 

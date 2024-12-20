@@ -39,9 +39,11 @@ export const deletePatientService = async (patientId: number) => {
     return { message: "Paciente deletado com sucesso" };
 }
 
-export const updatePatientService = async (patientData: UpdatePatientDTO) => {
+export const updatePatientService = async (patientData: UpdatePatientDTO, patientId: number) => {
+        console.log(patientData)
     try {
-        await patientRepository.update({ cpf: patientData.cpf }, patientData);
+       const result = await patientRepository.save(patientData);
+        console.log(result)
         return { message: 'Dados do paciente atualizados' };
     } catch (error) {
         throw new Error('Erro ao atualizar os dados do paciente');
@@ -50,7 +52,7 @@ export const updatePatientService = async (patientData: UpdatePatientDTO) => {
 
 export const registerPatient = async (patientData: RegisterPatientDTO, tenantId: number) => {
     let patient = await findPatientByCpf(patientData.cpf);
-
+    console.log(patient)
     if (patient) {
         if (patient.tenants.some(t => t.id === tenantId)) {
             throw new Error('Paciente já está associado a essa clínica');
@@ -64,9 +66,9 @@ export const registerPatient = async (patientData: RegisterPatientDTO, tenantId:
             ...patientData,
             password: hashedPassword,
             tenants: [{ id: tenantId } as any],
+            role: 'patient'
         });
     }
-
     const result = await patientRepository.save(patient);
     const resultWithoutPassword = { ...result, password: undefined }
 

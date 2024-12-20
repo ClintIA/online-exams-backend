@@ -50,7 +50,6 @@ export const createPatientExamWithPatient = async (examData: CreatePatientExamWi
             dob: examData.patientData.dob,
         });
         const newPatient = await registerPatient({ ...examData.patientData, password }, tenantId);
-
         return await createPatientExam({ ...examData, patientId: newPatient.data.id });
     } catch (error) {
         throw new Error('Erro ao criar paciente');
@@ -64,7 +63,6 @@ export const createPatientExam = async (examData: CreatePatientExamDTO) => {
     if (!exam || !patient || !createdBy) {
         throw new Error('Dados inválidos');
     }
-
     const newPatientExam = patientExamsRepository.create({
         exam,
         patient,
@@ -73,7 +71,6 @@ export const createPatientExam = async (examData: CreatePatientExamDTO) => {
         status: 'Scheduled',
         ...(examData.doctorId && { doctor: { id: examData.doctorId } })
     });
-
     const result = await patientExamsRepository.save(newPatientExam);
     const confirmationData = {
         exam_name: result.exam.exam_name,

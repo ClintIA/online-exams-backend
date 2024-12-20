@@ -45,13 +45,13 @@ export const updatePatient = async (req: Request, res: Response) => {
     */
     const tenantId = req.tenantId;
     const patientData: UpdatePatientDTO = req.body;
-
+    const { patientId } = req.params;
     if (!tenantId) {
         throw new Error('Tenant não encontrado');
     }
 
     try {
-        const result = await updatePatientService(patientData);
+        const result = await updatePatientService(patientData, parseInt(patientId));
         return successResponse(res, result);
     } catch (error) {
         return errorResponse(res, error);
