@@ -39,7 +39,7 @@ export const listPatientExams = async (filters: ListPatientExamsDTO) => {
         take: filters.take,
         skip: filters.skip,
         relations: ['patient', 'exam', 'exam.tenant','doctor'],
-        order: { examDate: 'DESC' }
+        order: { examDate: 'ASC' },
     });
     return { exams, total };
 };
