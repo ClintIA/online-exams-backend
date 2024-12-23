@@ -3,7 +3,14 @@ import {generatePasswordByCpfAndName} from "../utils/passwordGenerator";
 import {errorResponse, successResponse} from "../utils/httpResponses";
 import {RegisterDoctorDTO} from "../types/dto/doctor/registerDoctorDTO";
 import {addDoctorToExam} from "../services/tenantExamService";
-import {registerDoctor, updateDoctorService, deleteDoctorService} from "../services/doctorService";
+import {
+    registerDoctor,
+    updateDoctorService,
+    deleteDoctorService,
+    getDoctorsByExamName, getDoctors
+} from "../services/doctorService";
+import {GetDoctorsResult} from "../types/dto/doctor/getDoctorResult";
+import {PaginationQuery} from "../types/dto/doctor/paginationQuery";
 
 export const registerDoctorController = async (req: Request, res: Response) => {
     /*
@@ -48,15 +55,78 @@ export const updateDoctorController = async (req: Request, res: Response) => {
     */
     try {
         const doctorID = parseInt(req.params.id);
-        const { CRM, fullName, cpf, cep, phone, CNPJ, occupation } = req.body;
+        const { CRM, fullName, cpf, cep, phone, email, CNPJ, occupation } = req.body;
 
-        const result = await updateDoctorService(doctorID, { CRM, fullName, cpf, cep, phone, CNPJ, occupation });
+        const result = await updateDoctorService(doctorID, { CRM, fullName, email, cpf, cep, phone, CNPJ, occupation });
         return successResponse(res, result, 'Médico atualizado com sucesso');
     } catch (error) {
         return errorResponse(res, error);
     }
 };
+export const getDoctorsByExamNameController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Doctor']
+    #swagger.summary = 'Get Doctors by Exam  '
+    #swagger.description = 'Filter Doctors by exam name'
+    */
+    try {
+        const { examName } = req.query;
+        const result = await getDoctorsByExamName(examName as string);
+        return successResponse(res, result, 'Doutores associados ao exame listados com sucesso');
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+};
+export const getDoctorsListController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Doctor']
+    #swagger.summary = 'List All Doctors by Tenant with pagination'
+    #swagger.description = 'Get All Doctors from a Tenant with pagination By default list 10'
+    */
+    try {
+        const tenantId = req.headers['x-tenant-id'];
+        if (!tenantId || typeof tenantId !== 'string') {
+            return errorResponse(res, new Error('Tenant ID inválido ou não informado'), 400);
+        }
 
+        const { page, take, skip  } = req.query as PaginationQuery;
+
+        const numericParams = {
+            tenantId: parseInt(tenantId),
+            take: take || 10,
+            skip: skip || 0,
+            page: page || 1
+        };
+
+        if (Object.values(numericParams).some(isNaN)) {
+            return errorResponse(res, new Error('Invalid pagination parameters'), 400);
+        }
+        const result: GetDoctorsResult = await getDoctors({
+            tenantId: numericParams.tenantId,
+            take: numericParams.take,
+            skip: numericParams.skip
+        });
+
+        const remaining = result.total - result.doctors.length;
+
+        const message = `Mostrando ${result.doctors.length} de ${result.total} médicos (${remaining} faltando)`;
+
+        return successResponse(res, {
+            data: result.doctors,
+            pagination: {
+                total: result.total,
+                page: numericParams.page,
+                take: numericParams.take,
+                skip: numericParams.skip,
+                remaining
+            }
+        }, message);
+
+    } catch (error) {
+        console.error('Error in getDoctorsListController', error);
+        return errorResponse(res, error);
+    }
+};
 
 export const deleteDoctorController = async (req: Request, res: Response) => {
     /*

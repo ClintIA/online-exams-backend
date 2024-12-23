@@ -7,15 +7,17 @@ import {UpdateAdminDTO} from '../types/dto/admin/updateAdminDTO';
 import {LoginAdminDTO} from '../types/dto/auth/loginAdminDTO';
 import {RegisterAdminDTO} from '../types/dto/auth/registerAdminDTO';
 import {tenantRepository} from "../repositories/tenantRepository";
+import {findDoctorsByEmail, findDoctorsById} from "./doctorService";
+import { Doctor } from '../models/Doctor';
 
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
-    return await adminRepository.findOne({ where: { email }, relations: ['tenant'] });
+    return await adminRepository.findOne({where: {email}, relations: ['tenant']});
 };
 
 export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: number) => {
     const hashedPassword = await bcrypt.hash(adminData.password!, 10);
-    const tenant = await tenantRepository.findOne({ where: { id: tenantId } });
-    if(!tenant){
+    const tenant = await tenantRepository.findOne({where: {id: tenantId}});
+    if (!tenant) {
         throw new Error('Tenant not found!');
     }
     const newAdmin = adminRepository.create({
@@ -25,14 +27,19 @@ export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: numbe
     });
     try {
         const result = await adminRepository.save(newAdmin);
-        return { data: result, message: 'Admin registrado com sucesso' };
+        return {data: result, message: 'Admin registrado com sucesso'};
     } catch (error) {
         throw new Error("Erro ao registrar admin: Verifique se o email ou CPF já existe.");
     }
 };
 
 export const loginAdmin = async (loginData: LoginAdminDTO) => {
-    const admin = await findAdminByEmail(loginData.email);
+    let admin: Admin | Doctor | null;
+
+     admin = await findAdminByEmail(loginData.user);
+     if(!admin) {
+        admin = await findDoctorsByEmail(loginData.user);
+     }
     if (!admin) throw new Error('Admin não encontrado');
 
     const isPasswordValid = await bcrypt.compare(loginData.password, admin.password);

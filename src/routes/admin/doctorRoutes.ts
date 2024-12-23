@@ -3,11 +3,7 @@ import {tenantMiddleware} from "../../middlewares/tenantMiddleware";
 import {authMiddleware} from "../../middlewares/authMiddleware";
 import {isAdminMiddleware} from "../../middlewares/isAdminMiddleware";
 import {
-    getDoctorsByExamNameController,
-    getDoctorsListController,
-} from "../../services/doctorService";
-import {
-    deleteDoctorController,
+    deleteDoctorController, getDoctorsByExamNameController, getDoctorsListController,
     registerDoctorController,
     updateDoctorController
 } from "../../controllers/doctorController";
