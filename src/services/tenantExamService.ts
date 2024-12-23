@@ -20,6 +20,7 @@ export const createExam = async (examData: CreateExamDTO) => {
         price: examData.price,
         doctorPrice: examData.doctorPrice,
         tenant: { id: examData.tenantId },
+        exam_type: examData.exam_type,
         doctors: doctors
     });
     return { message: 'Exame criado com sucesso' };
@@ -64,7 +65,8 @@ export const updateExam = async (examId: number, examData: UpdateExamDTO) => {
         exam_name: examData.exam_name,
         price: examData.price,
         doctorPrice: examData.doctorPrice,
-        doctors: doctors
+        doctors: doctors,
+        exam_type: examData.exam_type
     })
     const result = await tenantExamsRepository.save(
         updateExam

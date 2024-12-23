@@ -1,29 +1,25 @@
-
-import {handleFilterDate} from "../utils/handleDate";
 import {patientExamsRepository} from "../repositories/patientExamsRepository";
 
 export const countTotalPatient = async () => {
 
-    const [exams, total] = await patientExamsRepository.findAndCount({
+    const totalPatient = await patientExamsRepository.count({
         where: {
             status: 'Completed'
         },
-        relations: ['patient', 'exam', 'exam.tenant', 'doctor'],
         order: {examDate: 'ASC'},
     });
-    return {exams, total};
+    return { total: totalPatient};
 }
-export const totalInvoicingByExam = async (examId: number) => {
-
+export const totalInvoicingByExam = async (filters: { status?: 'Scheduled' | 'InProgress' | 'Completed', examID?: number }) => {
+    const whereCondition: any = {};
+    if(filters.status) {
+     whereCondition.status = filters.status
+    }
+    if(filters.examID) {
+        whereCondition.examID = filters.examID
+    }
     const totalInvoiceExam = await patientExamsRepository.count({
-        where: {
-            status: 'Completed',
-            exam: {
-                id: examId
-            }
-        },
-        relations: ['patient', 'exam', 'exam.tenant', 'doctor'],
-        order: {examDate: 'ASC'},
+        where: whereCondition
     });
-    return { totalInvoiceExam };
+    return { total: totalInvoiceExam };
 }

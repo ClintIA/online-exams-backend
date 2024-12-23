@@ -12,6 +12,9 @@ export class TenantExams {
     @Column()
     exam_name!: string;
 
+    @Column()
+    exam_type!: string;
+
     @Column('decimal', { precision: 10, scale: 2 })
     price!: number;
 
