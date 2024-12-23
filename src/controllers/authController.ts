@@ -82,12 +82,11 @@ export const loginController = async (req: Request, res: Response) => {
      */
     try {
         const loginData: LoginAdminDTO = req.body;
+
         if(loginData.user.includes('@')) {
             const token = await loginAdmin(loginData);
             return successResponse(res, { token }, 'Login realizado com sucesso');
         } else  {
-            const loginData: LoginPatientDTO = req.body;
-
             const token = await loginPatientByCpf(loginData);
             return successResponse(res, { token }, 'Login realizado com sucesso');
         }

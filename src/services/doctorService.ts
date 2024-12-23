@@ -52,11 +52,8 @@ export const findDoctorsById = async (id: number) => {
     })
 }
 export const findDoctorsByEmail = async (email: string) => {
-    return await doctorRepository.findOne({
-        where: {
-            email: email
-        }
-    })
+    return await doctorRepository.findOne({where: {email}, relations: ['tenant']});
+
 }
 
 export const updateDoctorService = async (doctorID: number, updateData: RegisterDoctorDTO) => {
