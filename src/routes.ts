@@ -10,6 +10,7 @@ import noticeCardRoutes from "./routes/admin/noticeCardRoutes";
 import adminExamRoutes from "./routes/admin/adminExamRoutes";
 import adminPatientRoutes from "./routes/admin/adminPatientRoutes";
 import patientExamRoutes from "./routes/user/patientExamRoutes";
+import doctorRoutes from "./routes/admin/doctorRoutes";
 
 dotenv.config();
 
@@ -25,7 +26,8 @@ app.use('/api/v1/admin', [
     adminPatientRoutes,
     adminExamRoutes,
     tenantExamRoutes,
-    noticeCardRoutes
+    noticeCardRoutes,
+    doctorRoutes
 ])
 app.use('/api/v1/patient', [
     patientRoutes,

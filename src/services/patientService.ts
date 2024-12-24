@@ -1,12 +1,13 @@
-import { Patient } from '../models/Patient';
-import { generateToken } from '../utils/jwtHelper';
-import { patientRepository } from '../repositories/patientRepository';
+import {Patient} from '../models/Patient';
+import {generateToken} from '../utils/jwtHelper';
+import {patientRepository} from '../repositories/patientRepository';
 import bcrypt from 'bcryptjs';
-import { Like } from "typeorm";
-import { PatientFiltersDTO } from '../types/dto/patient/patientFiltersDTO';
-import { UpdatePatientDTO } from '../types/dto/patient/updatePatientDTO';
-import { RegisterPatientDTO } from '../types/dto/auth/registerPatientDTO';
-import { LoginPatientDTO } from '../types/dto/auth/loginPatientDTO';
+import {Like} from "typeorm";
+import {PatientFiltersDTO} from '../types/dto/patient/patientFiltersDTO';
+import {UpdatePatientDTO} from '../types/dto/patient/updatePatientDTO';
+import {RegisterPatientDTO} from '../types/dto/auth/registerPatientDTO';
+import {LoginPatientDTO} from '../types/dto/auth/loginPatientDTO';
+import {LoginAdminDTO} from "../types/dto/auth/loginAdminDTO";
 
 export const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
     return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
@@ -39,9 +40,9 @@ export const deletePatientService = async (patientId: number) => {
     return { message: "Paciente deletado com sucesso" };
 }
 
-export const updatePatientService = async (patientData: UpdatePatientDTO) => {
+export const updatePatientService = async (patientData: UpdatePatientDTO, patientId: number) => {
     try {
-        await patientRepository.update({ cpf: patientData.cpf }, patientData);
+       const result = await patientRepository.save(patientData);
         return { message: 'Dados do paciente atualizados' };
     } catch (error) {
         throw new Error('Erro ao atualizar os dados do paciente');
@@ -50,7 +51,6 @@ export const updatePatientService = async (patientData: UpdatePatientDTO) => {
 
 export const registerPatient = async (patientData: RegisterPatientDTO, tenantId: number) => {
     let patient = await findPatientByCpf(patientData.cpf);
-
     if (patient) {
         if (patient.tenants.some(t => t.id === tenantId)) {
             throw new Error('Paciente já está associado a essa clínica');
@@ -64,17 +64,17 @@ export const registerPatient = async (patientData: RegisterPatientDTO, tenantId:
             ...patientData,
             password: hashedPassword,
             tenants: [{ id: tenantId } as any],
+            role: 'patient'
         });
     }
-
     const result = await patientRepository.save(patient);
     const resultWithoutPassword = { ...result, password: undefined }
 
     return { data: resultWithoutPassword, message : 'Paciente registrado com sucesso' };
 };
 
-export const loginPatientByCpf = async (loginData: LoginPatientDTO) => {
-    const patient = await findPatientByCpf(loginData.cpf);
+export const loginPatientByCpf = async (loginData: LoginAdminDTO) => {
+    const patient = await findPatientByCpf(loginData.user);
 
     if (!patient) {
         throw new Error('Paciente não encontrado');
@@ -85,7 +85,7 @@ export const loginPatientByCpf = async (loginData: LoginPatientDTO) => {
         throw new Error('Senha inválida');
     }
 
-    const token = generateToken(patient.id, false);
+    const token = generateToken(patient.id, patient.role);
     patient.sessionToken = token;
 
     await patientRepository.save(patient);

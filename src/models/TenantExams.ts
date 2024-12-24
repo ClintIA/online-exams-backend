@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index, ManyToMany } from 'typeorm';
 import { Tenant } from './Tenant';
 import { Admin } from './Admin';
+import {Doctor} from "./Doctor";
 
 @Entity()
 @Index(['id', 'exam_name'])
@@ -23,6 +24,6 @@ export class TenantExams {
     @ManyToOne(() => Tenant, tenant => tenant.exams)
     tenant!: Tenant;    
 
-    @ManyToMany(() => Admin, admin => admin.exams)
-    doctors!: Admin[];
+    @ManyToMany(() => Doctor, admin => admin.exams)
+    doctors!: Doctor[];
 }

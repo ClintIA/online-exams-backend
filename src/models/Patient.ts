@@ -5,9 +5,10 @@ import {
     CreateDateColumn,
     ManyToMany,
     Index,
-    JoinTable, OneToMany
+    JoinTable
 } from 'typeorm';
 import { Tenant } from './Tenant';
+import {ProfileRole} from "../types/enums/ProfileRole";
 
 @Entity()
 @Index(['id'])
@@ -34,7 +35,10 @@ export class Patient {
     phone?: string;
 
     @Column({ nullable: true })
-    cep?: number;
+    cep?: string;
+
+    @Column( { enum: ProfileRole, default: 'patient' } )
+    role!: string;
 
     @Column()
     canal?: string;

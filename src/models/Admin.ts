@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index } from 'typeorm';
 import { Tenant } from './Tenant';
-import { TenantExams } from './TenantExams';
+import {ProfileRole} from "../types/enums/ProfileRole";
 
 @Entity()
-@Index(['id', 'cpf', 'fullName', 'occupation'])
+@Index(['id', 'cpf', 'fullName'])
 export class Admin {
     @PrimaryGeneratedColumn()
     id!: number;
@@ -18,16 +18,16 @@ export class Admin {
     password!: string;
 
     @Column({nullable: true})
-    CRM!: string;
+    phone!: string;
+
+    @Column({ enum: ProfileRole, nullable: true })
+    role!: string;
 
     @Column({nullable: true})
-    phone!: string;
+    cep!: string;
 
     @Column()
     fullName!: string;
-
-    @Column({ nullable: true})
-    occupation?: string;
 
     @Column({ nullable: true })
     sessionToken?: string;
@@ -38,10 +38,4 @@ export class Admin {
     @ManyToOne(() => Tenant, tenant => tenant.admins)
     tenant!: Tenant;
 
-    @Column({ default: false })
-    isDoctor!: boolean;
-
-    @ManyToMany(() => TenantExams, exam => exam.doctors)
-    @JoinTable()
-    exams!: TenantExams[];
 }

@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, In
 import { Patient } from './Patient';
 import { Admin } from './Admin';
 import { TenantExams } from './TenantExams';
+import {Doctor} from "./Doctor";
 
 @Entity()
 @Index(['id', 'patient', 'examDate', 'status'])
@@ -24,8 +25,8 @@ export class PatientExams {
     @ManyToOne(() => Admin, admin => admin.id, { nullable: true })
     uploadedBy?: Admin;
 
-    @ManyToOne(() => Admin, admin => admin.id, { nullable: true })
-    doctor?: Admin;
+    @ManyToOne(() => Doctor, doctor => doctor.id, { nullable: true })
+    doctor?: Doctor;
 
     @CreateDateColumn()
     createdAt!: Date;
