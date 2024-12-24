@@ -1,4 +1,4 @@
 export interface UpdateExamAttendanceDTO {
     examId: number;
-    attended: boolean;
+    attended: string;
 }

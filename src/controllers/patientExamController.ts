@@ -88,7 +88,7 @@ export const createPatientExamController = async (req: Request, res: Response) =
         const tenantId = req.tenantId!;
         const examData: CreatePatientExamDTO = { ...req.body, examDate: new Date(req.body.examDate) };
 
-        const result = await createPatientExam(examData);
+        const result = await createPatientExam(examData, tenantId);
 
         //  await sendExamScheduled({
         //     name: result.patientName!,

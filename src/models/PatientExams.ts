@@ -3,6 +3,7 @@ import { Patient } from './Patient';
 import { Admin } from './Admin';
 import { TenantExams } from './TenantExams';
 import {Doctor} from "./Doctor";
+import {Tenant} from "./Tenant";
 
 @Entity()
 @Index(['id', 'patient', 'examDate', 'status'])
@@ -40,6 +41,9 @@ export class PatientExams {
     @Column({ type: 'enum', enum: ['Scheduled', 'InProgress', 'Completed'], default: 'Scheduled' })
     status!: 'Scheduled' | 'InProgress' | 'Completed';
 
-    @Column({ type: 'boolean', default: null })
-    attended!: boolean;
+    @Column({ default: null })
+    attended!: string;
+
+    @ManyToOne(() => Tenant, tenant => tenant.exams)
+    tenant!: Tenant;
 }
