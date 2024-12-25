@@ -15,6 +15,9 @@ export class Doctor {
     @Column()
     password!: string;
 
+    @Column({ unique: true, nullable: true })
+    email!: string;
+
     @Column({ unique: true })
     CRM!: string;
 
@@ -27,7 +30,7 @@ export class Doctor {
     @Column({ unique: true })
     cnpj!: string;
 
-    @Column({ nullable: true })
+    @Column()
     phone!: string;
 
     @Column()

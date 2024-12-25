@@ -7,6 +7,7 @@ import {PatientFiltersDTO} from '../types/dto/patient/patientFiltersDTO';
 import {UpdatePatientDTO} from '../types/dto/patient/updatePatientDTO';
 import {RegisterPatientDTO} from '../types/dto/auth/registerPatientDTO';
 import {LoginPatientDTO} from '../types/dto/auth/loginPatientDTO';
+import {LoginAdminDTO} from "../types/dto/auth/loginAdminDTO";
 
 export const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
     return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
@@ -40,10 +41,8 @@ export const deletePatientService = async (patientId: number) => {
 }
 
 export const updatePatientService = async (patientData: UpdatePatientDTO, patientId: number) => {
-        console.log(patientData)
     try {
        const result = await patientRepository.save(patientData);
-        console.log(result)
         return { message: 'Dados do paciente atualizados' };
     } catch (error) {
         throw new Error('Erro ao atualizar os dados do paciente');
@@ -52,7 +51,6 @@ export const updatePatientService = async (patientData: UpdatePatientDTO, patien
 
 export const registerPatient = async (patientData: RegisterPatientDTO, tenantId: number) => {
     let patient = await findPatientByCpf(patientData.cpf);
-    console.log(patient)
     if (patient) {
         if (patient.tenants.some(t => t.id === tenantId)) {
             throw new Error('Paciente já está associado a essa clínica');
@@ -75,8 +73,8 @@ export const registerPatient = async (patientData: RegisterPatientDTO, tenantId:
     return { data: resultWithoutPassword, message : 'Paciente registrado com sucesso' };
 };
 
-export const loginPatientByCpf = async (loginData: LoginPatientDTO) => {
-    const patient = await findPatientByCpf(loginData.cpf);
+export const loginPatientByCpf = async (loginData: LoginAdminDTO) => {
+    const patient = await findPatientByCpf(loginData.user);
 
     if (!patient) {
         throw new Error('Paciente não encontrado');

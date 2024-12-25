@@ -21,7 +21,6 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
         const { userId, role } = decoded;
 
         let validSession = false;
-
         switch (role) {
             case 'patient':
                 const patient = await patientRepository.findOne({ where: { id: userId } });

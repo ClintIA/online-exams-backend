@@ -74,23 +74,7 @@ export const registerPatientController = async (req: Request, res: Response) => 
     }
 };
 
-export const loginPatientController = async (req: Request, res: Response) => {
-    /*
-     #swagger.tags = ['Auth']
-     #swagger.summary = 'Login as patient'
-     #swagger.description = 'Route to Login as patient'
-     */
-    try {
-        const loginData: LoginPatientDTO = req.body;
-
-        const token = await loginPatientByCpf(loginData);
-        return successResponse(res, { token }, 'Login realizado com sucesso');
-    } catch (error) {
-        return errorResponse(res, error, 401);
-    }
-};
-
-export const loginAdminController = async (req: Request, res: Response) => {
+export const loginController = async (req: Request, res: Response) => {
     /*
      #swagger.tags = ['Auth']
      #swagger.summary = 'Login as Admin'
@@ -99,8 +83,13 @@ export const loginAdminController = async (req: Request, res: Response) => {
     try {
         const loginData: LoginAdminDTO = req.body;
 
-        const token = await loginAdmin(loginData);
-        return successResponse(res, { token }, 'Login realizado com sucesso');
+        if(loginData.user.includes('@')) {
+            const token = await loginAdmin(loginData);
+            return successResponse(res, { token }, 'Login realizado com sucesso');
+        } else  {
+            const token = await loginPatientByCpf(loginData);
+            return successResponse(res, { token }, 'Login realizado com sucesso');
+        }
     } catch (error) {
         return errorResponse(res, error, 401);
     }

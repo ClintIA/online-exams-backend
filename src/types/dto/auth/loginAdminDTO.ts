@@ -1,4 +1,4 @@
 export interface LoginAdminDTO {
-    email: string;
+    user: string;
     password: string;
 }
