@@ -4,9 +4,10 @@ import {parseValidInt} from "../utils/parseValidInt";
 import {
     countPatientByMonthService,
     examPricesService,
-    countInvoicingService, listCanalService
+    countInvoicingService, listCanalService, createCanalService, updateCanalService, deleteCanalService
 } from "../services/marketingService";
 import {MarkertingPatientFilters, MarketingFilters} from "../types/dto/marketing/marketingFilters";
+import {MarketingDTO} from "../types/dto/marketing/marketingDTO";
 
 
 export const listCanalController  = async (req: Request, res: Response) => {
@@ -28,7 +29,74 @@ export const listCanalController  = async (req: Request, res: Response) => {
 
 }
 
-export const getTotalInvoiceWithFiltersController = async (req: Request, res: Response) => {
+export const createCanalController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Marketing']
+    #swagger.summary = 'Create Canal Marketing '
+    #swagger.description = 'Create Canal Marketing by tenant'
+    */
+    const tenantId = parseValidInt(req.headers['x-tenant-id'] as string);
+    if(!tenantId) {
+        throw new Error('Please, inform tenantID')
+    }
+    try {
+        const newCanal: MarketingDTO = req.body
+
+        const result = await createCanalService(newCanal,tenantId)
+        return successResponse(res,result, 'Canal Registrado')
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+
+}
+
+export const updateCanalController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Marketing']
+    #swagger.summary = 'Update Canal Marketing '
+    #swagger.description = 'Update Canal Marketing by tenant'
+    */
+    const tenantId = parseValidInt(req.headers['x-tenant-id'] as string);
+    if(!tenantId) {
+        throw new Error('Please, inform tenantID')
+    }
+    try {
+
+        const newCanal: MarketingDTO = req.body
+
+        const result = await updateCanalService(newCanal,tenantId)
+        return successResponse(res,result, 'Canal Registrado')
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+
+}
+
+export const deleteCanalController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Marketing']
+    #swagger.summary = 'Delete Canal Marketing '
+    #swagger.description = 'Delete Canal Marketing by tenant'
+    */
+    const tenantId = parseValidInt(req.headers['x-tenant-id'] as string);
+    if(!tenantId) {
+        throw new Error('Please, inform tenantID')
+    }
+
+    try {
+        const canalID = parseValidInt(req.params.id);
+        if(!canalID) {
+            return new Error('Inform ID')
+        }
+        const result = await deleteCanalService(canalID)
+        return successResponse(res,result, )
+    } catch (error) {
+        return  errorResponse(res,error)
+    }
+}
+
+
+export const countPatientExamWithFilterController = async (req: Request, res: Response) => {
     /*
     #swagger.tags = ['Marketing']
     #swagger.summary = 'Get Total Invoice by Exam, Date, Status  '
