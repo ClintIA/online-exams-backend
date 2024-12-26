@@ -4,7 +4,58 @@ import {MarkertingPatientFilters, MarketingFilters} from "../types/dto/marketing
 import {ILike} from "typeorm";
 import {patientRepository} from "../repositories/patientRepository";
 import {tenantExamsRepository} from "../repositories/tenantExamsRepository";
+import {marketingRepository} from "../repositories/marketingRepository";
+import {MarketingDTO} from "../types/dto/marketing/marketingDTO";
 
+export const listCanalService = async (tenantID: number) => {
+    return await marketingRepository.find({
+        where: {
+            tenant: { id: tenantID }
+        }
+    })
+}
+
+export const createCanalService = async (newCanal: MarketingDTO, tenantID: number) => {
+    try {
+         await marketingRepository.save({
+             canal: newCanal.canal,
+             budgetCanal: newCanal.budgetCanal,
+             createdBy: { id: newCanal.createdBy },
+             updatedBy: { id: newCanal.uploadBy },
+             tenant: { id: tenantID }
+         })
+
+        return { message: 'Canal Registrado com sucesso' }
+    } catch (error) {
+        return new Error('Erro ao cadastrar canal')
+    }
+}
+export const updateCanalService = async (newCanal: MarketingDTO, tenantID: number) => {
+    try {
+        await marketingRepository.save({
+            id: newCanal.id,
+            canal: newCanal.canal,
+            budgetCanal: newCanal.budgetCanal,
+            updatedBy: { id: newCanal.uploadBy },
+            tenant: { id: tenantID}
+        })
+
+        return { message: 'Canal Atualizado com sucesso' }
+    } catch (error) {
+        return new Error('Erro ao atualizar canal')
+    }
+}
+export const deleteCanalService = async (canalID: number) => {
+    try {
+        await marketingRepository.delete({
+          id: canalID
+        })
+
+        return { message: 'Canal deletado com sucesso' }
+    } catch (error) {
+        return new Error('Erro ao deletar canal')
+    }
+}
 export const countInvoicingService = async (filters: MarketingFilters) => {
     const whereCondition: any = {};
 

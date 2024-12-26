@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index } from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    ManyToOne,
+    CreateDateColumn,
+    Index,
+    BeforeUpdate,
+    UpdateDateColumn
+} from 'typeorm';
 import { Patient } from './Patient';
 import { Admin } from './Admin';
 import { TenantExams } from './TenantExams';
@@ -35,7 +44,7 @@ export class PatientExams {
     @Column({ nullable: true })
     examDate?: Date;
 
-    @Column({ nullable: true })
+    @UpdateDateColumn({ nullable: true })
     uploadedAt?: Date;
 
     @Column({ type: 'enum', enum: ['Scheduled', 'InProgress', 'Completed'], default: 'Scheduled' })

@@ -12,7 +12,7 @@ export class TenantExams {
     @Column()
     exam_name!: string;
 
-    @Column()
+    @Column({ nullable: true })
     exam_type!: string;
 
     @Column('decimal', { precision: 10, scale: 2 })

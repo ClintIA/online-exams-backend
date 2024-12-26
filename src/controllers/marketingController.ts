@@ -4,9 +4,29 @@ import {parseValidInt} from "../utils/parseValidInt";
 import {
     countPatientByMonthService,
     examPricesService,
-    countInvoicingService
+    countInvoicingService, listCanalService
 } from "../services/marketingService";
 import {MarkertingPatientFilters, MarketingFilters} from "../types/dto/marketing/marketingFilters";
+
+
+export const listCanalController  = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Marketing']
+    #swagger.summary = 'List Canal Marketing '
+    #swagger.description = 'List Canal Marketing by tenant'
+    */
+    const tenantId = parseValidInt(req.headers['x-tenant-id'] as string);
+    if(!tenantId) {
+        throw new Error('Please, inform tenantID')
+    }
+    try {
+        const result = await listCanalService(tenantId)
+        return successResponse(res,result, 'Lista de Canais')
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+
+}
 
 export const getTotalInvoiceWithFiltersController = async (req: Request, res: Response) => {
     /*

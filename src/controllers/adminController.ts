@@ -7,7 +7,11 @@ import {
     deleteAdmin,
     getAdmins
 } from "../services/adminService";
+import {adminRepository} from "../repositories/adminRepository";
 
+export const findAdminById = async (adminId: number) => {
+    return await adminRepository.findOne({ where: { id: adminId } })
+}
 
 export const getAdminListController =  async (req: Request, res: Response) => {
     /*

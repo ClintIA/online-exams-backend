@@ -1,14 +1,12 @@
-import {GetDoctorsDTO} from "../types/dto/doctor/getDoctorsDTO";
 import {doctorRepository} from "../repositories/doctorRepository";
 import {ILike} from "typeorm";
-import {Request, Response} from "express";
-import {errorResponse, successResponse} from "../utils/httpResponses";
 import bcrypt from "bcryptjs";
 import {tenantRepository} from "../repositories/tenantRepository";
 import {RegisterDoctorDTO} from "../types/dto/doctor/registerDoctorDTO";
+import {PaginationQuery} from "../types/dto/doctor/paginationQuery";
 
 
-export const getDoctors = async ({ tenantId, take = 10, skip = 0 }: GetDoctorsDTO) => {
+export const getDoctors = async ({ tenantId, take = 10, skip = 0 }: PaginationQuery) => {
     const [doctors, total] = await doctorRepository.findAndCount({
         select: { id: true, fullName: true, cpf: true, role:true, CRM: true,occupation: true, phone: true, created_at: true },
         relations: ['exams'],
@@ -18,6 +16,10 @@ export const getDoctors = async ({ tenantId, take = 10, skip = 0 }: GetDoctorsDT
     });
     return { doctors, total };
 };
+
+export const findDoctorsByEmail = async (email: string) => {
+    return await doctorRepository.findOne({where: {email}});
+}
 export const registerDoctor = async (doctorData: RegisterDoctorDTO, tenantId: number) => {
     const hashedPassword = await bcrypt.hash(doctorData.password!, 10);
     const tenant = await tenantRepository.findOne({ where: { id: tenantId } });
