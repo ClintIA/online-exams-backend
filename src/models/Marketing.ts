@@ -28,7 +28,7 @@ export class Marketing {
     createdBy?: Admin;
 
     @ManyToOne(() => Admin, admin => admin.id)
-    uploadBy?: Admin;
+    updatedBy?: Admin;
 
     @ManyToOne(() => Tenant, tenant => tenant.exams)
     tenant!: Tenant;

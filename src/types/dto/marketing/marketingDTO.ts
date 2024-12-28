@@ -3,5 +3,5 @@ export interface MarketingDTO {
     canal: string
     budgetCanal: number
     createdBy?: number
-    uploadBy: number
+    updatedBy: number
 }

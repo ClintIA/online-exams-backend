@@ -43,7 +43,7 @@ export const createCanalController = async (req: Request, res: Response) => {
         const newCanal: MarketingDTO = req.body
 
         const result = await createCanalService(newCanal,tenantId)
-        return successResponse(res,result, 'Canal Registrado')
+        return successResponse(res, result, 'Canal Registrado com Sucesso')
     } catch (error) {
         return errorResponse(res, error);
     }
@@ -112,8 +112,6 @@ export const countPatientExamWithFilterController = async (req: Request, res: Re
             examType,
             attended,
             exam_name,
-            patientID,
-            canal,
         } = req.query;
 
         const filters: MarketingFilters = {
@@ -143,7 +141,6 @@ export const countPatientByMonthController = async (req: Request, res: Response)
         gender,
         patientID,
         canal,
-
     } = req.query;
 
     const filters: MarkertingPatientFilters = {

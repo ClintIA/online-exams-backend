@@ -6,9 +6,15 @@ import {patientRepository} from "../repositories/patientRepository";
 import {tenantExamsRepository} from "../repositories/tenantExamsRepository";
 import {marketingRepository} from "../repositories/marketingRepository";
 import {MarketingDTO} from "../types/dto/marketing/marketingDTO";
+import {findAdminById} from "../controllers/adminController";
 
 export const listCanalService = async (tenantID: number) => {
     return await marketingRepository.find({
+        select: {
+            id: true,
+            canal: true,
+            budgetCanal: true,
+        },
         where: {
             tenant: { id: tenantID }
         }
@@ -17,13 +23,19 @@ export const listCanalService = async (tenantID: number) => {
 
 export const createCanalService = async (newCanal: MarketingDTO, tenantID: number) => {
     try {
-         await marketingRepository.save({
-             canal: newCanal.canal,
-             budgetCanal: newCanal.budgetCanal,
-             createdBy: { id: newCanal.createdBy },
-             updatedBy: { id: newCanal.uploadBy },
-             tenant: { id: tenantID }
-         })
+
+        const admin = await findAdminById(newCanal.updatedBy)
+
+        if(!admin) return new Error('Admin não encontrado')
+        console.log(admin)
+        const canal = marketingRepository.create({
+            canal: newCanal.canal,
+            budgetCanal: newCanal.budgetCanal,
+            createdBy: admin,
+            updatedBy: admin,
+            tenant: { id: tenantID },
+        })
+         await marketingRepository.save(canal)
 
         return { message: 'Canal Registrado com sucesso' }
     } catch (error) {
@@ -32,13 +44,18 @@ export const createCanalService = async (newCanal: MarketingDTO, tenantID: numbe
 }
 export const updateCanalService = async (newCanal: MarketingDTO, tenantID: number) => {
     try {
-        await marketingRepository.save({
-            id: newCanal.id,
+        const admin = await findAdminById(newCanal.updatedBy)
+
+        if(!admin) return new Error('Admin não encontrado')
+
+        const canal = marketingRepository.create({
             canal: newCanal.canal,
             budgetCanal: newCanal.budgetCanal,
-            updatedBy: { id: newCanal.uploadBy },
-            tenant: { id: tenantID}
+            createdBy: admin,
+            updatedBy: admin,
+            tenant: { id: tenantID },
         })
+        await marketingRepository.save(canal)
 
         return { message: 'Canal Atualizado com sucesso' }
     } catch (error) {
