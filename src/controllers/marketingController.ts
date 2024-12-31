@@ -4,10 +4,16 @@ import {parseValidInt} from "../utils/parseValidInt";
 import {
     countPatientByMonthService,
     examPricesService,
-    countInvoicingService, listCanalService, createCanalService, updateCanalService, deleteCanalService
+    countInvoicingService,
+    listCanalService,
+    createCanalService,
+    updateCanalService,
+    deleteCanalService,
+    getBudgetByTenantService
 } from "../services/marketingService";
 import {MarkertingPatientFilters, MarketingFilters} from "../types/dto/marketing/marketingFilters";
 import {MarketingDTO} from "../types/dto/marketing/marketingDTO";
+import {tenantRepository} from "../repositories/tenantRepository";
 
 
 export const listCanalController  = async (req: Request, res: Response) => {
@@ -92,6 +98,25 @@ export const deleteCanalController = async (req: Request, res: Response) => {
         return successResponse(res,result, )
     } catch (error) {
         return  errorResponse(res,error)
+    }
+}
+
+export const getBudgetByTenantController = async(req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Marketing']
+    #swagger.summary = 'Get budget by tenant'
+    #swagger.description = 'Get budget by tenant'
+    */
+    const tenantId = parseValidInt(req.headers['x-tenant-id'] as string);
+    if(!tenantId) {
+        throw new Error('Please, inform tenantID')
+    }
+    try {
+        const result = await getBudgetByTenantService(tenantId)
+
+        return successResponse(res, result);
+    } catch (error) {
+        return errorResponse(res, error);
     }
 }
 

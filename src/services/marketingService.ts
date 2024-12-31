@@ -7,6 +7,7 @@ import {tenantExamsRepository} from "../repositories/tenantExamsRepository";
 import {marketingRepository} from "../repositories/marketingRepository";
 import {MarketingDTO} from "../types/dto/marketing/marketingDTO";
 import {findAdminById} from "../controllers/adminController";
+import {tenantRepository} from "../repositories/tenantRepository";
 
 export const listCanalService = async (tenantID: number) => {
     return await marketingRepository.find({
@@ -55,7 +56,10 @@ export const updateCanalService = async (newCanal: MarketingDTO, tenantID: numbe
             updatedBy: admin,
             tenant: { id: tenantID },
         })
-        await marketingRepository.save(canal)
+        if(newCanal.id) {
+            await marketingRepository.update(newCanal.id,canal)
+
+        }
 
         return { message: 'Canal Atualizado com sucesso' }
     } catch (error) {
@@ -73,6 +77,23 @@ export const deleteCanalService = async (canalID: number) => {
         return new Error('Erro ao deletar canal')
     }
 }
+
+export const getBudgetByTenantService = async (tenantID: number) => {
+    try {
+        const result = await tenantRepository.findOne({
+            where: { id: tenantID },
+            select: {
+                budgetTotal: true
+            }
+        })
+
+        return { budget: result?.budgetTotal }
+    }
+    catch (error) {
+        return new Error('Erro ao buscar budget')
+    }
+}
+
 export const countInvoicingService = async (filters: MarketingFilters) => {
     const whereCondition: any = {};
 
