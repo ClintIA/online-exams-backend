@@ -9,7 +9,7 @@ import {
     createCanalService,
     updateCanalService,
     deleteCanalService,
-    getBudgetByTenantService
+    getBudgetByTenantService, updateBudgetByTenantService
 } from "../services/marketingService";
 import {MarkertingPatientFilters, MarketingFilters} from "../types/dto/marketing/marketingFilters";
 import {MarketingDTO} from "../types/dto/marketing/marketingDTO";
@@ -119,7 +119,25 @@ export const getBudgetByTenantController = async(req: Request, res: Response) =>
         return errorResponse(res, error);
     }
 }
+export const updateBudgetByTenantController = async(req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Marketing']
+    #swagger.summary = 'Update budget by tenant'
+    #swagger.description = 'Update budget by tenant'
+    */
+    const tenantId = parseValidInt(req.headers['x-tenant-id'] as string);
+    if(!tenantId) {
+        throw new Error('Please, inform tenantID')
+    }
+    try {
+        const budget = req.body.budget
+        const result = await updateBudgetByTenantService(budget,tenantId)
 
+        return successResponse(res, result);
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+}
 
 export const countPatientExamWithFilterController = async (req: Request, res: Response) => {
     /*

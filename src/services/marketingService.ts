@@ -94,6 +94,20 @@ export const getBudgetByTenantService = async (tenantID: number) => {
     }
 }
 
+export const updateBudgetByTenantService = async (tenantBudget: number ,tenantID: number) => {
+    try {
+        const result = await tenantRepository.update({ id: tenantID },
+            {
+                budgetTotal: tenantBudget
+            })
+            if(result.affected !== 0) {
+                return { budget: tenantBudget }
+            }
+    }
+    catch (error) {
+        return new Error('Erro ao buscar budget')
+    }
+}
 export const countInvoicingService = async (filters: MarketingFilters) => {
     const whereCondition: any = {};
 

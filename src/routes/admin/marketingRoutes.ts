@@ -7,7 +7,7 @@ import {
     listCanalController,
     updateCanalController,
     deleteCanalController,
-    getBudgetByTenantController
+    getBudgetByTenantController, updateBudgetByTenantController
 } from "../../controllers/marketingController";
 import {tenantMiddleware} from "../../middlewares/tenantMiddleware";
 
@@ -18,6 +18,7 @@ router.get('/marketin/countPatientExam', tenantMiddleware,countPatientExamWithFi
 router.get('/marketing/countPatient', tenantMiddleware,countPatientByMonthController);
 router.get('/marketing/examPrice', tenantMiddleware,examPriceController);
 router.get('/marketing/tenantBudget', tenantMiddleware, getBudgetByTenantController)
+router.put('/marketing/tenantBudget', tenantMiddleware, updateBudgetByTenantController)
 router.post('/marketing/canal',tenantMiddleware,createCanalController)
 router.get('/marketing/canal', tenantMiddleware,listCanalController)
 router.put('/marketing/canal', tenantMiddleware, updateCanalController)
