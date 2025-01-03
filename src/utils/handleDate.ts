@@ -1,4 +1,4 @@
-import {Between} from "typeorm";
+import { addDays, format } from 'date-fns';
 
 export const getFormattedDate = (date: string, offsetDays: number = 0): string => {
     const dateObj = new Date(date);
@@ -6,19 +6,20 @@ export const getFormattedDate = (date: string, offsetDays: number = 0): string =
     return dateObj.toISOString().split('T')[0];
 };
 
-export const handleFilterDate = (filters: { startDate?: string, endDate?: string}, offset?: number) => {
-    if (filters.startDate && filters.endDate) {
-        return Between(filters.startDate, getFormattedDate(filters.endDate, offset)
-        );
-    } else if (filters.startDate) {
-        return Between(
-            filters.startDate,
-            getFormattedDate(filters.startDate, offset)
-        );
-    } else if (filters.endDate) {
-       return Between(
-            filters.endDate,
-           getFormattedDate(filters.endDate, offset)
-        );
+export const handleFilterDate = (filters: { startDate?: string; endDate?: string }, offset?: number) => {
+    const result: { gte?: Date; lte?: Date } = {};
+
+    const formatDate = (date: string) => {
+        return format(addDays(new Date(date), offset || 0), 'yyyy-MM-dd');
+    };
+
+    if (filters.startDate) {
+        result.gte = new Date(formatDate(filters.startDate));
     }
-}
+
+    if (filters.endDate) {
+        result.lte = new Date(formatDate(filters.endDate));
+    }
+
+    return result;
+};

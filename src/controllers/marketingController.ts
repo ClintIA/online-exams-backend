@@ -9,7 +9,10 @@ import {
     createCanalService,
     updateCanalService,
     deleteCanalService,
-    getBudgetByTenantService, updateBudgetByTenantService
+    getBudgetByTenantService,
+    updateBudgetByTenantService,
+    listChannelByMonthService,
+    totalInvoiceByMonthService
 } from "../services/marketingService";
 import {MarkertingPatientFilters, MarketingFilters} from "../types/dto/marketing/marketingFilters";
 import {MarketingDTO} from "../types/dto/marketing/marketingDTO";
@@ -156,7 +159,6 @@ export const countPatientExamWithFilterController = async (req: Request, res: Re
             attended,
             exam_name,
         } = req.query;
-
         const filters: MarketingFilters = {
             tenantId: tenantId!,
             startDate: startDate as string,
@@ -167,6 +169,7 @@ export const countPatientExamWithFilterController = async (req: Request, res: Re
             attended: attended as string,
             exam_name: exam_name as string,
         };
+        console.log(filters)
 
         const result = await countInvoicingService(filters);
         return successResponse(res, result);
@@ -175,9 +178,46 @@ export const countPatientExamWithFilterController = async (req: Request, res: Re
     }
 };
 
+export const listChannelByMonthController = async (req: Request, res: Response) => {
+
+    const tenantId = parseValidInt(req.headers['x-tenant-id'] as string);
+    const filters: MarkertingPatientFilters = {
+        tenantId: tenantId!,
+
+    };
+    if(!tenantId) {
+        throw new Error('Tenant ID not found')
+    }
+    try {
+
+        const result = await listChannelByMonthService(filters)
+        return successResponse(res, result);
+    } catch (error) {
+        return errorResponse(res, error);
+
+    }
+}
+export const totalInvoiceByMonthController = async (req: Request, res: Response) => {
+    const tenantId = parseValidInt(req.headers['x-tenant-id'] as string);
+    const filters: MarkertingPatientFilters = {
+        tenantId: tenantId!,
+    };
+    if(!tenantId) {
+        throw new Error('Tenant ID not found')
+    }
+    try {
+        const { attended} = req.query;
+        const result = await totalInvoiceByMonthService({...filters, attended: attended as string})
+        return successResponse(res, result);
+    } catch (error) {
+        return errorResponse(res, error);
+
+    }
+
+}
 export const countPatientByMonthController = async (req: Request, res: Response) => {
 
-        const tenantId = parseValidInt(req.headers['x-tenant-id'] as string);
+    const tenantId = parseValidInt(req.headers['x-tenant-id'] as string);
     const {
         startDate,
         endDate,
@@ -209,18 +249,18 @@ export const countPatientByMonthController = async (req: Request, res: Response)
 export const examPriceController = async (req: Request, res: Response) => {
 
     const tenantId = parseValidInt(req.headers['x-tenant-id'] as string);
-    const {
-        examID,
-    } = req.query;
-
-    const filters = {
-        tenantId: tenantId!,
-        examID: examID as string
-    };
     if(!tenantId) {
         throw new Error('Tenant ID not found')
     }
+    const {
+        examID,
+    } = req.query;
     try {
+        const filters = {
+            tenantId: tenantId!,
+            examID: examID as string
+        };
+
         const result = await examPricesService(filters)
         if(!result) {
             return errorResponse(res, 'Exame não encontrado');

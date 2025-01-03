@@ -13,31 +13,31 @@ import {registerPatient} from "./patientService";
 import {generatePassword} from "../utils/passwordGenerator";
 import {doctorRepository} from "../repositories/doctorRepository";
 
-export const listPatientExams = async (filters: ListPatientExamsDTO) => {
+export const listPatientExams = async (filters?: ListPatientExamsDTO) => {
     const whereCondition: any = {};
 
-    if (filters.tenantId) {
+    if (filters?.tenantId) {
         whereCondition.exam = { tenant: { id: filters.tenantId } };
     }
-    if (filters.patientCpf) {
+    if (filters?.patientCpf) {
         whereCondition.patient = { cpf: filters.patientCpf };
     }
-    if (filters.patientId || filters.patientName) {
+    if (filters?.patientId || filters?.patientName) {
         whereCondition.patient = {
             ...(filters.patientId && { id: filters.patientId }),
             ...(filters.patientName && { full_name: Like(`%${filters.patientName}%`) })
         };
     }
-    if (filters.startDate || filters.endDate) {
+    if (filters?.startDate || filters?.endDate) {
         whereCondition.examDate = handleFilterDate(filters, 1);
     }
-    if (filters.status) {
+    if (filters?.status) {
         whereCondition.status = filters.status;
     }
     const [exams, total] = await patientExamsRepository.findAndCount({
         where: whereCondition,
-        take: filters.take,
-        skip: filters.skip,
+        take: filters?.take,
+        skip: filters?.skip,
         relations: ['patient', 'exam', 'exam.tenant','doctor'],
         order: { examDate: 'ASC' },
     });

@@ -7,14 +7,10 @@ export interface MarketingFilters {
     examType?: string
     attended?: string
     exam_name?: string
-}
-
-export interface MarkertingPatientFilters {
-    startDate?: string
-    endDate?: string
-    tenantId?: number
+    channel?: string
     patientID?: string
     canal?: string
     gender?: string
-
+    doctorID?: string
 }
+
