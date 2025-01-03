@@ -10,7 +10,7 @@ import {
     getBudgetByTenantController,
     updateBudgetByTenantController,
     listChannelByMonthController,
-    totalInvoiceByMonthController
+    totalInvoiceByMonthController, totalInvoiceDoctorByMonthController
 } from "../../controllers/marketingController";
 import {tenantMiddleware} from "../../middlewares/tenantMiddleware";
 
@@ -20,6 +20,7 @@ router.get('/marketing/countPatientExam', tenantMiddleware,countPatientExamWithF
 router.get('/marketing/countPatient', tenantMiddleware,countPatientByMonthController);
 router.get('/marketing/countChannel', tenantMiddleware,listChannelByMonthController);
 router.get('/marketing/totalInvoice', tenantMiddleware,totalInvoiceByMonthController);
+router.get('/marketing/totalInvoiceDoctor', tenantMiddleware,totalInvoiceDoctorByMonthController);
 router.get('/marketing/examPrice', tenantMiddleware,examPriceController);
 router.get('/marketing/tenantBudget', tenantMiddleware, getBudgetByTenantController)
 router.put('/marketing/tenantBudget', tenantMiddleware, updateBudgetByTenantController)

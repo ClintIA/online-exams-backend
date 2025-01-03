@@ -11,10 +11,9 @@ import {
     deleteCanalService,
     getBudgetByTenantService,
     updateBudgetByTenantService,
-    listChannelByMonthService,
-    totalInvoiceByMonthService
+    listChannelByMonthService, totalInvoicePerExamByMonthService, totalExamPerDoctorByMonthService,
 } from "../services/marketingService";
-import {MarkertingPatientFilters, MarketingFilters} from "../types/dto/marketing/marketingFilters";
+import { MarketingFilters} from "../types/dto/marketing/marketingFilters";
 import {MarketingDTO} from "../types/dto/marketing/marketingDTO";
 import {tenantRepository} from "../repositories/tenantRepository";
 
@@ -181,7 +180,7 @@ export const countPatientExamWithFilterController = async (req: Request, res: Re
 export const listChannelByMonthController = async (req: Request, res: Response) => {
 
     const tenantId = parseValidInt(req.headers['x-tenant-id'] as string);
-    const filters: MarkertingPatientFilters = {
+    const filters: MarketingFilters = {
         tenantId: tenantId!,
 
     };
@@ -199,7 +198,7 @@ export const listChannelByMonthController = async (req: Request, res: Response) 
 }
 export const totalInvoiceByMonthController = async (req: Request, res: Response) => {
     const tenantId = parseValidInt(req.headers['x-tenant-id'] as string);
-    const filters: MarkertingPatientFilters = {
+    const filters: MarketingFilters = {
         tenantId: tenantId!,
     };
     if(!tenantId) {
@@ -207,7 +206,25 @@ export const totalInvoiceByMonthController = async (req: Request, res: Response)
     }
     try {
         const { attended} = req.query;
-        const result = await totalInvoiceByMonthService({...filters, attended: attended as string})
+        const result = await totalInvoicePerExamByMonthService({...filters, attended: attended as string})
+        return successResponse(res, result);
+    } catch (error) {
+        return errorResponse(res, error);
+
+    }
+
+}
+export const totalInvoiceDoctorByMonthController = async (req: Request, res: Response) => {
+    const tenantId = parseValidInt(req.headers['x-tenant-id'] as string);
+    const filters: MarketingFilters = {
+        tenantId: tenantId!,
+    };
+    if(!tenantId) {
+        throw new Error('Tenant ID not found')
+    }
+    try {
+        const { attended} = req.query;
+        const result = await totalExamPerDoctorByMonthService({...filters, attended: attended as string})
         return successResponse(res, result);
     } catch (error) {
         return errorResponse(res, error);
@@ -226,7 +243,7 @@ export const countPatientByMonthController = async (req: Request, res: Response)
         canal,
     } = req.query;
 
-    const filters: MarkertingPatientFilters = {
+    const filters: MarketingFilters = {
         tenantId: tenantId!,
         startDate: startDate as string,
         endDate: endDate as string,

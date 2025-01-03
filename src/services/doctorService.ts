@@ -6,7 +6,7 @@ import {RegisterDoctorDTO} from "../types/dto/doctor/registerDoctorDTO";
 import {PaginationQuery} from "../types/dto/doctor/paginationQuery";
 
 
-export const getDoctors = async ({ tenantId, take = 10, skip = 0 }: PaginationQuery) => {
+export const getDoctors = async ({ tenantId, take = 100, skip = 0 }: PaginationQuery) => {
     const [doctors, total] = await doctorRepository.findAndCount({
         select: { id: true, fullName: true, cpf: true, role:true, CRM: true,occupation: true, phone: true, created_at: true },
         relations: ['exams'],

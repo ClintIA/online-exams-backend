@@ -8,11 +8,16 @@ import {MarketingDTO} from "../types/dto/marketing/marketingDTO";
 import {findAdminById} from "../controllers/adminController";
 import {tenantRepository} from "../repositories/tenantRepository";
 import {getExams} from "./tenantExamService";
+import {getDoctors} from "./doctorService";
+import {listPatientExams} from "./patientExamService";
 
 interface IChart {
     name: string
-    total: number
+    total?: number
+    quantity?: number
     totalDoctor?: number
+    profit?: number
+    percent?: number
 }
 
 export const listCanalService = async (tenantID?: number) => {
@@ -155,8 +160,8 @@ export const countInvoicingService = async (filters: MarketingFilters) => {
             .andWhere("exam.exam_name = :examName", { examName: filters.exam_name });
     }
     if (filters.doctorID) {
-        queryBuilder.innerJoin("patientExam.exam", "exam").leftJoin("exam.doctors", "doctor")
-            .andWhere("doctor. = :doctorID", { id: filters.doctorID });
+        queryBuilder.innerJoin("patientExam.doctor", "doctor")
+            .andWhere("doctor.id = :doctorID", { doctorID: filters.doctorID });
     }
     if (filters.channel) {
         queryBuilder.innerJoin("patientExam.patient", "patient")
@@ -203,27 +208,57 @@ export const countPatientByMonthService = async (filters: MarketingFilters) => {
     return { total: totalExamType };
 };
 
-export const totalInvoiceByMonthService = async (filters: MarketingFilters) => {
+export const totalExamPerDoctorByMonthService = async (filters: MarketingFilters) => {
+    const doctorList = await getDoctors({tenantId: filters.tenantId, take: 1000})
+    let totalInvoiceDoctors = 0;
+    let quantityExamDoctor: IChart[] = [];
+
+    for (const doctor of doctorList.doctors) {
+        const patientExamlist = await listPatientExams({ doctorID: doctor.id })
+        const countTotalExamsDoctor = await countInvoicingService({ ...filters, doctorID: doctor.id.toString() })
+        for(const patientexam of patientExamlist.exams) {
+            const examPrice = await examPricesService({
+                examID: patientexam.exam.id.toString()
+            })
+            const countPatientExam = await countInvoicingService({ ...filters, doctorID: doctor.id.toString(), examID: patientexam.exam.id.toString() })
+            totalInvoiceDoctors += countPatientExam.total * Number(examPrice.doctorPrice)
+        }
+        quantityExamDoctor.push({name: doctor.fullName, quantity: countTotalExamsDoctor.total})
+    }
+    return { quantityExamDoctor: quantityExamDoctor, totalInvoiceDoctor: totalInvoiceDoctors }
+}
+
+
+
+export const totalInvoicePerExamByMonthService = async (filters: MarketingFilters) => {
     const examList = await getExams(filters.tenantId)
     let totalInvoice = 0;
     let totalDoctorInvoice = 0;
-    let totalExamQuantity: IChart[] = []
     let totalPerExam: IChart[] = []
+    let profit = 0;
+    let percent = 0;
 
     for (const exam of examList) {
-
         const countPatientExam = await countInvoicingService({ ...filters, exam_name: exam.exam_name})
         const examPrice = await examPricesService({
             examID: exam.id.toString()
         })
         totalInvoice += countPatientExam.total * Number(examPrice.price)
         totalDoctorInvoice += countPatientExam.total * Number(examPrice.doctorPrice)
-        totalPerExam.push({name: exam.exam_name, total: countPatientExam.total * Number(examPrice.price)})
-        totalExamQuantity.push({name: exam.exam_name, total: countPatientExam.total})
+        profit = (countPatientExam.total * Number(examPrice.price))-(countPatientExam.total * Number(examPrice.doctorPrice))
+        percent = (profit / (countPatientExam.total * Number(examPrice.price))) * 100
+        totalPerExam.push({
+            name: exam.exam_name,
+            quantity: countPatientExam.total,
+            total: countPatientExam.total * Number(examPrice.price),
+            totalDoctor: countPatientExam.total * Number(examPrice.doctorPrice),
+            profit: profit,
+            percent: percent ? percent : 0
+        })
     }
-
-    return { generalTotalInvoice: totalInvoice, doctorTotalInvoice: totalDoctorInvoice, examList: totalExamQuantity, totalPerExam: totalPerExam  }
+    return { generalTotalInvoice: totalInvoice, doctorTotalInvoice: totalDoctorInvoice, totalPerExam: totalPerExam  }
 }
+
 
 export const listChannelByMonthService = async (filters: MarketingFilters) => {
 
@@ -252,6 +287,9 @@ export const examPricesService = async (filters: MarketingFilters) => {
     }
     if(filters.examID) {
         whereCondition.id = filters.examID
+    }
+    if(filters.doctorID) {
+        whereCondition.doctors = { id: filters.doctorID }
     }
 
     const exam = await tenantExamsRepository.findOne({
