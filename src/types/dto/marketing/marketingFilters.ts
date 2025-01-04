@@ -3,14 +3,14 @@ export interface MarketingFilters {
     startDate?: string
     endDate?: string
     status?: 'Scheduled' | 'InProgress' | 'Completed'
-    examID?: string
+    examID?: number
     examType?: string
     attended?: string
     exam_name?: string
     channel?: string
-    patientID?: string
+    patientID?: number
     canal?: string
     gender?: string
-    doctorID?: string
+    doctorID?: number
 }
 

@@ -9,4 +9,6 @@ export interface ListPatientExamsDTO {
     take?: number;
     skip?: number;
     doctorID?: number;
+    exam_name?: string;
+    attended?: string
 }

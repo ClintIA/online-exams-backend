@@ -163,12 +163,11 @@ export const countPatientExamWithFilterController = async (req: Request, res: Re
             startDate: startDate as string,
             endDate: endDate as string,
             status: status as 'Scheduled' | 'InProgress' | 'Completed' | undefined,
-            examID: examID as string,
+            examID: parseInt(examID as string),
             examType: examType as string,
             attended: attended as string,
             exam_name: exam_name as string,
         };
-        console.log(filters)
 
         const result = await countInvoicingService(filters);
         return successResponse(res, result);
@@ -247,7 +246,7 @@ export const countPatientByMonthController = async (req: Request, res: Response)
         tenantId: tenantId!,
         startDate: startDate as string,
         endDate: endDate as string,
-        patientID: patientID as string,
+        patientID: parseInt(patientID as string),
         canal: canal as string,
         gender: gender as string
     };
@@ -275,7 +274,7 @@ export const examPriceController = async (req: Request, res: Response) => {
     try {
         const filters = {
             tenantId: tenantId!,
-            examID: examID as string
+            examID: parseInt(examID as string)
         };
 
         const result = await examPricesService(filters)

@@ -128,17 +128,7 @@ export const countInvoicingService = async (filters: MarketingFilters) => {
 
     if (filters.examID) {
         queryBuilder.innerJoin("patientExam.exam", "exam")
-            .andWhere("exam.id = :examId", { examId: parseInt(filters.examID) });
-    }
-
-    if (filters.startDate || filters.endDate) {
-        const dateCondition = handleFilterDate(filters, 1);
-        if (dateCondition.gte) {
-            queryBuilder.andWhere("patientExam.examDate >= :startDate", { startDate: dateCondition.gte });
-        }
-        if (dateCondition.lte) {
-            queryBuilder.andWhere("patientExam.examDate <= :endDate", { endDate: dateCondition.lte });
-        }
+            .andWhere("exam.id = :examId", { examId: filters.examID });
     }
 
     if (filters.tenantId) {
@@ -181,18 +171,8 @@ export const countPatientByMonthService = async (filters: MarketingFilters) => {
             .andWhere("tenant.id = :tenantId", { tenantId: filters.tenantId });
     }
 
-    if (filters.startDate || filters.endDate) {
-        const dateCondition = handleFilterDate(filters, 1);
-        if (dateCondition.gte) {
-            queryBuilder.andWhere("patient.examDate >= :startDate", { startDate: dateCondition });
-        }
-        if (dateCondition.lte) {
-            queryBuilder.andWhere("patient.examDate <= :endDate", { endDate: dateCondition });
-        }
-    }
-
     if (filters.patientID) {
-        queryBuilder.andWhere("patient.id = :patientId", { patientId: parseInt(filters.patientID) });
+        queryBuilder.andWhere("patient.id = :patientId", { patientId: filters.patientID });
     }
 
     if (filters.gender) {
@@ -215,12 +195,12 @@ export const totalExamPerDoctorByMonthService = async (filters: MarketingFilters
 
     for (const doctor of doctorList.doctors) {
         const patientExamlist = await listPatientExams({ doctorID: doctor.id })
-        const countTotalExamsDoctor = await countInvoicingService({ ...filters, doctorID: doctor.id.toString() })
+        const countTotalExamsDoctor = await countInvoicingService({ ...filters, doctorID: doctor.id })
         for(const patientexam of patientExamlist.exams) {
             const examPrice = await examPricesService({
-                examID: patientexam.exam.id.toString()
+                examID: patientexam.exam.id
             })
-            const countPatientExam = await countInvoicingService({ ...filters, doctorID: doctor.id.toString(), examID: patientexam.exam.id.toString() })
+            const countPatientExam = await countInvoicingService({ ...filters, doctorID: doctor.id, examID: patientexam.exam.id })
             totalInvoiceDoctors += countPatientExam.total * Number(examPrice.doctorPrice)
         }
         quantityExamDoctor.push({name: doctor.fullName, quantity: countTotalExamsDoctor.total})
@@ -241,7 +221,7 @@ export const totalInvoicePerExamByMonthService = async (filters: MarketingFilter
     for (const exam of examList) {
         const countPatientExam = await countInvoicingService({ ...filters, exam_name: exam.exam_name})
         const examPrice = await examPricesService({
-            examID: exam.id.toString()
+            examID: exam.id
         })
         totalInvoice += countPatientExam.total * Number(examPrice.price)
         totalDoctorInvoice += countPatientExam.total * Number(examPrice.doctorPrice)

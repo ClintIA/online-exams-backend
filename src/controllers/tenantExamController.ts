@@ -30,7 +30,8 @@ export const getExamsController = async (req: Request, res: Response) => {
     */
     try {
         const tenantId = req.tenantId!;
-        const result = await getExams({tenantId});
+
+        const result = await getExams(tenantId);
         return successResponse(res, result, 'Exames listados com sucesso');
     } catch (error) {
         return errorResponse(res, error);

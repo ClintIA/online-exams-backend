@@ -34,8 +34,16 @@ export const listPatientExams = async (filters?: ListPatientExamsDTO) => {
     if (filters?.status) {
         whereCondition.status = filters.status;
     }
+
+    if (filters?.attended) {
+        whereCondition.attended = filters.attended;
+    }
+
     if (filters?.doctorID) {
         whereCondition.doctor = { id: filters.doctorID }
+    }
+    if (filters?.exam_name) {
+        whereCondition.exam = { exam_name: filters.exam_name }
     }
     const [exams, total] = await patientExamsRepository.findAndCount({
         where: whereCondition,
