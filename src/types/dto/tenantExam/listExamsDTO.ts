@@ -1,3 +1,3 @@
 export interface ListExamsDTO {
-    tenantId: number;
+    tenantId?: number;
 }

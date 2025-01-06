@@ -16,9 +16,9 @@ export const handleFilterDate = (filters: { startDate?: string, endDate?: string
             getFormattedDate(filters.startDate, offset)
         );
     } else if (filters.endDate) {
-       return Between(
+        return Between(
             filters.endDate,
-           getFormattedDate(filters.endDate, offset)
+            getFormattedDate(filters.endDate, offset)
         );
     }
 }

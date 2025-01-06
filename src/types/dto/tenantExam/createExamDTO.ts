@@ -3,5 +3,6 @@ export interface CreateExamDTO {
     price: number;
     doctorPrice: number;
     tenantId: number;
+    exam_type: string;
     doctors: string[];
 }

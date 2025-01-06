@@ -13,31 +13,42 @@ import {registerPatient} from "./patientService";
 import {generatePassword} from "../utils/passwordGenerator";
 import {doctorRepository} from "../repositories/doctorRepository";
 
-export const listPatientExams = async (filters: ListPatientExamsDTO) => {
+export const listPatientExams = async (filters?: ListPatientExamsDTO) => {
     const whereCondition: any = {};
 
-    if (filters.tenantId) {
+    if (filters?.tenantId) {
         whereCondition.exam = { tenant: { id: filters.tenantId } };
     }
-    if (filters.patientCpf) {
+    if (filters?.patientCpf) {
         whereCondition.patient = { cpf: filters.patientCpf };
     }
-    if (filters.patientId || filters.patientName) {
+    if (filters?.patientId || filters?.patientName) {
         whereCondition.patient = {
             ...(filters.patientId && { id: filters.patientId }),
             ...(filters.patientName && { full_name: Like(`%${filters.patientName}%`) })
         };
     }
-    if (filters.startDate || filters.endDate) {
+    if (filters?.startDate || filters?.endDate) {
         whereCondition.examDate = handleFilterDate(filters, 1);
     }
-    if (filters.status) {
+    if (filters?.status) {
         whereCondition.status = filters.status;
+    }
+
+    if (filters?.attended) {
+        whereCondition.attended = filters.attended;
+    }
+
+    if (filters?.doctorID) {
+        whereCondition.doctor = { id: filters.doctorID }
+    }
+    if (filters?.exam_name) {
+        whereCondition.exam = { exam_name: filters.exam_name }
     }
     const [exams, total] = await patientExamsRepository.findAndCount({
         where: whereCondition,
-        take: filters.take,
-        skip: filters.skip,
+        take: filters?.take,
+        skip: filters?.skip,
         relations: ['patient', 'exam', 'exam.tenant','doctor'],
         order: { examDate: 'ASC' },
     });
@@ -50,19 +61,21 @@ export const createPatientExamWithPatient = async (examData: CreatePatientExamWi
             dob: examData.patientData.dob,
         });
         const newPatient = await registerPatient({ ...examData.patientData, password }, tenantId);
-        return await createPatientExam({ ...examData, patientId: newPatient.data.id });
+        return await createPatientExam({ ...examData, patientId: newPatient.data.id }, tenantId);
     } catch (error) {
         throw new Error('Erro ao criar paciente');
     }
 }
-export const createPatientExam = async (examData: CreatePatientExamDTO) => {
+export const createPatientExam = async (examData: CreatePatientExamDTO, tenantId: number) => {
     const exam = await tenantExamsRepository.findOne({ where: { id: examData.examId } });
     const patient = await patientRepository.findOne({ where: { id: examData.patientId } });
     const createdBy = await adminRepository.findOne({ where: { id: examData.userId } });
     const doctor = await doctorRepository.findOne({ where: { id: examData.doctorId } });
+
     if (!exam || !patient || !createdBy) {
         throw new Error('Dados inválidos');
     }
+
     const newPatientExam = patientExamsRepository.create({
         exam,
         patient,
@@ -71,7 +84,7 @@ export const createPatientExam = async (examData: CreatePatientExamDTO) => {
         status: 'Scheduled',
         ...(examData.doctorId && { doctor: { id: examData.doctorId } })
     });
-    const result = await patientExamsRepository.save(newPatientExam);
+    const result = await patientExamsRepository.save({...newPatientExam, tenant: { id: tenantId}});
     const confirmationData = {
         exam_name: result.exam.exam_name,
         exameDate: result.examDate,

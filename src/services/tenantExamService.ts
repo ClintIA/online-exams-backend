@@ -4,6 +4,7 @@ import { ListExamsDTO } from '../types/dto/tenantExam/listExamsDTO';
 import { UpdateExamDTO } from '../types/dto/tenantExam/updateExamDTO';
 import {Doctor} from "../models/Doctor";
 import {findDoctorsById} from "./doctorService";
+import {MarketingFilters} from "../types/dto/marketing/marketingFilters";
 
 export const createExam = async (examData: CreateExamDTO) => {
     const doctors: Doctor[] = [];
@@ -20,14 +21,26 @@ export const createExam = async (examData: CreateExamDTO) => {
         price: examData.price,
         doctorPrice: examData.doctorPrice,
         tenant: { id: examData.tenantId },
+        exam_type: examData.exam_type,
         doctors: doctors
     });
     return { message: 'Exame criado com sucesso' };
 };
 
-export const getExams = async (filters: ListExamsDTO) => {
+export const getExams = async (filters?: number) => {
     return await tenantExamsRepository.find({
-        where: { tenant: { id: filters.tenantId } }, relations: ['doctors']
+        select: {
+          id: true,
+          exam_name: true,
+          exam_type: true,
+          price: true,
+          doctorPrice: true,
+            doctors: {
+                id: true,
+                fullName: true,
+            },
+        },
+        where: { tenant: { id: filters } }, relations: ['doctors']
     });
 };
 export const addDoctorToExam = async (examsID: string[], doctor: Doctor) => {
@@ -64,7 +77,8 @@ export const updateExam = async (examId: number, examData: UpdateExamDTO) => {
         exam_name: examData.exam_name,
         price: examData.price,
         doctorPrice: examData.doctorPrice,
-        doctors: doctors
+        doctors: doctors,
+        exam_type: examData.exam_type
     })
     const result = await tenantExamsRepository.save(
         updateExam

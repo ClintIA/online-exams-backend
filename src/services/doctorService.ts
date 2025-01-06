@@ -6,9 +6,9 @@ import {RegisterDoctorDTO} from "../types/dto/doctor/registerDoctorDTO";
 import {PaginationQuery} from "../types/dto/doctor/paginationQuery";
 
 
-export const getDoctors = async ({ tenantId, take = 10, skip = 0 }: PaginationQuery) => {
+export const getDoctors = async ({ tenantId, take = 100, skip = 0 }: PaginationQuery) => {
     const [doctors, total] = await doctorRepository.findAndCount({
-        select: { id: true, fullName: true, email: true, cep: true, cpf: true, role:true, CRM: true,occupation: true, phone: true, created_at: true },
+        select: { id: true, fullName: true, cpf: true, role:true, CRM: true,occupation: true, phone: true, created_at: true },
         relations: ['exams'],
         take,
         skip,
@@ -16,6 +16,10 @@ export const getDoctors = async ({ tenantId, take = 10, skip = 0 }: PaginationQu
     });
     return { doctors, total };
 };
+
+export const findDoctorsByEmail = async (email: string) => {
+    return await doctorRepository.findOne({where: {email}});
+}
 export const registerDoctor = async (doctorData: RegisterDoctorDTO, tenantId: number) => {
     const hashedPassword = await bcrypt.hash(doctorData.password!, 10);
     const tenant = await tenantRepository.findOne({ where: { id: tenantId } });
@@ -36,6 +40,7 @@ export const registerDoctor = async (doctorData: RegisterDoctorDTO, tenantId: nu
     }
 };
 
+
 export const getDoctorsByExamName = async (examName: string) => {
     return await doctorRepository.find({
         where: { exams: { exam_name: ILike(`%${examName}%`) } },
@@ -50,10 +55,6 @@ export const findDoctorsById = async (id: number) => {
             id
         }
     })
-}
-export const findDoctorsByEmail = async (email: string) => {
-    return await doctorRepository.findOne({where: {email}, relations: ['tenant']});
-
 }
 
 export const updateDoctorService = async (doctorID: number, updateData: RegisterDoctorDTO) => {

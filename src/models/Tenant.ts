@@ -25,6 +25,9 @@ export class Tenant {
     @Column({default: 0})
     uploadUsage!: number;
 
+    @Column('decimal', { precision: 10, scale: 2, nullable: true })
+    budgetTotal!: number;
+
     @Column({ unique: true })
     whatsAppNumber!: string;
 

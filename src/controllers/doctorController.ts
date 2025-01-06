@@ -7,11 +7,33 @@ import {
     registerDoctor,
     updateDoctorService,
     deleteDoctorService,
-    getDoctorsByExamName, getDoctors
+    getDoctors,
+    getDoctorsByExamName
 } from "../services/doctorService";
-import {GetDoctorsResult} from "../types/dto/doctor/getDoctorResult";
-import {PaginationQuery} from "../types/dto/doctor/paginationQuery";
+interface PaginationQuery {
+    page?: string;
+    take?: string;
+    skip?: string;
+}
 
+interface GetDoctorsResult {
+    doctors: any[];
+    total: number;
+}
+export const getDoctorsByExamNameController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Doctor']
+    #swagger.summary = 'Get Doctors by Exam  '
+    #swagger.description = 'Filter Doctors by exam name'
+    */
+    try {
+        const { examName } = req.query;
+        const result = await getDoctorsByExamName(examName as string);
+        return successResponse(res, result, 'Doutores associados ao exame listados com sucesso');
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+};
 export const registerDoctorController = async (req: Request, res: Response) => {
     /*
     #swagger.tags = ['Doctor']
@@ -55,24 +77,10 @@ export const updateDoctorController = async (req: Request, res: Response) => {
     */
     try {
         const doctorID = parseInt(req.params.id);
-        const { CRM, fullName, cpf, cep, phone, email, CNPJ, occupation } = req.body;
+        const { CRM, fullName, cpf, cep, phone, CNPJ, occupation } = req.body;
 
-        const result = await updateDoctorService(doctorID, { CRM, fullName, email, cpf, cep, phone, CNPJ, occupation });
+        const result = await updateDoctorService(doctorID, { CRM, fullName, cpf, cep, phone, CNPJ, occupation });
         return successResponse(res, result, 'Médico atualizado com sucesso');
-    } catch (error) {
-        return errorResponse(res, error);
-    }
-};
-export const getDoctorsByExamNameController = async (req: Request, res: Response) => {
-    /*
-    #swagger.tags = ['Doctor']
-    #swagger.summary = 'Get Doctors by Exam  '
-    #swagger.description = 'Filter Doctors by exam name'
-    */
-    try {
-        const { examName } = req.query;
-        const result = await getDoctorsByExamName(examName as string);
-        return successResponse(res, result, 'Doutores associados ao exame listados com sucesso');
     } catch (error) {
         return errorResponse(res, error);
     }
@@ -89,13 +97,13 @@ export const getDoctorsListController = async (req: Request, res: Response) => {
             return errorResponse(res, new Error('Tenant ID inválido ou não informado'), 400);
         }
 
-        const { page, take, skip  } = req.query as PaginationQuery;
+        const { page = '1', take = '10', skip = '0' } = req.query as PaginationQuery;
 
         const numericParams = {
             tenantId: parseInt(tenantId),
-            take: take || 10,
-            skip: skip || 0,
-            page: page || 1
+            take: parseInt(take),
+            skip: parseInt(skip),
+            page: parseInt(page)
         };
 
         if (Object.values(numericParams).some(isNaN)) {
