@@ -33,7 +33,7 @@ export const listPatientExamsController = async (req: Request, res: Response) =>
             endDate: endDate as string,
             status: status as 'Scheduled' | 'InProgress' | 'Completed',
             patientName: patientName as string,
-            take: parseInt(take as string, 10) || 10,
+            take: parseInt(take as string, 10) || 1000,
             skip: parseInt(skip as string, 10) || 0
         };
 
