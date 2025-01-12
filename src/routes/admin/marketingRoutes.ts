@@ -10,7 +10,10 @@ import {
     getBudgetByTenantController,
     updateBudgetByTenantController,
     listChannelByMonthController,
-    totalInvoiceByMonthController, totalInvoiceDoctorByMonthController
+    totalInvoiceByMonthController,
+    totalInvoiceDoctorByMonthController,
+    upsertMarketingDataController,
+    getMarketingMetricsController
 } from "../../controllers/marketingController";
 import {tenantMiddleware} from "../../middlewares/tenantMiddleware";
 
@@ -28,4 +31,8 @@ router.post('/marketing/canal',tenantMiddleware,createCanalController)
 router.get('/marketing/canal', tenantMiddleware,listCanalController)
 router.put('/marketing/canal', tenantMiddleware, updateCanalController)
 router.delete('/marketing/canal', tenantMiddleware, deleteCanalController)
+
+router.post('/marketing/data', upsertMarketingDataController);
+router.get('/marketing/metrics', getMarketingMetricsController);
+
 export default router;

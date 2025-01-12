@@ -11,7 +11,10 @@ import {
     deleteCanalService,
     getBudgetByTenantService,
     updateBudgetByTenantService,
-    listChannelByMonthService, totalInvoicePerExamByMonthService, totalExamPerDoctorByMonthService,
+    listChannelByMonthService,
+    totalInvoicePerExamByMonthService,
+    totalExamPerDoctorByMonthService,
+    upsertMarketingDataService, calculateMarketingMetrics,
 } from "../services/marketingService";
 import { MarketingFilters} from "../types/dto/marketing/marketingFilters";
 import {MarketingDTO} from "../types/dto/marketing/marketingDTO";
@@ -287,3 +290,41 @@ export const examPriceController = async (req: Request, res: Response) => {
 
     }
 }
+
+export const upsertMarketingDataController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Marketing']
+    #swagger.summary = 'Create or Update Marketing Data'
+    #swagger.description = 'Insert or update data for a specific marketing channel'
+    */
+    try {
+        const tenantId = parseInt(req.headers['x-tenant-id'] as string);
+        const newData = req.body;
+
+        if (!tenantId) throw new Error('Tenant ID é obrigatório');
+        const result = await upsertMarketingDataService(newData, tenantId);
+
+        return successResponse(res, result);
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+};
+
+export const getMarketingMetricsController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Marketing']
+    #swagger.summary = 'Get Marketing Metrics'
+    #swagger.description = 'Retrieve calculated metrics for marketing channels'
+    */
+    try {
+        const tenantId = parseInt(req.headers['x-tenant-id'] as string);
+        const { month } = req.query;
+
+        if (!tenantId || !month) throw new Error('Tenant ID e mês são obrigatórios');
+        const result = await calculateMarketingMetrics(tenantId, month as string);
+
+        return successResponse(res, result, 'Métricas calculadas com sucesso');
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+};
