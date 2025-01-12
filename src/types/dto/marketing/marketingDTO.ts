@@ -3,10 +3,7 @@ export interface MarketingDTO {
     canal: string;
     budgetCanal?: number;
     clicks?: number;
-    ctr?: number;
     cost?: number;
-    costPerConversion?: number;
-    conversionRate?: number;
     leads?: number;
     updatedBy: number;
 }

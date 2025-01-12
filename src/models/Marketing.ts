@@ -25,17 +25,8 @@ export class Marketing {
     @Column('int', { nullable: true })
     clicks?: number;
 
-    @Column('decimal', { precision: 5, scale: 2, nullable: true })
-    ctr?: number;
-
     @Column('decimal', { precision: 10, scale: 2, nullable: true })
     cost?: number;
-
-    @Column('decimal', { precision: 10, scale: 2, nullable: true })
-    costPerConversion?: number;
-
-    @Column('decimal', { precision: 5, scale: 2, nullable: true })
-    conversionRate?: number;
 
     @Column('int', { nullable: true })
     leads?: number;
