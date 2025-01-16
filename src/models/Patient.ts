@@ -5,7 +5,7 @@ import {
     CreateDateColumn,
     ManyToMany,
     Index,
-    JoinTable
+    JoinTable, DeleteDateColumn
 } from 'typeorm';
 import { Tenant } from './Tenant';
 import {ProfileRole} from "../types/enums/ProfileRole";
@@ -61,4 +61,6 @@ export class Patient {
     @ManyToMany(() => Tenant, tenant => tenant.patients)
     @JoinTable()
     tenants!: Tenant[];
+    @DeleteDateColumn()
+    delete_at?: Date;
 }

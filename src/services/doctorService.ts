@@ -66,7 +66,7 @@ export const updateDoctorService = async (doctorID: number, updateData: Register
 };
 
 export const deleteDoctorService = async (doctorID: number) => {
-    const result = await doctorRepository.delete(doctorID);
+    const result = await doctorRepository.softDelete(doctorID);
 
     if (result.affected === 0) throw new Error('Médico não encontrado');
 

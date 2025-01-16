@@ -107,7 +107,7 @@ export const deleteAdmin = async (adminId: number) => {
     if(admin?.role === 'master') {
         throw new Error("Não é possível deletar o admin selecionado")
     }
-    const result = await adminRepository.delete(adminId);
+    const result = await adminRepository.softDelete(adminId);
 
     if (result.affected === 0) throw new Error('Admin não encontrado');
     

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index } from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index, DeleteDateColumn} from 'typeorm';
 import { Tenant } from './Tenant';
 import {ProfileRole} from "../types/enums/ProfileRole";
 
@@ -38,4 +38,6 @@ export class Admin {
     @ManyToOne(() => Tenant, tenant => tenant.admins)
     tenant!: Tenant;
 
+    @DeleteDateColumn()
+    delete_at?: Date;
 }

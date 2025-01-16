@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index, ManyToMany } from 'typeorm';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    ManyToOne,
+    CreateDateColumn,
+    Index,
+    ManyToMany,
+    DeleteDateColumn
+} from 'typeorm';
 import { Tenant } from './Tenant';
 import { Admin } from './Admin';
 import {Doctor} from "./Doctor";
@@ -29,4 +38,7 @@ export class TenantExams {
 
     @ManyToMany(() => Doctor, admin => admin.exams)
     doctors!: Doctor[];
+
+    @DeleteDateColumn()
+    delete_at?: Date;
 }
