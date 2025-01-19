@@ -30,7 +30,8 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
                 break;
             case 'doctor':
                 const doctor = await doctorRepository.findOne({ where: { id: userId } });
-                if (doctor && doctor.sessionToken === token) {
+                console.log('here')
+                if (doctor && doctor.sessionToken === token) {   console.log('here trur')
                     validSession = true;
                 }
                 break

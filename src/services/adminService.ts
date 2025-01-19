@@ -54,16 +54,18 @@ export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: numbe
 export const loginAdmin = async (loginData: LoginAdminDTO): Promise<string> => {
     let user: Admin | Doctor | null = await findAdminByEmail(loginData.user) || await findDoctorsByEmail(loginData.user);
     if (!user) throw new Error('Usuário não encontrado');
-
     const isPasswordValid = await bcrypt.compare(loginData.password, user.password);
     if (!isPasswordValid) throw new Error('Senha inválida');
-
+    console.log(user)
     const token = generateToken(user.id, user.role, user.tenant.id);
+    console.log(token)
     user.sessionToken = token;
-
+    console.log('aui2')
     if (user instanceof Admin) {
+        console.log('admin')
         await adminRepository.save(user);
     } else {
+        console.log('doctor')
         await doctorRepository.save(user);
     }
 
@@ -92,7 +94,12 @@ export const getAdminsByName = async (name: string) => {
     });
 };
 
-
+export const getAdminsById = async (adminID: number) => {
+    return await adminRepository.findOne({
+        select: { email: true, fullName: true, phone: true, cep: true, cpf: true, role: true, created_at: true },
+        where: { id: adminID }
+    });
+};
 export const updateAdmin = async (adminId: number, updateData: UpdateAdminDTO) => {
     const result = await adminRepository.update(adminId, updateData);
 

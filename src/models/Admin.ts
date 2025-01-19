@@ -23,7 +23,7 @@ export class Admin {
     @Column({ enum: ProfileRole, nullable: true })
     role!: string;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     cep!: string;
 
     @Column()

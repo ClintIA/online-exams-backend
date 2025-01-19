@@ -5,7 +5,7 @@ import {
     getAdminsByName,
     updateAdmin,
     deleteAdmin,
-    getAdmins
+    getAdmins, getAdminsById
 } from "../services/adminService";
 import {adminRepository} from "../repositories/adminRepository";
 
@@ -45,6 +45,26 @@ export const getAdminsByCPFController = async (req: Request, res: Response) => {
 
    }  catch (error) {
     return errorResponse(res, error);
+
+    }
+}
+export const getAdminsByIDController = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin']
+    #swagger.summary = 'Get Admin info by CPF'
+    #swagger.description = 'Filter Admins with CPF '
+    */
+    try {
+        const { adminID } = req.query;
+        const result = await getAdminsById(parseInt(adminID as string))
+
+        if(!result) {
+            return customErrorResponse(res, 'Admin não encontrado');
+        }
+        return successResponse(res, result);
+
+    }  catch (error) {
+        return errorResponse(res, error);
 
     }
 }
