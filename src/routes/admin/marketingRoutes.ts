@@ -30,7 +30,7 @@ router.put('/marketing/tenantBudget', tenantMiddleware, updateBudgetByTenantCont
 router.post('/marketing/canal',tenantMiddleware,createCanalController)
 router.get('/marketing/canal', tenantMiddleware,listCanalController)
 router.put('/marketing/canal', tenantMiddleware, updateCanalController)
-router.delete('/marketing/canal', tenantMiddleware, deleteCanalController)
+router.delete('/marketing/canal/:id', tenantMiddleware, deleteCanalController)
 
 router.post('/marketing/data', upsertMarketingDataController);
 router.get('/marketing/metrics', getMarketingMetricsController);
