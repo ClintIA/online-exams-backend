@@ -1,5 +1,4 @@
 import {patientExamsRepository} from "../repositories/patientExamsRepository";
-import { handleFilterDate} from "../utils/handleDate";
 import { MarketingFilters} from "../types/dto/marketing/marketingFilters";
 import {patientRepository} from "../repositories/patientRepository";
 import {tenantExamsRepository} from "../repositories/tenantExamsRepository";
@@ -10,6 +9,7 @@ import {tenantRepository} from "../repositories/tenantRepository";
 import {getExams} from "./tenantExamService";
 import {getDoctors} from "./doctorService";
 import {listPatientExams} from "./patientExamService";
+import {Between, LessThan, Like, MoreThan} from "typeorm";
 
 interface IChart {
     name: string
@@ -277,3 +277,107 @@ export const examPricesService = async (filters: MarketingFilters) => {
     })
     return { price: exam?.price, doctorPrice: exam?.doctorPrice }
 }
+
+export const upsertMarketingDataService = async (newData: MarketingDTO, tenantId: number) => {
+    const admin = await findAdminById(newData.updatedBy);
+    if (!admin) throw new Error('Admin não encontrado');
+
+    const marketingData = marketingRepository.create({
+        ...newData,
+        updatedBy: admin,
+        tenant: { id: tenantId },
+    });
+
+    if (newData.id) {
+        await marketingRepository.update(newData.id, marketingData);
+    } else {
+        await marketingRepository.save(marketingData);
+    }
+
+    return { message: 'Dados de marketing atualizados com sucesso' };
+};
+
+export const calculateMarketingMetrics = async (tenantId: number, month: string) => {
+    const dateStart = new Date(`${month}-01`);
+    const dateEnd = new Date(`${month}-31`);
+    console.log(dateStart)
+    console.log(dateEnd)
+
+    // Dados da tabela Marketing
+    const marketingData = await marketingRepository.find({
+        where: {
+            tenant: { id: tenantId },
+            created_at: Between(dateStart, dateEnd),
+            updatedBy: Between(dateStart, dateEnd),
+        },
+    });
+
+    // Dados de Exames
+    const examsData = await patientExamsRepository.find({
+        where: {
+            tenant: { id: tenantId },
+            examDate: MoreThan(dateStart),
+        },
+        relations: ['patient', 'exam'],
+    });
+
+    // Variáveis para cálculos
+    let totalLeads = 0;
+    let totalClicks = 0;
+    let totalCost = 0;
+    let totalAppointments = 0;
+    let totalCompleted = 0;
+    let totalRevenue = 0;
+
+    // Processa dados da tabela Marketing
+    marketingData.forEach((record) => {
+        totalClicks += record.clicks ?? 0;
+        totalLeads += record.leads ?? 0;
+        totalCost += record.cost ?? 0;
+    });
+
+    // Processa dados de Exames
+    examsData.forEach((exam) => {
+        if (exam.status === 'Completed') {
+            totalCompleted++;
+            totalRevenue += exam.exam.price ?? 0;
+        }
+        if (exam.status === 'Scheduled') totalAppointments++;
+    });
+
+    // Cálculos
+    const CPL = totalCost / totalLeads || 0; // Custo por Lead
+    const CAP = totalCost / totalAppointments || 0; // Custo por Agendamento
+    const ROAS = totalRevenue / totalCost || 0; // Retorno sobre o Investimento
+    const averageTicket = totalRevenue / totalCompleted || 0; // Ticket Médio
+    const LTV = totalRevenue / totalLeads || 0; // Lifetime Value
+    const CPC = totalCost / totalClicks || 0; // Custo por Clique
+
+    // Taxas
+    const appointmentRate = totalAppointments / totalLeads || 0; // Taxa de Aproveitamento
+    const noShowRate = 1 - (totalCompleted / totalAppointments || 0); // Taxa de Absenteísmo
+    const conversionRate = totalCompleted / totalLeads || 0; // Taxa de Conversão Final
+    const roasPercentage = (ROAS - 1) * 100; // Taxa de ROAS
+
+    return {
+        CPL,
+        CAP,
+        ROAS,
+        roasPercentage,
+        averageTicket,
+        CPC,
+        LTV,
+        appointmentRate,
+        noShowRate,
+        conversionRate,
+        funnel: {
+            clicks: totalClicks,
+            leads: totalLeads,
+            appointments: totalAppointments,
+            completed: totalCompleted,
+        },
+    };
+};
+
+
+
