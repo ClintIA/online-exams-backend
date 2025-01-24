@@ -18,7 +18,6 @@ import {
 } from "../services/marketingService";
 import { MarketingFilters} from "../types/dto/marketing/marketingFilters";
 import {MarketingDTO} from "../types/dto/marketing/marketingDTO";
-import {tenantRepository} from "../repositories/tenantRepository";
 
 
 export const listCanalController  = async (req: Request, res: Response) => {
@@ -297,11 +296,12 @@ export const upsertMarketingDataController = async (req: Request, res: Response)
     #swagger.summary = 'Create or Update Marketing Data'
     #swagger.description = 'Insert or update data for a specific marketing channel'
     */
-    try {
-        const tenantId = parseInt(req.headers['x-tenant-id'] as string);
-        const newData = req.body;
+    const tenantId = parseInt(req.headers['x-tenant-id'] as string);
+    const newData = req.body;
 
-        if (!tenantId) throw new Error('Tenant ID é obrigatório');
+    if (!tenantId) throw new Error('Tenant ID é obrigatório');
+    try {
+
         const result = await upsertMarketingDataService(newData, tenantId);
 
         return successResponse(res, result);
@@ -316,6 +316,7 @@ export const getMarketingMetricsController = async (req: Request, res: Response)
     #swagger.summary = 'Get Marketing Metrics'
     #swagger.description = 'Retrieve calculated metrics for marketing channels'
     */
+
     try {
         const tenantId = parseInt(req.headers['x-tenant-id'] as string);
         const { month } = req.query;

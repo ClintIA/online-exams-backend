@@ -9,7 +9,7 @@ import {tenantRepository} from "../repositories/tenantRepository";
 import {getExams} from "./tenantExamService";
 import {getDoctors} from "./doctorService";
 import {listPatientExams} from "./patientExamService";
-import {Like, MoreThan} from "typeorm";
+import {Between, LessThan, Like, MoreThan} from "typeorm";
 
 interface IChart {
     name: string
@@ -300,13 +300,15 @@ export const upsertMarketingDataService = async (newData: MarketingDTO, tenantId
 export const calculateMarketingMetrics = async (tenantId: number, month: string) => {
     const dateStart = new Date(`${month}-01`);
     const dateEnd = new Date(`${month}-31`);
+    console.log(dateStart)
+    console.log(dateEnd)
 
     // Dados da tabela Marketing
     const marketingData = await marketingRepository.find({
         where: {
             tenant: { id: tenantId },
-            created_at: MoreThan(dateStart),
-            updated_at: MoreThan(dateEnd),
+            created_at: Between(dateStart, dateEnd),
+            updatedBy: Between(dateStart, dateEnd),
         },
     });
 
