@@ -101,9 +101,9 @@ export const selectTenantController = async (req: Request, res: Response) => {
      #swagger.summary = 'Select Tenant for Login'
      */
     try {
-        const { userId, tenantId } = req.body;
+        const { user, tenantId } = req.body;
 
-        const token = await selectTenantService(userId, tenantId);
+        const token = await selectTenantService(user, tenantId);
 
         return successResponse(res, { token }, 'Login realizado com sucesso.');
     } catch (error) {

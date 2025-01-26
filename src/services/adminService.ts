@@ -87,26 +87,23 @@ export const loginAdmin = async (loginData: LoginAdminDTO)  => {
     return { multipleTenants: false, token };
 };
 
-export const selectTenantService = async (userId, tenantId) => {
-        const admin = await adminRepository.findOne({ where: { id: userId }, relations: ['tenants'] });
-        const doctor = await doctorRepository.findOne({ where: { id: userId }, relations: ['tenants'] });
+export const selectTenantService = async (userLogin: string, tenantId: number) => {
+    let user: Admin | Doctor | null = await findAdminByEmail(userLogin) || await findDoctorsByEmail(userLogin);
+    if (!user) throw new Error('Usuário não encontrado');
 
-        const user = admin || doctor;
-        if (!user) throw new Error('Usuário não encontrado.');
+    const tenant = user.tenants.find(t => t.id === tenantId);
+    if (!tenant) throw new Error('Tenant inválido.');
 
-        const tenant = user.tenants.find(t => t.id === tenantId);
-        if (!tenant) throw new Error('Tenant inválido.');
+    const token = generateToken(user.id, user.role, tenantId);
+    user.sessionToken = token;
 
-        const token = generateToken(user.id, user.role, tenant.id);
-        user.sessionToken = token;
+    if (user instanceof Admin) {
+        await adminRepository.save(user);
+    } else {
+        await doctorRepository.save(user);
+    }
 
-        if (admin) {
-            await adminRepository.save(user);
-        } else if (doctor) {
-            await doctorRepository.save(user);
-        }
-
-        return token
+    return token
 };
 
 
