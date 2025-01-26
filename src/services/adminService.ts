@@ -10,6 +10,8 @@ import {tenantRepository} from "../repositories/tenantRepository";
 import {findDoctorsByEmail} from "./doctorService";
 import { Doctor } from '../models/Doctor';
 import {doctorRepository} from "../repositories/doctorRepository";
+import {tenantExamsRepository} from "../repositories/tenantExamsRepository";
+import {patientExamsRepository} from "../repositories/patientExamsRepository";
 
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
     return await adminRepository.findOne({where: {email}, relations: ['tenant']});
@@ -138,15 +140,40 @@ export const updateAdmin = async (adminId: number, updateData: UpdateAdminDTO) =
     return { message: 'Admin atualizado com sucesso' };
 };
 
-export const deleteAdmin = async (adminId: number) => {
-    const admin = await adminRepository.findOne({ where: { id: adminId}});
+export const deleteAdmin = async (adminId: number, tenantId: number) => {
+    const admin = await adminRepository.findOne({ where: { id: adminId }, relations: ['tenants'] });
 
-    if(admin?.role === 'master') {
-        throw new Error("Não é possível deletar o admin selecionado")
+    if (!admin) {
+        throw new Error('Admin não encontrado');
     }
-    const result = await adminRepository.delete(adminId);
 
-    if (result.affected === 0) throw new Error('Admin não encontrado');
-    
-    return { message: 'Admin deletado com sucesso' };
+    if (admin.role === 'master') {
+        throw new Error("Não é possível deletar o admin selecionado");
+    }
+
+    const tenantAssociation = admin.tenants.find(t => t.id === tenantId);
+    if (!tenantAssociation) {
+        throw new Error("Admin não está associado ao tenant especificado");
+    }
+
+    const hasDependencies = await patientExamsRepository.count({ where: { createdBy: admin } });
+
+    if (hasDependencies > 0) {
+        admin.tenants = admin.tenants.filter(t => t.id !== tenantId);
+        await adminRepository.save(admin);
+        return { message: 'Admin desassociado do tenant, mas não deletado devido a dependências.' };
+    }
+
+    if (admin.tenants.length > 1) {
+        admin.tenants = admin.tenants.filter(t => t.id !== tenantId);
+        await adminRepository.save(admin);
+        return { message: 'Admin desassociado do tenant com sucesso.' };
+    }
+
+    if (admin.tenants.length === 1) {
+        await adminRepository.remove(admin);
+        return { message: 'Admin deletado com sucesso, pois não havia dependências e estava associado a apenas um tenant.' };
+    }
+
+    throw new Error('Erro inesperado ao deletar/desassociar Admin.');
 };

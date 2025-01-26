@@ -93,9 +93,10 @@ export const deleteAdminController = async (req: Request, res: Response) => {
     #swagger.description = 'Delete an admin from the database by admin ID'
     */
     try {
-        const adminId = parseInt(req.params.id);
+        const adminId = parseInt(req.params.adminId);
+        const tenantId = req.headers['x-tenant-id'];
         
-        await deleteAdmin(adminId);
+        await deleteAdmin(adminId, Number(tenantId));
         return successResponse(res, null, 'Admin deletado com sucesso');
     } catch (error) {
         return errorResponse(res, error);
