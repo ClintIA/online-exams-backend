@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { registerPatient, loginPatientByCpf } from '../services/patientService'; 
-import { registerAdmin, loginAdmin } from '../services/adminService';
+import {registerAdmin, loginAdmin, selectTenantService} from '../services/adminService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
 import {generatePassword, generatePasswordByCpfAndName} from "../utils/passwordGenerator";
 import { sendLoginInfoToAdmin, sendLoginInfoToClient } from './notificationController';
@@ -74,22 +74,38 @@ export const registerPatientController = async (req: Request, res: Response) => 
     }
 };
 
+
 export const loginController = async (req: Request, res: Response) => {
     /*
      #swagger.tags = ['Auth']
-     #swagger.summary = 'Login as Admin'
-     #swagger.description = 'Route to Login as admin'
+     #swagger.summary = 'Login as Admin or Doctor'
      */
     try {
         const loginData: LoginAdminDTO = req.body;
 
-        if(loginData.user.includes('@')) {
-            const token = await loginAdmin(loginData);
-            return successResponse(res, { token }, 'Login realizado com sucesso');
-        } else  {
-            const token = await loginPatientByCpf(loginData);
-            return successResponse(res, { token }, 'Login realizado com sucesso');
+        const result = await loginAdmin(loginData);
+
+        if (result.multipleTenants) {
+            return successResponse(res, { tenants: result.tenants }, 'Selecione o tenant para prosseguir.');
         }
+
+        return successResponse(res, { token: result.token }, 'Login realizado com sucesso.');
+    } catch (error) {
+        return errorResponse(res, error, 401);
+    }
+};
+
+export const selectTenantController = async (req: Request, res: Response) => {
+    /*
+     #swagger.tags = ['Auth']
+     #swagger.summary = 'Select Tenant for Login'
+     */
+    try {
+        const { userId, tenantId } = req.body;
+
+        const token = await selectTenantService(userId, tenantId);
+
+        return successResponse(res, { token }, 'Login realizado com sucesso.');
     } catch (error) {
         return errorResponse(res, error, 401);
     }

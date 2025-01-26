@@ -28,12 +28,24 @@ export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: numbe
     const hashedPassword = await bcrypt.hash(adminData.password!, 10);
     const tenant = await tenantRepository.findOne({where: {id: tenantId}});
     if (!tenant) {
-        throw new Error('Tenant not found!');
+        throw new Error('Tenant não encontrado.');
     }
+
+    const existingAdmin = await adminRepository.findOne({ where: { email: adminData.email }, relations: ['tenants'] });
+
+    if (existingAdmin) {
+        if (!existingAdmin.tenants.find(t => t.id === tenant.id)) {
+            existingAdmin.tenants.push(tenant);
+            await adminRepository.save(existingAdmin);
+        }
+
+        return { data: existingAdmin, message: 'Admin já registrado, associado ao novo tenant.' };
+    }
+
     const newAdmin = adminRepository.create({
         ...adminData,
         password: hashedPassword,
-        tenant: tenant
+        tenants: [tenant]
     });
     try {
         const result = await adminRepository.save(newAdmin);
@@ -51,14 +63,19 @@ export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: numbe
  *
  * @throws Will throw an error if the user is not found or if the password is invalid.
  */
-export const loginAdmin = async (loginData: LoginAdminDTO): Promise<string> => {
+export const loginAdmin = async (loginData: LoginAdminDTO)  => {
     let user: Admin | Doctor | null = await findAdminByEmail(loginData.user) || await findDoctorsByEmail(loginData.user);
     if (!user) throw new Error('Usuário não encontrado');
 
     const isPasswordValid = await bcrypt.compare(loginData.password, user.password);
     if (!isPasswordValid) throw new Error('Senha inválida');
 
-    const token = generateToken(user.id, user.role, user.tenant.id);
+    const tenants = user.tenants;
+    if (tenants.length > 1) {
+        return { multipleTenants: true, tenants };
+    }
+
+    const token = generateToken(user.id, user.role, tenants[0].id);
     user.sessionToken = token;
 
     if (user instanceof Admin) {
@@ -67,14 +84,37 @@ export const loginAdmin = async (loginData: LoginAdminDTO): Promise<string> => {
         await doctorRepository.save(user);
     }
 
-    return token;
+    return { multipleTenants: false, token };
+};
+
+export const selectTenantService = async (userId, tenantId) => {
+        const admin = await adminRepository.findOne({ where: { id: userId }, relations: ['tenants'] });
+        const doctor = await doctorRepository.findOne({ where: { id: userId }, relations: ['tenants'] });
+
+        const user = admin || doctor;
+        if (!user) throw new Error('Usuário não encontrado.');
+
+        const tenant = user.tenants.find(t => t.id === tenantId);
+        if (!tenant) throw new Error('Tenant inválido.');
+
+        const token = generateToken(user.id, user.role, tenant.id);
+        user.sessionToken = token;
+
+        if (admin) {
+            await adminRepository.save(user);
+        } else if (doctor) {
+            await doctorRepository.save(user);
+        }
+
+        return token
 };
 
 
 export const getAdmins = async (tenantId: number) => {
     return await adminRepository.find({
         select: { id: true, fullName: true, cpf: true, email: true, cep: true, phone: true, created_at: true, role: true },
-        where: { tenant: { id: tenantId } }
+        where: { tenants: { id: tenantId } },
+        relations: ['tenants'],
     });
 };
 

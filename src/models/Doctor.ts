@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, Index, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index, ManyToMany, JoinTable } from 'typeorm';
 import { Tenant } from './Tenant';
 import { TenantExams } from './TenantExams';
 import {ProfileRole} from "../types/enums/ProfileRole";
@@ -45,8 +45,9 @@ export class Doctor {
     @CreateDateColumn()
     created_at!: Date;
 
-    @ManyToOne(() => Tenant, tenant => tenant.admins)
-    tenant!: Tenant;
+    @ManyToMany(() => Tenant, tenant => tenant.admins)
+    @JoinTable()
+    tenants!: Tenant[];
 
     @ManyToMany(() => TenantExams, exam => exam.doctors)
     @JoinTable()
