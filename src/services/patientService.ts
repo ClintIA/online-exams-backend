@@ -36,7 +36,7 @@ export const listPatientByTenant = async (
 };
 
 export const deletePatientService = async (patientId: number) => {
-    await patientRepository.delete({ id: patientId });
+    await patientRepository.softDelete({ id: patientId });
     return { message: "Paciente deletado com sucesso" };
 }
 

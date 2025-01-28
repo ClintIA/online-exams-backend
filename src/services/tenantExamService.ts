@@ -92,7 +92,7 @@ export const updateExam = async (examId: number, examData: UpdateExamDTO) => {
 };
 
 export const deleteExam = async (examId: number, tenantId: number) => {
-    const result = await tenantExamsRepository.delete({
+    const result = await tenantExamsRepository.softDelete({
         id: examId,
         tenant: { id: tenantId },
     });

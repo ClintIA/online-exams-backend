@@ -7,7 +7,6 @@ import { sendLoginInfoToAdmin, sendLoginInfoToClient } from './notificationContr
 import { RegisterPatientDTO } from '../types/dto/auth/registerPatientDTO';
 import { LoginAdminDTO } from '../types/dto/auth/loginAdminDTO';
 import { RegisterAdminDTO } from '../types/dto/auth/registerAdminDTO';
-import { LoginPatientDTO } from '../types/dto/auth/loginPatientDTO';
 
 export const registerAdminController = async (req: Request, res: Response) => {
     /*

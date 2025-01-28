@@ -6,7 +6,7 @@ import {
     CreateDateColumn,
     Index,
     BeforeUpdate,
-    UpdateDateColumn
+    UpdateDateColumn, DeleteDateColumn
 } from 'typeorm';
 import { Patient } from './Patient';
 import { Admin } from './Admin';
@@ -55,4 +55,7 @@ export class PatientExams {
 
     @ManyToOne(() => Tenant, tenant => tenant.exams)
     tenant!: Tenant;
+
+    @DeleteDateColumn()
+    delete_at?: Date;
 }

@@ -6,8 +6,9 @@ import {addDoctorToExam} from "../services/tenantExamService";
 import {
     registerDoctor,
     updateDoctorService,
+    deleteDoctorService,
     getDoctors,
-    getDoctorsByExamName, deleteDoctorFromTenant
+    getDoctorsByExamName, findDoctorsById
 } from "../services/doctorService";
 interface PaginationQuery {
     page?: string;
@@ -63,6 +64,18 @@ export const registerDoctorController = async (req: Request, res: Response) => {
         // });
 
         return successResponse(res, result, 'Médico registrado com sucesso', 201);
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+};
+export const getDoctorByIDController = async (req: Request, res: Response) => {
+
+    try {
+        const doctorID = parseInt(req.params.id);
+
+        const result = await findDoctorsById(doctorID);
+        const newResult = { ...result, password: null}
+        return successResponse(res, newResult , 'Médico atualizado com sucesso');
     } catch (error) {
         return errorResponse(res, error);
     }
@@ -143,9 +156,8 @@ export const deleteDoctorController = async (req: Request, res: Response) => {
     */
     try {
         const doctorId = parseInt(req.params.id);
-        const tenantId = req.headers['x-tenant-id'];
 
-        await deleteDoctorFromTenant(doctorId, Number(tenantId));
+        await deleteDoctorService(doctorId);
         return successResponse(res, null, 'Médico deletado com sucesso');
     } catch (error) {
         return errorResponse(res, error);
