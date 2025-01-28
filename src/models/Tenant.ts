@@ -34,7 +34,7 @@ export class Tenant {
     @ManyToMany(() => Patient, patient => patient.tenants)
     patients!: Patient[];
 
-    @OneToMany(() => Admin, admin => admin.tenants)
+    @ManyToMany(() => Admin, admin => admin.tenants)
     admins!: Admin[];
 
     @OneToMany(() => TenantExams, tenantExams => tenantExams.tenant)

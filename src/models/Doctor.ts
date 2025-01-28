@@ -55,12 +55,14 @@ export class Doctor {
     @CreateDateColumn()
     created_at!: Date;
 
-    @ManyToOne(() => Tenant, tenant => tenant.admins)
+    @ManyToMany(() => Tenant, tenant => tenant.admins)
+    @JoinTable()
     tenants!: Tenant[];
 
     @ManyToMany(() => TenantExams, exam => exam.doctors)
     @JoinTable()
     exams!: TenantExams[];
+
     @DeleteDateColumn()
     delete_at?: Date;
 }

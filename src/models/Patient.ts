@@ -61,6 +61,7 @@ export class Patient {
     @ManyToMany(() => Tenant, tenant => tenant.patients)
     @JoinTable()
     tenants!: Tenant[];
+
     @DeleteDateColumn()
     delete_at?: Date;
 }
