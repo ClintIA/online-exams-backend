@@ -6,9 +6,8 @@ import {addDoctorToExam} from "../services/tenantExamService";
 import {
     registerDoctor,
     updateDoctorService,
-    deleteDoctorService,
     getDoctors,
-    getDoctorsByExamName, findDoctorsById
+    getDoctorsByExamName, findDoctorsById, deleteDoctorFromTenant
 } from "../services/doctorService";
 interface PaginationQuery {
     page?: string;
@@ -156,8 +155,9 @@ export const deleteDoctorController = async (req: Request, res: Response) => {
     */
     try {
         const doctorId = parseInt(req.params.id);
+        const tenantId = req.headers['x-tenant-id'];
 
-        await deleteDoctorService(doctorId);
+        await deleteDoctorFromTenant(doctorId, parseInt(tenantId as string));
         return successResponse(res, null, 'Médico deletado com sucesso');
     } catch (error) {
         return errorResponse(res, error);

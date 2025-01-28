@@ -16,7 +16,9 @@ import {patientExamsRepository} from "../repositories/patientExamsRepository";
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
     return await adminRepository.findOne({where: {email}, relations: ['tenants']});
 };
-
+export const getAdminById = async (adminID: number): Promise<Admin | null> => {
+    return await adminRepository.findOne({ where: { id: adminID }, relations: ['tenants'] });
+};
 /**
  * Registers a new admin by hashing the provided password and associating the admin with a tenant.
  *

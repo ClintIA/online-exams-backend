@@ -5,7 +5,7 @@ import {
     getAdminsByName,
     updateAdmin,
     deleteAdmin,
-    getAdmins, getAdminsById
+    getAdmins, getAdminById
 } from "../services/adminService";
 import {adminRepository} from "../repositories/adminRepository";
 
@@ -56,7 +56,7 @@ export const getAdminsByIDController = async (req: Request, res: Response) => {
     */
     try {
         const { adminID } = req.query;
-        const result = await getAdminsById(parseInt(adminID as string))
+        const result = await getAdminById(parseInt(adminID as string))
 
         if(!result) {
             return customErrorResponse(res, 'Admin não encontrado');
