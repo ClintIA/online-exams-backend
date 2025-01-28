@@ -65,7 +65,7 @@ export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: numbe
  *
  * @throws Will throw an error if the user is not found or if the password is invalid.
  */
-export const loginAdmin = async (loginData: LoginAdminDTO): Promise<string>  => {
+export const loginAdmin = async (loginData: LoginAdminDTO): Promise<any>  => {
     let user: Admin | Doctor | null = await findAdminByEmail(loginData.user) || await findDoctorsByEmail(loginData.user);
     if (!user) throw new Error('Usuário não encontrado');
 
