@@ -56,7 +56,7 @@ export class Doctor {
     created_at!: Date;
 
     @ManyToOne(() => Tenant, tenant => tenant.admins)
-    tenant!: Tenant;
+    tenants!: Tenant[];
 
     @ManyToMany(() => TenantExams, exam => exam.doctors)
     @JoinTable()

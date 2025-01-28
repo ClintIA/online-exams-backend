@@ -36,7 +36,7 @@ export class Admin {
     created_at!: Date;
 
     @ManyToOne(() => Tenant, tenant => tenant.admins)
-    tenant!: Tenant;
+    tenants!: Tenant[];
 
     @DeleteDateColumn()
     delete_at?: Date;
