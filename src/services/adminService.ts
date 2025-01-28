@@ -10,11 +10,15 @@ import {tenantRepository} from "../repositories/tenantRepository";
 import {findDoctorsByEmail} from "./doctorService";
 import { Doctor } from '../models/Doctor';
 import {doctorRepository} from "../repositories/doctorRepository";
+import {tenantExamsRepository} from "../repositories/tenantExamsRepository";
+import {patientExamsRepository} from "../repositories/patientExamsRepository";
 
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
-    return await adminRepository.findOne({where: {email}, relations: ['tenant']});
+    return await adminRepository.findOne({where: {email}, relations: ['tenants']});
 };
-
+export const getAdminById = async (adminID: number): Promise<Admin | null> => {
+    return await adminRepository.findOne({ where: { id: adminID }, relations: ['tenants'] });
+};
 /**
  * Registers a new admin by hashing the provided password and associating the admin with a tenant.
  *
@@ -28,12 +32,24 @@ export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: numbe
     const hashedPassword = await bcrypt.hash(adminData.password!, 10);
     const tenant = await tenantRepository.findOne({where: {id: tenantId}});
     if (!tenant) {
-        throw new Error('Tenant not found!');
+        throw new Error('Tenant não encontrado.');
     }
+
+    const existingAdmin = await adminRepository.findOne({ where: { email: adminData.email }, relations: ['tenants'] });
+
+    if (existingAdmin) {
+        if (!existingAdmin.tenants.find(t => t.id === tenant.id)) {
+            existingAdmin.tenants.push(tenant);
+            await adminRepository.save(existingAdmin);
+        }
+
+        return { data: existingAdmin, message: 'Admin já registrado, associado ao novo tenant.' };
+    }
+
     const newAdmin = adminRepository.create({
         ...adminData,
         password: hashedPassword,
-        tenant: tenant
+        tenants: [tenant]
     });
     try {
         const result = await adminRepository.save(newAdmin);
@@ -51,32 +67,55 @@ export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: numbe
  *
  * @throws Will throw an error if the user is not found or if the password is invalid.
  */
-export const loginAdmin = async (loginData: LoginAdminDTO): Promise<string> => {
+export const loginAdmin = async (loginData: LoginAdminDTO): Promise<any>  => {
     let user: Admin | Doctor | null = await findAdminByEmail(loginData.user) || await findDoctorsByEmail(loginData.user);
     if (!user) throw new Error('Usuário não encontrado');
+
     const isPasswordValid = await bcrypt.compare(loginData.password, user.password);
     if (!isPasswordValid) throw new Error('Senha inválida');
-    console.log(user)
-    const token = generateToken(user.id, user.role, user.tenant.id);
-    console.log(token)
+
+    const tenants = user.tenants;
+    if (tenants.length > 1) {
+        return { multipleTenants: true, tenants, admin: user.fullName, login: user.email };
+    }
+
+    const token = generateToken(user.id, user.role, tenants[0].id, tenants[0].name);
     user.sessionToken = token;
-    console.log('aui2')
+
     if (user instanceof Admin) {
-        console.log('admin')
         await adminRepository.save(user);
     } else {
-        console.log('doctor')
         await doctorRepository.save(user);
     }
 
-    return token;
+    return { multipleTenants: false, token };
+};
+
+export const selectTenantService = async (userLogin: string, tenantId: number) => {
+    let user: Admin | Doctor | null = await findAdminByEmail(userLogin) || await findDoctorsByEmail(userLogin);
+    if (!user) throw new Error('Usuário não encontrado');
+
+    const tenant = user.tenants.find(t => t.id === tenantId);
+    if (!tenant) throw new Error('Tenant inválido.');
+
+    const token = generateToken(user.id, user.role, tenantId, tenant.name);
+    user.sessionToken = token;
+
+    if (user instanceof Admin) {
+        await adminRepository.save(user);
+    } else {
+        await doctorRepository.save(user);
+    }
+
+    return token
 };
 
 
 export const getAdmins = async (tenantId: number) => {
     return await adminRepository.find({
         select: { id: true, fullName: true, cpf: true, email: true, cep: true, phone: true, created_at: true, role: true },
-        where: { tenant: { id: tenantId } }
+        where: { tenants: { id: tenantId } },
+        relations: ['tenants'],
     });
 };
 
@@ -94,29 +133,49 @@ export const getAdminsByName = async (name: string) => {
     });
 };
 
-export const getAdminsById = async (adminID: number) => {
-    return await adminRepository.findOne({
-        select: { email: true, fullName: true, phone: true, cep: true, cpf: true, role: true, created_at: true },
-        where: { id: adminID }
-    });
-};
+
 export const updateAdmin = async (adminId: number, updateData: UpdateAdminDTO) => {
     const result = await adminRepository.update(adminId, updateData);
 
     if (result.affected === 0) throw new Error('Admin não encontrado');
-    
+
     return { message: 'Admin atualizado com sucesso' };
 };
 
-export const deleteAdmin = async (adminId: number) => {
-    const admin = await adminRepository.findOne({ where: { id: adminId}});
+export const deleteAdmin = async (adminId: number, tenantId: number) => {
+    const admin = await adminRepository.findOne({ where: { id: adminId }, relations: ['tenants'] });
 
-    if(admin?.role === 'master') {
-        throw new Error("Não é possível deletar o admin selecionado")
+    if (!admin) {
+        throw new Error('Admin não encontrado');
     }
-    const result = await adminRepository.softDelete(adminId);
 
-    if (result.affected === 0) throw new Error('Admin não encontrado');
-    
-    return { message: 'Admin deletado com sucesso' };
+    if (admin.role === 'master') {
+        throw new Error("Não é possível deletar o admin selecionado");
+    }
+
+    const tenantAssociation = admin.tenants.find(t => t.id === tenantId);
+    if (!tenantAssociation) {
+        throw new Error("Admin não está associado ao tenant especificado");
+    }
+
+    const hasDependencies = await patientExamsRepository.count({ where: { createdBy: admin } });
+
+    if (hasDependencies > 0) {
+        admin.tenants = admin.tenants.filter(t => t.id !== tenantId);
+        await adminRepository.save(admin);
+        return { message: 'Admin desassociado do tenant, mas não deletado devido a dependências.' };
+    }
+
+    if (admin.tenants.length > 1) {
+        admin.tenants = admin.tenants.filter(t => t.id !== tenantId);
+        await adminRepository.save(admin);
+        return { message: 'Admin desassociado do tenant com sucesso.' };
+    }
+
+    if (admin.tenants.length === 1) {
+        await adminRepository.remove(admin);
+        return { message: 'Admin deletado com sucesso, pois não havia dependências e estava associado a apenas um tenant.' };
+    }
+
+    throw new Error('Erro inesperado ao deletar/desassociar Admin.');
 };

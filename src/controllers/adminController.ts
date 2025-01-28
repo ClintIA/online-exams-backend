@@ -5,7 +5,7 @@ import {
     getAdminsByName,
     updateAdmin,
     deleteAdmin,
-    getAdmins, getAdminsById
+    getAdmins, getAdminById
 } from "../services/adminService";
 import {adminRepository} from "../repositories/adminRepository";
 
@@ -56,7 +56,7 @@ export const getAdminsByIDController = async (req: Request, res: Response) => {
     */
     try {
         const { adminID } = req.query;
-        const result = await getAdminsById(parseInt(adminID as string))
+        const result = await getAdminById(parseInt(adminID as string))
 
         if(!result) {
             return customErrorResponse(res, 'Admin não encontrado');
@@ -113,9 +113,10 @@ export const deleteAdminController = async (req: Request, res: Response) => {
     #swagger.description = 'Delete an admin from the database by admin ID'
     */
     try {
-        const adminId = parseInt(req.params.id);
+        const adminId = parseInt(req.params.adminId);
+        const tenantId = req.headers['x-tenant-id'];
         
-        await deleteAdmin(adminId);
+        await deleteAdmin(adminId, Number(tenantId));
         return successResponse(res, null, 'Admin deletado com sucesso');
     } catch (error) {
         return errorResponse(res, error);
