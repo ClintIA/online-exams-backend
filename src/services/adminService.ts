@@ -14,7 +14,7 @@ import {tenantExamsRepository} from "../repositories/tenantExamsRepository";
 import {patientExamsRepository} from "../repositories/patientExamsRepository";
 
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
-    return await adminRepository.findOne({where: {email}, relations: ['tenant']});
+    return await adminRepository.findOne({where: {email}, relations: ['tenants']});
 };
 
 /**
@@ -74,10 +74,10 @@ export const loginAdmin = async (loginData: LoginAdminDTO)  => {
 
     const tenants = user.tenants;
     if (tenants.length > 1) {
-        return { multipleTenants: true, tenants };
+        return { multipleTenants: true, tenants, admin: user.fullName, login: user.email };
     }
 
-    const token = generateToken(user.id, user.role, tenants[0].id);
+    const token = generateToken(user.id, user.role, tenants[0].id, tenants[0].name);
     user.sessionToken = token;
 
     if (user instanceof Admin) {
@@ -96,7 +96,7 @@ export const selectTenantService = async (userLogin: string, tenantId: number) =
     const tenant = user.tenants.find(t => t.id === tenantId);
     if (!tenant) throw new Error('Tenant inválido.');
 
-    const token = generateToken(user.id, user.role, tenantId);
+    const token = generateToken(user.id, user.role, tenantId, tenant.name);
     user.sessionToken = token;
 
     if (user instanceof Admin) {

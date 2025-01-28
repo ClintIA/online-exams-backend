@@ -86,7 +86,7 @@ export const loginController = async (req: Request, res: Response) => {
         const result = await loginAdmin(loginData);
 
         if (result.multipleTenants) {
-            return successResponse(res, { tenants: result.tenants }, 'Selecione o tenant para prosseguir.');
+            return successResponse(res, { tenants: result.tenants, admin: result.admin, login: result.login }, 'Selecione o tenant para prosseguir.');
         }
 
         return successResponse(res, { token: result.token }, 'Login realizado com sucesso.');

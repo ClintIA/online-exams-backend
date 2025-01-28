@@ -5,7 +5,6 @@ import {tenantRepository} from "../repositories/tenantRepository";
 import {RegisterDoctorDTO} from "../types/dto/doctor/registerDoctorDTO";
 import {PaginationQuery} from "../types/dto/doctor/paginationQuery";
 import {adminRepository} from "../repositories/adminRepository";
-import {tenantExamsRepository} from "../repositories/tenantExamsRepository";
 import {patientExamsRepository} from "../repositories/patientExamsRepository";
 
 
@@ -21,7 +20,7 @@ export const getDoctors = async ({ tenantId, take = 100, skip = 0 }: PaginationQ
 };
 
 export const findDoctorsByEmail = async (email: string) => {
-    return await doctorRepository.findOne({where: {email}});
+    return await doctorRepository.findOne({where: {email}, relations: ['tenants']});
 }
 export const registerDoctor = async (doctorData: RegisterDoctorDTO, tenantId: number) => {
     const hashedPassword = await bcrypt.hash(doctorData.password!, 10);

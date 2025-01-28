@@ -6,8 +6,8 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export const generateToken = (userId: number, role: string, tenantId?: number): string => {
-    const payload: TokenPayload =  { userId, tenantId: tenantId!, role };
+export const generateToken = (userId: number, role: string, tenantId?: number, tenantName?: string): string => {
+    const payload: TokenPayload =  { userId, tenantId: tenantId!, role, tenantName };
     
     const expiresIn = role === 'admin' ? '7d' : '3d';
 
