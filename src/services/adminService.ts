@@ -72,19 +72,14 @@ export const loginAdmin = async (loginData: LoginAdminDTO): Promise<any>  => {
 
     const isPasswordValid = await bcrypt.compare(loginData.password, user.password);
     if (!isPasswordValid) throw new Error('Senha inválida');
-    console.log(user)
     const tenants = user.tenants;
-    console.log(tenants)
-    console.log('teste')
+
     if (tenants.length > 1) {
-        console.log('teste22')
         return { multipleTenants: true, tenants, admin: user.fullName, login: user.email };
     }
 
     const token = generateToken(user.id, user.role, tenants[0].id, tenants[0].name);
     user.sessionToken = token;
-    console.log('teste2')
-
     if (user instanceof Admin) {
         await adminRepository.save(user);
     } else {

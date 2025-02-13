@@ -37,7 +37,7 @@ export class Marketing {
     @ManyToOne(() => Admin, admin => admin.id)
     updatedBy?: Admin;
 
-    @ManyToOne(() => Tenant, tenant => tenant.exams)
+    @ManyToOne(() => Tenant, tenant => tenant.marketing)
     tenant!: Tenant;
 
     @UpdateDateColumn()

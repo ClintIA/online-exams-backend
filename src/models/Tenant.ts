@@ -4,6 +4,7 @@ import { Admin } from './Admin';
 import { Product } from './Product';
 import { TenantExams } from './TenantExams';
 import {Doctor} from "./Doctor";
+import {Marketing} from "./Marketing";
 
 @Entity()
 @Index(['id'])
@@ -40,6 +41,9 @@ export class Tenant {
 
     @ManyToMany(() => Doctor, doctor => doctor.tenants)
     doctors!: Doctor[];
+
+    @OneToMany(() => Marketing, marketing => marketing.tenant)
+    marketing!: Marketing;
 
     @OneToMany(() => TenantExams, tenantExams => tenantExams.tenant)
     exams!: TenantExams[];

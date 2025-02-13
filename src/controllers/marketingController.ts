@@ -116,8 +116,8 @@ export const getBudgetByTenantController = async(req: Request, res: Response) =>
         throw new Error('Please, inform tenantID')
     }
     try {
-        const result = await getBudgetByTenantService(tenantId)
 
+        const result = await getBudgetByTenantService(tenantId)
         return successResponse(res, result);
     } catch (error) {
         return errorResponse(res, error);
@@ -297,7 +297,7 @@ export const upsertMarketingDataController = async (req: Request, res: Response)
     #swagger.description = 'Insert or update data for a specific marketing channel'
     */
     const tenantId = parseInt(req.headers['x-tenant-id'] as string);
-    const newData = req.body;
+    const newData: MarketingDTO = req.body;
 
     if (!tenantId) throw new Error('Tenant ID é obrigatório');
     try {

@@ -90,14 +90,24 @@ export const deleteCanalService = async (canalID: number) => {
 
 export const getBudgetByTenantService = async (tenantID: number) => {
     try {
+        const metrics = await marketingRepository.findOne({
+            where: {
+                tenant: { id: tenantID }
+            }
+        });
         const result = await tenantRepository.findOne({
             where: { id: tenantID },
             select: {
                 budgetTotal: true
             }
-        })
-
-        return { budget: result?.budgetTotal }
+        });
+        return {
+            budgetCanal: metrics?.budgetCanal,
+            budget: result?.budgetTotal,
+            leads: metrics?.leads,
+            cost: metrics?.cost,
+            clicks: metrics?.clicks
+        }
     }
     catch (error) {
         return new Error('Erro ao buscar budget')
@@ -300,10 +310,6 @@ export const upsertMarketingDataService = async (newData: MarketingDTO, tenantId
 export const calculateMarketingMetrics = async (tenantId: number, month: string) => {
     const dateStart = new Date(`${month}-01`);
     const dateEnd = new Date(`${month}-31`);
-    console.log(dateStart)
-    console.log(dateEnd)
-
-    // Dados da tabela Marketing
     const marketingData = await marketingRepository.find({
         where: {
             tenant: { id: tenantId },
@@ -311,8 +317,6 @@ export const calculateMarketingMetrics = async (tenantId: number, month: string)
             updatedBy: Between(dateStart, dateEnd),
         },
     });
-
-    // Dados de Exames
     const examsData = await patientExamsRepository.find({
         where: {
             tenant: { id: tenantId },
