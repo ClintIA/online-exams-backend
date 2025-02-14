@@ -60,6 +60,7 @@ export const createPatientExamWithPatient = async (examData: CreatePatientExamWi
             full_name: examData.patientData.full_name,
             dob: examData.patientData.dob,
         });
+
         const newPatient = await registerPatient({ ...examData.patientData, password }, tenantId);
         return await createPatientExam({ ...examData, patientId: newPatient.data.id }, tenantId);
     } catch (error) {

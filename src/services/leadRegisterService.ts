@@ -19,7 +19,6 @@ export const createLeadRegisterService = async (createLeadRegisterDTO: CreateLea
 
                     const leadRegister = {...createLeadRegisterDTO, tenants: tenant}
                     const newLeadRegister = leadRegisterRepository.create(leadRegister)
-                    console.log(newLeadRegister)
                     return await leadRegisterRepository.save(newLeadRegister);
                 }
         } catch (error) {
