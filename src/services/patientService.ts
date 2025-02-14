@@ -54,28 +54,31 @@ export const updatePatientService = async (patientData: UpdatePatientDTO, patien
 };
 
 export const registerPatient = async (patientData: RegisterPatientDTO, tenantId: number) => {
-    let patient = await findPatientByCpf(patientData.cpf);
+    if(patientData.cpf) {
+        let patient = await findPatientByCpf(patientData.cpf);
+        if (patient) {
+            if (patient.tenants.some(t => t.id === tenantId)) {
+                throw new Error('Paciente já está associado a essa clínica');
+            }
 
-    if (patient) {
-        if (patient.tenants.some(t => t.id === tenantId)) {
-            throw new Error('Paciente já está associado a essa clínica');
+            Object.assign(patient, patientData);
+            patient.tenants.push({ id: tenantId } as any);
+            const resultWithoutPassword = {...patient, password: undefined}
+            return {data: resultWithoutPassword, message: 'Paciente adicionado a clinica com sucesso'};
         }
-
-        Object.assign(patient, patientData);
-        patient.tenants.push({ id: tenantId } as any);
     } else {
         const hashedPassword = await bcrypt.hash(patientData.password!, 10);
-        patient = patientRepository.create({
+        const newPatient = patientRepository.create({
             ...patientData,
             password: hashedPassword,
-            tenants: [{ id: tenantId } as any],
+            tenants: [{id: tenantId} as any],
             role: 'patient'
         });
-    }
-    const result = await patientRepository.save(patient);
-    const resultWithoutPassword = { ...result, password: undefined }
+        const result = await patientRepository.save(newPatient);
+        const resultWithoutPassword = {...result, password: undefined}
 
-    return { data: resultWithoutPassword, message : 'Paciente registrado com sucesso' };
+        return {data: resultWithoutPassword, message: 'Paciente registrado com sucesso'};
+    }
 };
 
 export const loginPatientByCpf = async (loginData: LoginAdminDTO) => {
