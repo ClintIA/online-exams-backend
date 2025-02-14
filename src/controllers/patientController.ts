@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { successResponse, errorResponse } from '../utils/httpResponses';
 import {
     deletePatientService,
-    findPatientByCpf,
+    findPatientByCpf, findPatientByPhoneService,
     listPatientByTenant,
     updatePatientService
 } from "../services/patientService";
@@ -89,6 +89,26 @@ export const findPatientByCPF = async (req: Request, res: Response) => {
 
     try {
         const patient = await findPatientByCpf(cpf as string);
+        if (!patient) {
+            return errorResponse(res, new Error('Paciente não encontrado'), 404);
+        }
+
+        const { password, ...patientInfoWithoutPassword } = patient;
+        return successResponse(res, patientInfoWithoutPassword);
+    } catch (error) {
+        return errorResponse(res, error);
+    }
+}
+export const findPatientByPhone = async (req: Request, res: Response) => {
+    /*
+    #swagger.tags = ['Admin/Patient']
+    #swagger.summary = 'Find a Patient by CPF'
+    #swagger.description = 'Get patient info by CPF'
+    */
+    const { phone } = req.query;
+
+    try {
+        const patient = await findPatientByPhoneService(phone as string);
         if (!patient) {
             return errorResponse(res, new Error('Paciente não encontrado'), 404);
         }

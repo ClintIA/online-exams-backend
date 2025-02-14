@@ -6,34 +6,22 @@ import {Tenant} from "../models/Tenant";
 export interface CreateLeadRegisterDTO {
     full_name: string;
     phone: string;
-    diagnostic?: string;
     obs?: string;
     canal?: string;
-    isPatient?: boolean;
     gender?: string;
-    tenants?: Tenant[];
+    tenants?: Tenant;
 }
 
 export const createLeadRegisterService = async (createLeadRegisterDTO: CreateLeadRegisterDTO, tenantID: number)  => {
         try {
-
-            const tenants: Tenant[] = [];
-            const leadRegister: CreateLeadRegisterDTO = {
-                full_name: createLeadRegisterDTO.full_name,
-                phone: createLeadRegisterDTO.phone,
-                diagnostic: createLeadRegisterDTO.diagnostic,
-                obs: createLeadRegisterDTO.obs,
-                canal: createLeadRegisterDTO.canal,
-                isPatient: createLeadRegisterDTO.isPatient,
-                gender: createLeadRegisterDTO.gender,
-            };
                 const tenant = await tenantRepository.findOne({ where: { id: tenantID}})
                 if(tenant) {
-                    tenants.push(tenant);
-                    leadRegister.tenants = tenants
-                }
 
-            return await leadRegisterRepository.save(leadRegister);
+                    const leadRegister = {...createLeadRegisterDTO, tenants: tenant}
+                    const newLeadRegister = leadRegisterRepository.create(leadRegister)
+                    console.log(newLeadRegister)
+                    return await leadRegisterRepository.save(newLeadRegister);
+                }
         } catch (error) {
             throw new Error(`Failed to create lead register: ${error}`);
         }
@@ -78,7 +66,7 @@ export const findAll = async (tenantID: number) => {
 
             const tenant = await tenantRepository.findOne({ where: { id: tenantId}})
             if(tenant) {
-                leadRegister.tenants.push(tenant);
+                leadRegister.tenants = tenant;
             }
 
 

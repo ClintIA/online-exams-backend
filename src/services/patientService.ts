@@ -12,6 +12,9 @@ import {LoginAdminDTO} from "../types/dto/auth/loginAdminDTO";
 export const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
     return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
 };
+export const findPatientByPhoneService = async (phone: string): Promise<Patient | null> => {
+    return await patientRepository.findOne({ where: { phone }, relations: ['tenants'] });
+};
 
 export const listPatientByTenant = async (
     filters: PatientFiltersDTO,

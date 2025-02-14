@@ -7,6 +7,7 @@ export interface UpdatePatientDTO {
     phone?: string;
     cep?: string;
     role?: string;
+    diagnostic?: string;
     gender: "Masculino" | "Feminino" | "Prefiro não informar";
     health_card_number?: string;
     password?: string;

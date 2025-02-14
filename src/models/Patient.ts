@@ -23,16 +23,19 @@ export class Patient {
     password!: string;
 
     @Column({ unique: true })
-    cpf!: string;
+    cpf?: string;
 
     @Column({type: 'date'})
     dob!: Date;
+
+    @Column({ nullable: true })
+    diagnostic?: string;
 
     @Column({ unique: true })
     email?: string;
 
     @Column()
-    phone?: string;
+    phone!: string;
 
     @Column({ nullable: true })
     cep?: string;

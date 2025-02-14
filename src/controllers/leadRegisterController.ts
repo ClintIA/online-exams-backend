@@ -1,6 +1,15 @@
 import { Request, Response } from 'express';
 import { customErrorResponse, errorResponse, successResponse } from '../utils/httpResponses';
-import { createLeadRegisterService, findAll, findOne, updateLeadService, softDelete, remove, search } from '../services/leadRegisterService';
+import {
+    createLeadRegisterService,
+    findAll,
+    findOne,
+    updateLeadService,
+    softDelete,
+    remove,
+    search,
+    CreateLeadRegisterDTO
+} from '../services/leadRegisterService';
 
 export const createLeadRegisterController = async (req: Request, res: Response) => {
     /*
@@ -10,7 +19,8 @@ export const createLeadRegisterController = async (req: Request, res: Response) 
     */
     try {
         const tenantId = req.headers['x-tenant-id'];
-        const leadData = req.body;
+        const leadData: CreateLeadRegisterDTO = req.body;
+        console.log(leadData)
         const result = await createLeadRegisterService(leadData, parseInt(tenantId as string));
         return successResponse(res, result, 'Lead registrado com sucesso');
     } catch (error) {

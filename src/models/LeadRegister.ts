@@ -3,9 +3,8 @@ import {
     PrimaryGeneratedColumn,
     Column,
     CreateDateColumn,
-    ManyToMany,
     Index,
-    JoinTable, DeleteDateColumn
+     DeleteDateColumn, OneToMany
 } from 'typeorm';
 import { Tenant } from './Tenant';
 
@@ -21,18 +20,11 @@ export class LeadRegister {
     @Column()
     phone!: string;
 
-    @Column({ unique: true })
-    diagnostic?: string;
-
-
     @Column()
     obs?: string;
 
     @Column()
     canal?: string;
-
-    @Column({ default: false })
-    isPatient?: boolean;
 
     @Column({ nullable: true })
     gender?: string;
@@ -40,9 +32,8 @@ export class LeadRegister {
     @CreateDateColumn()
     created_at!: Date;
 
-    @ManyToMany(() => Tenant, tenant => tenant.patients)
-    @JoinTable()
-    tenants!: Tenant[];
+    @OneToMany(() => Tenant, tenant => tenant.id)
+    tenants?: Tenant;
 
     @DeleteDateColumn()
     delete_at?: Date;
