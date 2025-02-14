@@ -64,7 +64,9 @@ export const createPatientExamNewPatientController = async (req: Request, res: R
         */
     try {
     const tenantId = req.tenantId!;
+
     const examData: CreatePatientExamWithPatientDTO = { ...req.body, examDate: new Date(req.body.examDate) };
+
     const result = await createPatientExamWithPatient(examData, tenantId);
 
     //  await sendExamScheduled({
@@ -153,6 +155,7 @@ export const deletePatientExamController = async (req: Request, res: Response) =
 };
 
 import { UpdateExamAttendanceDTO } from '../types/dto/patientExam/updateExamAttendanceDTO';
+import {PatientFiltersDTO} from "../types/dto/patient/patientFiltersDTO";
 
 export const updateExamAttendanceController = async (req: Request, res: Response) => {
     /*

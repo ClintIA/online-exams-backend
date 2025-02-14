@@ -53,29 +53,76 @@ export const updatePatientService = async (patientData: UpdatePatientDTO, patien
     }
 };
 
-export const registerPatient = async (patientData: RegisterPatientDTO, tenantId: number) => {
-    let patient = await findPatientByCpf(patientData.cpf);
+interface RegisterResponse {
+    data: Omit<Patient, 'password'>;
+    message: string;
+}
 
-    if (patient) {
-        if (patient.tenants.some(t => t.id === tenantId)) {
-            throw new Error('Paciente já está associado a essa clínica');
+export const registerPatient = async (patientData: RegisterPatientDTO, tenantId: number): Promise<RegisterResponse> => {
+    try {
+        if (!patientData.password) {
+            throw new Error('Password is required');
+        }
+        if (patientData.cpf) {
+            return await handleExistingPatient(patientData, tenantId);
         }
 
-        Object.assign(patient, patientData);
-        patient.tenants.push({ id: tenantId } as any);
-    } else {
-        const hashedPassword = await bcrypt.hash(patientData.password!, 10);
-        patient = patientRepository.create({
-            ...patientData,
-            password: hashedPassword,
-            tenants: [{ id: tenantId } as any],
-            role: 'patient'
-        });
+        // Create new patient without CPF
+        return await createNewPatient(patientData, tenantId);
+    } catch (error) {
+        throw new Error(`Failed to register patient: ${error}`);
     }
-    const result = await patientRepository.save(patient);
-    const resultWithoutPassword = { ...result, password: undefined }
+};
 
-    return { data: resultWithoutPassword, message : 'Paciente registrado com sucesso' };
+const handleExistingPatient = async (patientData: RegisterPatientDTO, tenantId: number): Promise<RegisterResponse> => {
+    const existingPatient = await findPatientByCpf(patientData.cpf!);
+
+    if (existingPatient) {
+        if (existingPatient.tenants.some(t => t.id === tenantId)) {
+            throw new Error('Patient ja adicionado a essa clinica');
+        }
+        return await updateExistingPatient(existingPatient, patientData, tenantId);
+    }
+
+    return await createNewPatient(patientData, tenantId);
+};
+
+const createNewPatient = async (patientData: RegisterPatientDTO, tenantId: number): Promise<RegisterResponse> => {
+    const hashedPassword = await hashPassword(patientData.password!);
+
+    const newPatient = patientRepository.create({
+        ...patientData,
+        password: hashedPassword,
+        tenants: [{ id: tenantId } as any],
+        role: 'patient'
+    });
+
+    const result = await patientRepository.save(newPatient);
+    return formatPatientResponse(result, 'Paciente registrado com sucesso');
+};
+
+const updateExistingPatient = async (
+    existingPatient: Patient,
+    patientData: RegisterPatientDTO,
+    tenantId: number
+): Promise<RegisterResponse> => {
+    Object.assign(existingPatient, patientData);
+    existingPatient.tenants.push({ id: tenantId } as any);
+
+    const result = await patientRepository.save(existingPatient);
+    return formatPatientResponse(result, 'Patient successfully added to clinic');
+};
+
+const hashPassword = async (password: string): Promise<string> => {
+    return await bcrypt.hash(password, 10);
+};
+
+const formatPatientResponse = (patient: Patient, message: string): RegisterResponse => {
+    const { password, ...patientWithoutPassword } = patient;
+    return {
+        data: patientWithoutPassword,
+        message
+    };
 };
 
 export const loginPatientByCpf = async (loginData: LoginAdminDTO) => {

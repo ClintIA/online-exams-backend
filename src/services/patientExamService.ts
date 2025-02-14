@@ -58,7 +58,7 @@ export const createPatientExamWithPatient = async (examData: CreatePatientExamWi
     try {
         const password = generatePassword({
             full_name: examData.patientData.full_name,
-            dob: examData.patientData.dob,
+            dob: examData.patientData.dob || '',
         });
 
         const newPatient = await registerPatient({ ...examData.patientData, password }, tenantId);

@@ -19,19 +19,19 @@ export class Patient {
     @Column()
     full_name!: string;
 
-    @Column()
+    @Column({ nullable: true })
     password!: string;
 
-    @Column({ unique: true })
+    @Column({ unique: true, nullable: true })
     cpf?: string;
 
-    @Column({type: 'date'})
+    @Column({type: 'date', nullable: true })
     dob!: Date;
 
     @Column({ nullable: true })
     diagnostic?: string;
 
-    @Column({ unique: true })
+    @Column({ unique: true, nullable: true })
     email?: string;
 
     @Column()
@@ -43,7 +43,7 @@ export class Patient {
     @Column( { enum: ProfileRole, default: 'patient' } )
     role!: string;
 
-    @Column()
+    @Column({ nullable: true })
     canal?: string;
 
     @Column({ nullable: true })

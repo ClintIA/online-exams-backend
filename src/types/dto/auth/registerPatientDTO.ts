@@ -1,8 +1,8 @@
 export interface RegisterPatientDTO {
     full_name: string;
-    cpf: string;
-    dob: string;
-    email: string;
+    cpf?: string;
+    dob?: string;
+    email?: string;
     phone?: string;
     cep?: string;
     canal?: string;
