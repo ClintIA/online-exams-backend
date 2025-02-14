@@ -16,6 +16,8 @@ import {
     getMarketingMetricsController
 } from "../../controllers/marketingController";
 import {tenantMiddleware} from "../../middlewares/tenantMiddleware";
+import {authMiddleware} from "../../middlewares/authMiddleware";
+import {isAdminMiddleware} from "../../middlewares/isAdminMiddleware";
 
 const router = Router();
 
@@ -32,7 +34,7 @@ router.get('/marketing/canal', tenantMiddleware,listCanalController)
 router.put('/marketing/canal', tenantMiddleware, updateCanalController)
 router.delete('/marketing/canal/:id', tenantMiddleware, deleteCanalController)
 
-router.post('/marketing/data', upsertMarketingDataController);
-router.get('/marketing/metrics', getMarketingMetricsController);
+router.post('/marketing/data', authMiddleware, isAdminMiddleware, tenantMiddleware, upsertMarketingDataController);
+router.get('/marketing/metrics', authMiddleware, isAdminMiddleware, tenantMiddleware, getMarketingMetricsController);
 
 export default router;

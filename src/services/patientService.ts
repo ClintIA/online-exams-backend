@@ -8,9 +8,13 @@ import {UpdatePatientDTO} from '../types/dto/patient/updatePatientDTO';
 import {RegisterPatientDTO} from '../types/dto/auth/registerPatientDTO';
 import {LoginPatientDTO} from '../types/dto/auth/loginPatientDTO';
 import {LoginAdminDTO} from "../types/dto/auth/loginAdminDTO";
+import {findPatientByPhone} from "../controllers/patientController";
 
 export const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
     return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
+};
+export const findPatientByPhoneService = async (phone: string | undefined): Promise<Patient | null> => {
+    return await patientRepository.findOne({ where: { phone: phone }, relations: ['tenants'] });
 };
 
 export const listPatientByTenant = async (
@@ -51,6 +55,7 @@ export const updatePatientService = async (patientData: UpdatePatientDTO, patien
 
 export const registerPatient = async (patientData: RegisterPatientDTO, tenantId: number) => {
     let patient = await findPatientByCpf(patientData.cpf);
+
     if (patient) {
         if (patient.tenants.some(t => t.id === tenantId)) {
             throw new Error('Paciente já está associado a essa clínica');

@@ -10,6 +10,7 @@ import {NoticeCard} from "../models/NoticeCard";
 import {PatientClinic} from "../models/PatientClinic";
 import {Doctor} from "../models/Doctor";
 import {Marketing} from "../models/Marketing";
+import {LeadRegister} from "../models/LeadRegister";
 
 dotenv.config();
 
@@ -30,7 +31,8 @@ export const AppDataSource = new DataSource({
         TenantExams,
         PatientExams,
         Doctor,
-        Marketing
+        Marketing,
+        LeadRegister
     ],
     synchronize: true,
     logging: true,
