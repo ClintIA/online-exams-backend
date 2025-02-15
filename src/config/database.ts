@@ -34,7 +34,7 @@ export const AppDataSource = new DataSource({
         Marketing,
         LeadRegister
     ],
-    synchronize: true,
+    synchronize: false,
     logging: true,
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
