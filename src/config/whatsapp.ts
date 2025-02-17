@@ -1,9 +1,11 @@
 import { Client, LocalAuth } from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal';
 
-const client = new Client({
+const client = new Client({ puppeteer: {
+    headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-extensions'] },
     authStrategy: new LocalAuth(),
 });
+
 
 client.on('qr', (qr) => {
     console.log('QR CODE')
