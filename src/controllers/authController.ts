@@ -25,13 +25,17 @@ export const registerAdminController = async (req: Request, res: Response) => {
             tenantId
         );
 
-        // await sendLoginInfoToAdmin({
-        //     name: adminData.fullName,
-        //     phoneNumber: adminData.phone || "",
-        //     login: adminData.adminCpf,
-        //     password: password,
-        //     tenantId: tenantId
-        // });
+        try {
+            await sendLoginInfoToAdmin({
+                name: result.data.fullName,
+                phoneNumber: result.data.phone || "",
+                login: result.data.cpf,
+                password: password,
+                tenantId: tenantId
+            });
+        } catch (e) {
+            console.error('Erro ao enviar notificação de cadastro de admin', e);
+        }
 
         return successResponse(res, result, 'Admin registrado com sucesso', 201);
     } catch (error) {
@@ -58,6 +62,8 @@ export const registerPatientController = async (req: Request, res: Response) => 
             { ...patientData, password },
             tenantId
         );
+
+        // Não enviar info de login pro paciente por enquanto, somente quando for exame e verificar se ele já recebeu (sugiro criar tabela)
 
         // await sendLoginInfoToClient({
         //     name: patientData.full_name,
