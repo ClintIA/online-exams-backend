@@ -69,12 +69,17 @@ export const createPatientExamNewPatientController = async (req: Request, res: R
 
     const result = await createPatientExamWithPatient(examData, tenantId);
 
-    //  await sendExamScheduled({
-    //     name: result.patientName!,
-    //     phoneNumber: result.patientPhone!,
-    //     tenantId,
-    //     examDateTime: examData.examDate.toISOString()
-    // });
+        try {
+            await sendExamScheduled({
+                name: result.data.patientName!,
+                phoneNumber: result.data.patientPhone!,
+                tenantId,
+                examDateTime: examData.examDate.toISOString()
+            });
+        } catch (error) {
+            console.error('Erro ao enviar notificação de agendamento de exame', error);
+        }
+
         return successResponse(res, result, 'Exame do paciente criado com sucesso', 201);
     } catch (error) {
         return errorResponse(res, error);
@@ -92,12 +97,16 @@ export const createPatientExamController = async (req: Request, res: Response) =
 
         const result = await createPatientExam(examData, tenantId);
 
-        //  await sendExamScheduled({
-        //     name: result.patientName!,
-        //     phoneNumber: result.patientPhone!,
-        //     tenantId,
-        //     examDateTime: examData.examDate.toISOString()
-        // });
+        try {
+            await sendExamScheduled({
+                name: result.data.patientName!,
+                phoneNumber: result.data.patientPhone!,
+                tenantId,
+                examDateTime: examData.examDate.toISOString()
+            });
+        } catch (error) {
+            console.error('Erro ao enviar notificação de agendamento de exame', error);
+        }
 
         return successResponse(res, result, 'Exame do paciente criado com sucesso', 201);
     } catch (error) {
