@@ -14,6 +14,6 @@
     "rootDir": "./src",
     "noImplicitAny": false
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/templates/whatsappMessages.json"],
   "exclude": ["node_modules", "dist"]
 }
