@@ -20,7 +20,7 @@ export const getDoctors = async ({ tenantId, take = 100, skip = 0 }: PaginationQ
 };
 
 export const findDoctorsByEmail = async (email: string) => {
-    return await doctorRepository.findOne({where: {email}, relations: ['tenants']});
+    return await doctorRepository.findOne({where: {email: email}, relations: ['tenants']});
 }
 export const registerDoctor = async (doctorData: RegisterDoctorDTO, tenantId: number) => {
     const hashedPassword = await bcrypt.hash(doctorData.password!, 10);

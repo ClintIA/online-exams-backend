@@ -13,7 +13,7 @@ import {doctorRepository} from "../repositories/doctorRepository";
 import {patientExamsRepository} from "../repositories/patientExamsRepository";
 
 const findAdminByEmail = async (email: string): Promise<Admin | null> => {
-    return await adminRepository.findOne({where: {email}, relations: ['tenants']});
+    return await adminRepository.findOne({where: { email: email }, relations: ['tenants']});
 };
 export const getAdminById = async (adminID: number): Promise<Admin | null> => {
     return await adminRepository.findOne({ where: { id: adminID }, relations: ['tenants'] });
@@ -67,7 +67,7 @@ export const registerAdmin = async (adminData: RegisterAdminDTO, tenantId: numbe
  * @throws Will throw an error if the user is not found or if the password is invalid.
  */
 export const loginAdmin = async (loginData: LoginAdminDTO): Promise<any>  => {
-    let user: Admin | Doctor | null = await findAdminByEmail(loginData.user) || await findDoctorsByEmail(loginData.user);
+    let user: Admin | Doctor | null = await findAdminByEmail(loginData.login) || await findDoctorsByEmail(loginData.login);
     if (!user) throw new Error('Usuário não encontrado');
 
     const isPasswordValid = await bcrypt.compare(loginData.password, user.password);
