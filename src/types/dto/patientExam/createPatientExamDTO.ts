@@ -12,5 +12,5 @@ export interface CreatePatientExamWithPatientDTO {
     examId: number;
     examDate: Date;
     userId: number;
-    doctorId: number;
+    doctorId?: number;
 }
