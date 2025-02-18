@@ -29,7 +29,7 @@ export const registerAdminController = async (req: Request, res: Response) => {
             await sendLoginInfoToAdmin({
                 name: result.data.fullName,
                 phoneNumber: result.data.phone || "",
-                login: result.data.cpf,
+                login: result.data.email,
                 password: password,
                 tenantId: tenantId
             });
