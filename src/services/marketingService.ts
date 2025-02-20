@@ -26,7 +26,11 @@ export const listCanalService = async (tenantID?: number) => {
             id: true,
             canal: true,
             budgetCanal: true,
+            cost: true,
+            clicks: true,
+            leads: true,
         },
+        order: { id: 'ASC'},
         where: {
             tenant: { id: tenantID }
         }
@@ -298,11 +302,8 @@ export const upsertMarketingDataService = async (newData: MarketingDTO, tenantId
         tenant: { id: tenantId },
     });
 
-    if (newData.id) {
         await marketingRepository.update(newData.id, marketingData);
-    } else {
-        await marketingRepository.save(marketingData);
-    }
+
 
     return { message: 'Dados de marketing atualizados com sucesso' };
 };
