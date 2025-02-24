@@ -37,7 +37,7 @@ export class Doctor {
     @Column( { enum: ProfileRole, default: 'doctor' } )
     role!: string;
 
-    @Column({ unique: true })
+    @Column()
     cnpj!: string;
 
     @Column()
