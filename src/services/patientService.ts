@@ -7,8 +7,6 @@ import {PatientFiltersDTO} from '../types/dto/patient/patientFiltersDTO';
 import {UpdatePatientDTO} from '../types/dto/patient/updatePatientDTO';
 import {RegisterPatientDTO} from '../types/dto/auth/registerPatientDTO';
 import {LoginPatientDTO} from '../types/dto/auth/loginPatientDTO';
-import {LoginAdminDTO} from "../types/dto/auth/loginAdminDTO";
-import {findPatientByPhone} from "../controllers/patientController";
 
 export const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
     return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
@@ -63,19 +61,21 @@ export const registerPatient = async (patientData: RegisterPatientDTO, tenantId:
         if (!patientData.password) {
             throw new Error('Password is required');
         }
-        if (patientData.cpf) {
-            return await handleExistingPatient(patientData, tenantId);
-        }
 
-        // Create new patient without CPF
-        return await createNewPatient(patientData, tenantId);
+        return await handleExistingPatient(patientData, tenantId);
     } catch (error) {
         throw new Error(`Failed to register patient: ${error}`);
     }
 };
 
 const handleExistingPatient = async (patientData: RegisterPatientDTO, tenantId: number): Promise<RegisterResponse> => {
-    const existingPatient = await findPatientByCpf(patientData.cpf!);
+    let existingPatient: Patient | null = null;
+    
+    if (patientData.cpf) {
+        existingPatient = await findPatientByCpf(patientData.cpf!);
+    } else if (patientData.phone) {
+        existingPatient = await findPatientByPhoneService(patientData.phone);
+    }
 
     if (existingPatient) {
         if (existingPatient.tenants.some(t => t.id === tenantId)) {
@@ -125,8 +125,8 @@ const formatPatientResponse = (patient: Patient, message: string): RegisterRespo
     };
 };
 
-export const loginPatientByCpf = async (loginData: LoginAdminDTO) => {
-    const patient = await findPatientByCpf(loginData.user);
+export const loginPatientByCpf = async (loginData: LoginPatientDTO) => {
+    const patient = await findPatientByCpf(loginData.cpf);
 
     if (!patient) {
         throw new Error('Paciente não encontrado');

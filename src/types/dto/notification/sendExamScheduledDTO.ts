@@ -3,4 +3,5 @@ export interface SendExamScheduledDTO {
     phoneNumber: string;
     tenantId: number;
     examDateTime: string;
+    examName: string;
 }

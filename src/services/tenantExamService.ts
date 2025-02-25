@@ -43,6 +43,13 @@ export const getExams = async (filters?: number) => {
         where: { tenant: { id: filters } }, relations: ['doctors']
     });
 };
+
+export const getExam = async (examId: number)   => {
+    return await tenantExamsRepository.find({
+        where: { id: examId }
+    });
+};
+
 export const addDoctorToExam = async (examsID: string[], doctor: Doctor) => {
     for (const id of examsID) {
         const doctors: Doctor[] = []

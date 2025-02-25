@@ -22,7 +22,7 @@ export class Patient {
     @Column({ nullable: true })
     password!: string;
 
-    @Column({ unique: true, nullable: true })
+    @Column({ nullable: true })
     cpf?: string;
 
     @Column({type: 'date', nullable: true })
@@ -31,7 +31,7 @@ export class Patient {
     @Column({ nullable: true })
     diagnostic?: string;
 
-    @Column({ unique: true, nullable: true })
+    @Column({ nullable: true })
     email?: string;
 
     @Column()
@@ -45,6 +45,12 @@ export class Patient {
 
     @Column({ nullable: true })
     canal?: string;
+
+    @Column({ nullable: true })
+    contactChannel?: string;
+
+    @Column({ nullable: true })
+    indication_name?: string;
 
     @Column({ nullable: true })
     gender?: string;

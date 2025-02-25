@@ -10,7 +10,6 @@ import {NoticeCard} from "../models/NoticeCard";
 import {PatientClinic} from "../models/PatientClinic";
 import {Doctor} from "../models/Doctor";
 import {Marketing} from "../models/Marketing";
-import {LeadRegister} from "../models/LeadRegister";
 
 dotenv.config();
 
@@ -32,9 +31,8 @@ export const AppDataSource = new DataSource({
         PatientExams,
         Doctor,
         Marketing,
-        LeadRegister
     ],
-    synchronize: false,
+    synchronize: true,
     logging: true,
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });

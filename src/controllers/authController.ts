@@ -52,10 +52,8 @@ export const registerPatientController = async (req: Request, res: Response) => 
     try {
         const patientData: RegisterPatientDTO = req.body;
         const tenantId = req.tenantId!;
-
         const password = generatePassword({
-            full_name: patientData.full_name,
-            dob: patientData.dob,
+            full_name: patientData.full_name
         });
 
         const result = await registerPatient(
