@@ -9,7 +9,6 @@ import {
     DeleteDateColumn
 } from 'typeorm';
 import { Tenant } from './Tenant';
-import { Admin } from './Admin';
 import {Doctor} from "./Doctor";
 
 @Entity()

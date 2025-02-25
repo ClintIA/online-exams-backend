@@ -72,7 +72,7 @@ export const sendExamReadyNotification = async (clientData: SendExamReadyNotific
 };
 
 export const sendExamScheduled = async (clientData: SendExamScheduledDTO) => {
-    const { name, phoneNumber, tenantId, examDateTime } = clientData;
+    const { name, phoneNumber, tenantId, examDateTime, examName } = clientData;
     const formattedNumber = formatPhoneNumber(phoneNumber);
     const clinicData = await findTenantById(tenantId);
 
@@ -85,6 +85,8 @@ export const sendExamScheduled = async (clientData: SendExamScheduledDTO) => {
     await sendWhatsAppMessage(formattedNumber.toString(), WhatsAppMessageType.ExamScheduled, {
         name,
         clinicName: clinicData.name,
+        clinicAdress: clinicData.address,
+        examName: examName,
         examDateTime,
         clinicWhatsAppLink
     });

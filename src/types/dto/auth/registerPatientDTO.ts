@@ -11,4 +11,6 @@ export interface RegisterPatientDTO {
     gender?: "Masculino" | "Feminino" | "Prefiro não informar" | "Outros";
     health_card_number?: string;
     password?: string;
+    contactChannel?: string;
+    indication_name?: string;
 }

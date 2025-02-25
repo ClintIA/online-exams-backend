@@ -9,10 +9,11 @@ import {
 } from '../services/patientExamService';
 import { successResponse, errorResponse } from '../utils/httpResponses';
 import { parseValidInt } from '../utils/parseValidInt';
-import { sendExamReadyNotification, sendExamScheduled } from './notificationController';
+import { sendExamScheduled } from './notificationController';
 import {CreatePatientExamDTO, CreatePatientExamWithPatientDTO} from '../types/dto/patientExam/createPatientExamDTO';
 import { ListPatientExamsDTO } from '../types/dto/patientExam/listPatientExamsDTO';
 import { UpdatePatientExamDTO } from '../types/dto/patientExam/updatePatientExamDTO';
+import { formatDateTimeToBrazilian } from '../utils/converTime';
 
 export const listPatientExamsController = async (req: Request, res: Response) => {
     /*
@@ -70,12 +71,30 @@ export const createPatientExamNewPatientController = async (req: Request, res: R
     const result = await createPatientExamWithPatient(examData, tenantId);
 
         try {
+
+            const tenantExam = await getExam(examData.examId);
+
+            if (!tenantExam || tenantExam.length === 0) {
+                throw new Error('Exame não encontrado');
+            }
+
+            const examDateTime = examData.examDate.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+
             await sendExamScheduled({
                 name: result.data.patientName!,
                 phoneNumber: result.data.patientPhone!,
                 tenantId,
-                examDateTime: examData.examDate.toISOString()
+                examDateTime: examDateTime,
+                examName: tenantExam[0].exam_name
             });
+
         } catch (error) {
             console.error('Erro ao enviar notificação de agendamento de exame', error);
         }
@@ -98,12 +117,30 @@ export const createPatientExamController = async (req: Request, res: Response) =
         const result = await createPatientExam(examData, tenantId);
 
         try {
+
+            const tenantExam = await getExam(examData.examId);
+
+            if (!tenantExam || tenantExam.length === 0) {
+                throw new Error('Exame não encontrado');
+            }
+
+            const examDateTime = examData.examDate.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+
             await sendExamScheduled({
                 name: result.data.patientName!,
                 phoneNumber: result.data.patientPhone!,
                 tenantId,
-                examDateTime: examData.examDate.toISOString()
+                examDateTime: examDateTime,
+                examName: tenantExam[0].exam_name
             });
+
         } catch (error) {
             console.error('Erro ao enviar notificação de agendamento de exame', error);
         }
@@ -165,6 +202,7 @@ export const deletePatientExamController = async (req: Request, res: Response) =
 
 import { UpdateExamAttendanceDTO } from '../types/dto/patientExam/updateExamAttendanceDTO';
 import {PatientFiltersDTO} from "../types/dto/patient/patientFiltersDTO";
+import {getExam} from "../services/tenantExamService";
 
 export const updateExamAttendanceController = async (req: Request, res: Response) => {
     /*

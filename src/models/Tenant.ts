@@ -33,6 +33,9 @@ export class Tenant {
     @Column({ unique: true })
     whatsAppNumber!: string;
 
+    @Column()
+    address!: string;
+
     @ManyToMany(() => Patient, patient => patient.tenants)
     patients!: Patient[];
 
