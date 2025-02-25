@@ -73,12 +73,15 @@ export const addDoctorToExam = async (examsID: string[], doctor: Doctor) => {
 export const updateExam = async (examId: number, examData: UpdateExamDTO) => {
     const doctors: Doctor[] = [];
 
-    for (const doctorId of examData.doctors) {
-        const doctor =  await findDoctorsById(parseInt(doctorId));
-        if(doctor) {
-            doctors.push(doctor);
+    if(examData.doctors) {
+        for (const doctorId of examData.doctors) {
+            const doctor =  await findDoctorsById(parseInt(doctorId));
+            if(doctor) {
+                doctors.push(doctor);
+            }
         }
     }
+
     const updateExam = tenantExamsRepository.create({
         id: examId,
         exam_name: examData.exam_name,
