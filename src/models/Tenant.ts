@@ -33,7 +33,7 @@ export class Tenant {
     @Column({ unique: true })
     whatsAppNumber!: string;
 
-    @Column()
+    @Column({ nullable: true })
     address!: string;
 
     @ManyToMany(() => Patient, patient => patient.tenants)

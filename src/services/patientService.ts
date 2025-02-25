@@ -78,9 +78,6 @@ const handleExistingPatient = async (patientData: RegisterPatientDTO, tenantId: 
     }
 
     if (existingPatient) {
-        if (existingPatient.tenants.some(t => t.id === tenantId)) {
-            throw new Error('Patient ja adicionado a essa clinica');
-        }
         return await updateExistingPatient(existingPatient, patientData, tenantId);
     }
 

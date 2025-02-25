@@ -12,7 +12,6 @@ const router = Router();
 
 router.get('/doctors/exam', tenantMiddleware, authMiddleware, isAdminMiddleware, getDoctorsByExamNameController)
 router.get('/doctors/', authMiddleware, isAdminMiddleware, tenantMiddleware, getDoctorsListController)
-router.get('/doctors/', authMiddleware, isAdminMiddleware, tenantMiddleware, getDoctorsListController)
 router.post('/doctors/', authMiddleware, isAdminMiddleware, tenantMiddleware, registerDoctorController);
 router.put('/doctors/:id', tenantMiddleware, authMiddleware, isAdminMiddleware, updateDoctorController);
 router.delete('/doctors/:id', tenantMiddleware, authMiddleware, isAdminMiddleware, deleteDoctorController);
