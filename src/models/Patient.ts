@@ -47,6 +47,12 @@ export class Patient {
     canal?: string;
 
     @Column({ nullable: true })
+    contactChannel?: string;
+
+    @Column({ nullable: true })
+    indication_name?: string;
+
+    @Column({ nullable: true })
     gender?: string;
 
     @Column({ nullable: true })
