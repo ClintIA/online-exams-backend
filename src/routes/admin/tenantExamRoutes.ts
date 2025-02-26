@@ -7,7 +7,7 @@ import { isAdminMiddleware } from '../../middlewares/isAdminMiddleware';
 const router = Router();
 
 router.post('/tenantexam', tenantMiddleware, authMiddleware, isAdminMiddleware, createExamController);
-router.get('/tenantexam', tenantMiddleware, authMiddleware, isAdminMiddleware, getExamsController);
+router.get('/tenantexam', tenantMiddleware, authMiddleware, getExamsController);
 router.put('/tenantexam/:clinicExamId', tenantMiddleware, authMiddleware, isAdminMiddleware, updateExamController);
 router.delete('/tenantexam/:clinicExamId', tenantMiddleware, authMiddleware, isAdminMiddleware, deleteExamController);
 
