@@ -35,7 +35,7 @@ export const registerDoctor = async (doctorData: RegisterDoctorDTO, tenantId: nu
     if (existingDoctor) {
         if (!existingDoctor.tenants.find(t => t.id === tenant.id)) {
             existingDoctor.tenants.push(tenant);
-            await adminRepository.save(existingDoctor);
+            await doctorRepository.save(existingDoctor);
         }
 
         return { data: existingDoctor, message: 'Doutor já registrado, associado ao novo tenant.' };
