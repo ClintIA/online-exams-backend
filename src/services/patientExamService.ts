@@ -128,9 +128,8 @@ export const updatePatientExam = async (examId: number, examData: UpdatePatientE
 };
 
 export const deletePatientExam = async ({ examId, tenantId }: DeletePatientExamDTO) => {
-    const updateResult = await patientExamsRepository.update(
-        { id: examId, tenant: { id: tenantId } },
-        { delete_at: new Date() }
+    const updateResult = await patientExamsRepository.softDelete(
+        { id: examId, tenant: { id: tenantId } }
     );
 
     if (!updateResult.affected) throw new Error('Exame não encontrado');

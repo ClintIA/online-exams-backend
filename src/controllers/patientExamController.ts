@@ -188,7 +188,7 @@ export const deletePatientExamController = async (req: Request, res: Response) =
     */
     try {
         const tenantId = req.tenantId!;
-        const examId = parseValidInt(req.params.examId);
+        const examId = parseValidInt(req.params.patientExamId);
         if (!examId) {
             return new Error('ID do exame é obrigatório');
         }
