@@ -1,4 +1,4 @@
-import { Like } from 'typeorm';
+import {IsNull, Like} from 'typeorm';
 import { patientExamsRepository } from '../repositories/patientExamsRepository';
 import { tenantExamsRepository } from '../repositories/tenantExamsRepository';
 import { handleFilterDate } from '../utils/handleDate';
@@ -128,21 +128,18 @@ export const updatePatientExam = async (examId: number, examData: UpdatePatientE
 };
 
 export const deletePatientExam = async ({ examId, tenantId }: DeletePatientExamDTO) => {
-    const deleteResult = await patientExamsRepository.delete({
-        id: examId,
-        exam: { tenant: { id: tenantId } }
-    });
+    const updateResult = await patientExamsRepository.update(
+        { id: examId, tenant: { id: tenantId } },
+        { delete_at: new Date() }
+    );
 
-    if (!deleteResult.affected) throw new Error('Exame não encontrado');
+    if (!updateResult.affected) throw new Error('Exame não encontrado');
     return { message: 'Exame deletado com sucesso' };
 };
 
 export const updateExamAttendance = async (examId: UpdateExamAttendanceDTO['examId'], attended: UpdateExamAttendanceDTO['attended']) => {
 
-    const updateResult = await patientExamsRepository.update(
-        { id: examId, tenant: { id: tenantId } },
-        { delete_at: new Date() }
-    );
+    const updateResult = await patientExamsRepository.update({ id: examId }, { attended });
 
     if (!updateResult.affected) {
         throw new Error('Exame não encontrado ou não atualizado');
