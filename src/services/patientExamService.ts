@@ -1,4 +1,4 @@
-import { Like } from 'typeorm';
+import {IsNull, Like} from 'typeorm';
 import { patientExamsRepository } from '../repositories/patientExamsRepository';
 import { tenantExamsRepository } from '../repositories/tenantExamsRepository';
 import { handleFilterDate } from '../utils/handleDate';
@@ -14,9 +14,12 @@ import {generatePassword} from "../utils/passwordGenerator";
 import {doctorRepository} from "../repositories/doctorRepository";
 import { Doctor } from '../models/Doctor';
 import { PatientExams } from '../models/PatientExams';
+import {leadRepository} from "../repositories/leadRepository";
 
 export const listPatientExams = async (filters?: ListPatientExamsDTO) => {
     const whereCondition: any = {};
+
+    whereCondition.delete_at = IsNull();
 
     if (filters?.tenantId) {
         whereCondition.exam = {tenant: {id: filters.tenantId}};
@@ -125,16 +128,16 @@ export const updatePatientExam = async (examId: number, examData: UpdatePatientE
 };
 
 export const deletePatientExam = async ({ examId, tenantId }: DeletePatientExamDTO) => {
-    const deleteResult = await patientExamsRepository.delete({
-        id: examId,
-        exam: { tenant: { id: tenantId } }
-    });
+    const updateResult = await patientExamsRepository.softDelete(
+        { id: examId, tenant: { id: tenantId } }
+    );
 
-    if (!deleteResult.affected) throw new Error('Exame não encontrado');
+    if (!updateResult.affected) throw new Error('Exame não encontrado');
     return { message: 'Exame deletado com sucesso' };
 };
 
 export const updateExamAttendance = async (examId: UpdateExamAttendanceDTO['examId'], attended: UpdateExamAttendanceDTO['attended']) => {
+
     const updateResult = await patientExamsRepository.update({ id: examId }, { attended });
 
     if (!updateResult.affected) {

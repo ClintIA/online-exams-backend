@@ -141,22 +141,27 @@ export const updateAdmin = async (adminId: number, updateData: UpdateAdminDTO) =
 };
 
 export const deleteAdmin = async (adminId: number, tenantId: number) => {
-    const admin = await adminRepository.findOne({ where: { id: adminId }, relations: ['tenants'] });
+    const admin = await adminRepository.findOne({
+        where: { id: adminId },
+        relations: ['tenants']
+    });
 
     if (!admin) {
         throw new Error('Admin não encontrado');
     }
 
     if (admin.role === 'master') {
-        throw new Error("Não é possível deletar o admin selecionado");
+        throw new Error('Não é possível deletar este admin específico (master).');
     }
 
     const tenantAssociation = admin.tenants.find(t => t.id === tenantId);
     if (!tenantAssociation) {
-        throw new Error("Admin não está associado ao tenant especificado");
+        throw new Error('Admin não está associado ao tenant especificado.');
     }
 
-    const hasDependencies = await patientExamsRepository.count({ where: { createdBy: admin } });
+    const hasDependencies = await patientExamsRepository.count({
+        where: { createdBy: admin }
+    });
 
     if (hasDependencies > 0) {
         admin.tenants = admin.tenants.filter(t => t.id !== tenantId);
@@ -177,3 +182,4 @@ export const deleteAdmin = async (adminId: number, tenantId: number) => {
 
     throw new Error('Erro inesperado ao deletar/desassociar Admin.');
 };
+

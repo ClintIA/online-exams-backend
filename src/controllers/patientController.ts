@@ -72,7 +72,7 @@ export const deletePatient = async (req: Request, res: Response) => {
     }
 
     try {
-        const result = await deletePatientService(parseInt(patientId as string, 10));
+        const result = await deletePatientService(parseInt(patientId as string, 10), tenantId);
         return successResponse(res, result);
     } catch (error) {
         return errorResponse(res, error);

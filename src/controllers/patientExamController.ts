@@ -188,7 +188,7 @@ export const deletePatientExamController = async (req: Request, res: Response) =
     */
     try {
         const tenantId = req.tenantId!;
-        const examId = parseValidInt(req.params.examId);
+        const examId = parseValidInt(req.params.patientExamId);
         if (!examId) {
             return new Error('ID do exame é obrigatório');
         }
@@ -203,6 +203,7 @@ export const deletePatientExamController = async (req: Request, res: Response) =
 import { UpdateExamAttendanceDTO } from '../types/dto/patientExam/updateExamAttendanceDTO';
 import {PatientFiltersDTO} from "../types/dto/patient/patientFiltersDTO";
 import {getExam} from "../services/tenantExamService";
+import {createLeadController} from "./leadController";
 
 export const updateExamAttendanceController = async (req: Request, res: Response) => {
     /*

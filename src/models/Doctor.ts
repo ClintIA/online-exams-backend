@@ -14,7 +14,7 @@ import { TenantExams } from './TenantExams';
 import {ProfileRole} from "../types/enums/ProfileRole";
 
 @Entity()
-@Index(['id', 'CRM', 'fullName', 'occupation'])
+@Index(['id', 'fullName', 'occupation'])
 export class Doctor {
     @PrimaryGeneratedColumn()
     id!: number;
@@ -28,17 +28,17 @@ export class Doctor {
     @Column({ unique: true, nullable: true })
     email!: string;
 
-    @Column({ unique: true })
-    CRM!: string;
+    @Column({ nullable: true })
+    CRM?: string;
 
-    @Column()
-    cep!: string;
+    @Column({nullable: true})
+    cep?: string;
 
     @Column( { enum: ProfileRole, default: 'doctor' } )
     role!: string;
 
-    @Column()
-    cnpj!: string;
+    @Column({nullable: true})
+    cnpj?: string;
 
     @Column()
     phone!: string;
