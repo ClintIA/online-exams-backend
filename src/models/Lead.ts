@@ -18,20 +18,20 @@ export class Lead {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
+    @Column({ nullable: true })
     name!: string;
 
-    @Column()
+    @Column({ nullable: true })
     phoneNumber!: string;
 
     @ManyToOne(() => TenantExams, { nullable: true })
     @JoinTable()
     exam?: TenantExams;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ nullable: true })
     callDate!: Date;
 
-    @Column()
+    @Column({ nullable: true })
     canal!: string;
 
     @Column({ nullable: true })
