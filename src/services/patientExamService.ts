@@ -14,9 +14,12 @@ import {generatePassword} from "../utils/passwordGenerator";
 import {doctorRepository} from "../repositories/doctorRepository";
 import { Doctor } from '../models/Doctor';
 import { PatientExams } from '../models/PatientExams';
+import {leadRepository} from "../repositories/leadRepository";
 
 export const listPatientExams = async (filters?: ListPatientExamsDTO) => {
     const whereCondition: any = {};
+
+    whereCondition.delete_at = IsNull();
 
     if (filters?.tenantId) {
         whereCondition.exam = {tenant: {id: filters.tenantId}};
@@ -135,7 +138,11 @@ export const deletePatientExam = async ({ examId, tenantId }: DeletePatientExamD
 };
 
 export const updateExamAttendance = async (examId: UpdateExamAttendanceDTO['examId'], attended: UpdateExamAttendanceDTO['attended']) => {
-    const updateResult = await patientExamsRepository.update({ id: examId }, { attended });
+
+    const updateResult = await patientExamsRepository.update(
+        { id: examId, tenant: { id: tenantId } },
+        { delete_at: new Date() }
+    );
 
     if (!updateResult.affected) {
         throw new Error('Exame não encontrado ou não atualizado');
