@@ -7,6 +7,7 @@ import {PatientFiltersDTO} from '../types/dto/patient/patientFiltersDTO';
 import {UpdatePatientDTO} from '../types/dto/patient/updatePatientDTO';
 import {RegisterPatientDTO} from '../types/dto/auth/registerPatientDTO';
 import {LoginPatientDTO} from '../types/dto/auth/loginPatientDTO';
+import {patientExamsRepository} from "../repositories/patientExamsRepository";
 
 export const findPatientByCpf = async (cpf: string): Promise<Patient | null> => {
     return await patientRepository.findOne({ where: { cpf }, relations: ['tenants'] });
@@ -37,10 +38,48 @@ export const listPatientByTenant = async (
     });
 };
 
-export const deletePatientService = async (patientId: number) => {
-    await patientRepository.softDelete({ id: patientId });
-    return { message: "Paciente deletado com sucesso" };
-}
+export const deletePatientService = async (patientId: number, tenantId: number) => {
+    const patient = await patientRepository.findOne({
+        where: { id: patientId },
+        relations: ['tenants'],
+    });
+
+    if (!patient) {
+        throw new Error('Paciente não encontrado.');
+    }
+
+    const tenantAssociation = patient.tenants.find((t) => t.id === tenantId);
+    if (!tenantAssociation) {
+        throw new Error('Paciente não está associado ao tenant especificado.');
+    }
+
+    const hasDependencies = await patientExamsRepository.count({
+        where: { patient: { id: patient.id } },
+    });
+
+    if (hasDependencies > 0) {
+        patient.tenants = patient.tenants.filter((t) => t.id !== tenantId);
+        await patientRepository.save(patient);
+        return {
+            message: 'Paciente desassociado do tenant, mas não deletado devido a dependências.'
+        };
+    }
+
+    if (patient.tenants.length > 1) {
+        patient.tenants = patient.tenants.filter((t) => t.id !== tenantId);
+        await patientRepository.save(patient);
+        return { message: 'Paciente desassociado do tenant com sucesso.' };
+    }
+
+    if (patient.tenants.length === 1) {
+        await patientRepository.softDelete(patient.id);
+        return {
+            message: 'Paciente deletado com sucesso, pois não havia dependências e estava associado a apenas um tenant.',
+        };
+    }
+
+    throw new Error('Erro inesperado ao deletar/desassociar paciente.');
+};
 
 export const updatePatientService = async (patientData: UpdatePatientDTO, patientId: number) => {
     try {
