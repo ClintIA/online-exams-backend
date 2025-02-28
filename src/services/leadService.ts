@@ -69,7 +69,18 @@ export const createLead = async (leadData: CreateLeadDTO, tenantId: number) => {
 };
 
 export const updateLead = async (leadId: number, leadData: UpdateLeadDTO) => {
-    const updateResult = await leadRepository.update({ id: leadId }, leadData);
+    let exam;
+    let scheduledDoctor;
+
+    if (leadData.examId) {
+        exam = await tenantExamsRepository.findOne({ where: { id: leadData.examId } });
+    }
+    if (leadData.scheduledDoctorId) {
+        scheduledDoctor = await doctorRepository.findOne({ where: { id: leadData.scheduledDoctorId } });
+    }
+    delete leadData.scheduledDoctorId
+    delete leadData.examId
+    const updateResult = await leadRepository.update({ id: leadId }, {...leadData, scheduledDoctor: scheduledDoctor, exam: exam});
 
     if (!updateResult.affected) {
         throw new Error('Erro ao atualizar o lead ou lead não encontrado');
