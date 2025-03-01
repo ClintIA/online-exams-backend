@@ -90,9 +90,8 @@ export const updateLead = async (leadId: number, leadData: UpdateLeadDTO) => {
 };
 
 export const deleteLead = async ({ leadId, tenantId }: DeleteLeadDTO) => {
-    const updateResult = await leadRepository.update(
+    const updateResult = await leadRepository.softDelete(
         { id: leadId, tenant: { id: tenantId } },
-        { delete_at: new Date() }
     );
 
     if (!updateResult.affected) {
